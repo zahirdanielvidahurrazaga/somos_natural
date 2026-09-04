@@ -240,11 +240,8 @@ Las 5 elegidas y para qué:
 
 | Archivo | Original | Dónde | Por qué esa |
 |---|---|---|---|
-| `formacion.jpg` | 4730 | Sección propia tras Proceso | Nueve sabores de un jalón: es la prueba del catálogo |
-| `evento.jpg` | 4707 | Banda en Eventos | Recorte 5:3, el más ancho que deja la botella entera |
-| `detalle-jamaica.jpg` | 4648 | Trío tras Sabores | **Trae la etiqueta de Jamaica REAL**, la misma que da el diseño al sitio |
-| `detalle-vocho.jpg` | 4697 | Trío | Un Vocho crema de fondo: regalo para lo setentero |
-| `detalle-cafe.jpg` | 4640 | Trío | Margaritas moradas, la más "natural" del lote |
+| `formacion-ancha.jpg` | 4733 | Franja al cerrar Sabores | La fila de botellas ya es una composición horizontal: es la única que aguanta el corte ancho |
+| `formacion.jpg` | 4740 | Sección propia tras Proceso | Jamaica y horchata con gotas de frío. Se cambió la fila de botellas para no repetirla dos veces en la misma página |
 
 Se convierten con `sips` (HEIC→JPEG) y se recortan con PIL. Ninguna pasa de 225 KB.
 
@@ -258,8 +255,18 @@ la regla del proyecto:
 > integra una foto es la ESCALA, no la forma.** El arco no arregla nada; sangrar hasta el
 > borde de la pantalla sí.
 
-- **Franja de cuatro fotos** (`.tira-fotos`) pegadas sin separación, de borde a borde,
-  cerrando Sabores. Es una franja, no cuatro cuadros.
+- **Franja** (`.franja`): UNA foto ancha, de borde a borde y **en silencio** —sin velo, sin
+  texto, sin marco— cerrando Sabores. Es el remate: después de quince etiquetas dibujadas,
+  las botellas de verdad, todas juntas.
+
+  > 🔴 **Aquí hubo cuatro fotos cuadradas en cuatro columnas y se veían pésimas.** Dos
+  > causas. La tonta: `figure img { object-fit: cover }` **no alcanzaba a imágenes que no
+  > viven dentro de un `<figure>`**, así que quedaban sin `object-fit` y sin tamaño, y el
+  > navegador usaba el atributo `height="700"` del HTML contra un ancho de columna de 360:
+  > las **estiraba**. Las reglas ahora apuntan al elemento (`.foto img`), no al padre.
+  > La de fondo, y la que importa: **una foto cuadrada con una botella vertical no sobrevive
+  > una banda horizontal**, por bien recortada que esté. Solo aguantan las fotos cuya
+  > composición ya es horizontal — la formación de botellas en fila.
 - **Banda** (`.banda`) de borde a borde con la frase encima. Es el formato que el negocio
   aprobó explícitamente al verlo con video.
 - **Retrato** (`.retrato`): la foto **sale por el borde izquierdo** de la pantalla y el texto

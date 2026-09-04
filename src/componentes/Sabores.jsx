@@ -1,6 +1,6 @@
 import { sabores, grupos, tamanos, dulzura, mostrarIngredientes } from '../datos/negocio'
 import Etiqueta from './Etiqueta'
-import TiraFotos from './TiraFotos'
+import Franja from './Franja'
 
 const TIPO = { agua: 'De agua', leche: 'Con leche' }
 
@@ -46,7 +46,7 @@ export default function Sabores() {
           )
         })}
 
-        <TiraFotos />
+        <Franja />
 
         <div className="opciones" data-revelar>
           <div>

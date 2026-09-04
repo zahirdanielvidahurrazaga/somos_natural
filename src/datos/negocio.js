@@ -176,13 +176,12 @@ export const eventos = [
 export const fotos = {
   formacion: {
     src: '/img/fotos/formacion.jpg',
-    alt: 'Nueve aguas de distintos sabores formadas sobre una barda de ladrillo',
-    ancho: 1200, alto: 1200,
+    alt: 'Un agua de jamaica y una de horchata, frías y recién puestas, junto a una maceta de talavera',
+    ancho: 1200, alto: 1500,
   },
-  tira: [
-    { src: '/img/fotos/tira-1.jpg', alt: 'Agua de jamaica junto a una maceta de talavera con geranios' },
-    { src: '/img/fotos/tira-2.jpg', alt: 'Agua de jamaica sostenida frente a una palma' },
-    { src: '/img/fotos/tira-3.jpg', alt: 'Agua de horchata apoyada en un portón, con un Vocho crema atrás' },
-    { src: '/img/fotos/tira-4.jpg', alt: 'Agua de café sostenida entre margaritas moradas' },
-  ],
+  franja: {
+    src: '/img/fotos/formacion-ancha.jpg',
+    alt: 'Nueve aguas de distintos sabores formadas frente a una pared roja',
+    ancho: 2200, alto: 1000,
+  },
 }

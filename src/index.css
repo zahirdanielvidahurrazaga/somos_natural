@@ -488,7 +488,13 @@ a { color: inherit; text-decoration: none; }
    arco tampoco lo arregló. Lo que integra es la escala, no la forma. */
 
 figure { margin: 0; }
-figure img, figure video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.foto img, .foto video,
+figure img, figure video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 
 /* Lavado cálido para que los blancos de la foto casen con el papel. */
 .foto { position: relative; }
@@ -503,16 +509,13 @@ figure img, figure video { width: 100%; height: 100%; object-fit: cover; display
   pointer-events: none;
 }
 
-/* Franja de cuatro fotos pegadas, de borde a borde. */
-.tira-fotos {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+/* Franja: UNA foto ancha, de borde a borde y en silencio. */
+.franja {
   width: 100vw;
   margin: var(--hueco4) calc(50% - 50vw) 0;
   overflow: hidden;
 }
-.tira-fotos img { aspect-ratio: 1; transition: transform 1s cubic-bezier(.2,.7,.3,1); }
-.tira-fotos:hover img { transform: scale(1.03); }
+.franja img { aspect-ratio: 22 / 10; }
 
 /* Banda: de borde a borde, con la frase encima. */
 .banda {
@@ -546,7 +549,7 @@ figure img, figure video { width: 100%; height: 100%; object-fit: cover; display
 /* Retrato: la foto sale por el borde izquierdo, el texto se queda alineado
    con el resto de la página. Esta sección NO va dentro de .marco. */
 .retrato { display: grid; }
-.retrato figure img { aspect-ratio: 1; }
+.retrato figure img { aspect-ratio: 4 / 5; }
 .retrato-texto {
   padding: var(--hueco2) clamp(1.15rem, 4vw, 2.25rem) 0;
 }
@@ -568,7 +571,7 @@ figure img, figure video { width: 100%; height: 100%; object-fit: cover; display
 
 @media (max-width: 560px) {
   .banda img, .banda video { aspect-ratio: 4 / 3; }
-  .tira-fotos { grid-template-columns: repeat(2, 1fr); }
+  .franja img { aspect-ratio: 16 / 10; }
 }
 
 /* ── Grupos de sabores ───────────────────────────────────────────────────── */
@@ -1042,7 +1045,6 @@ figure img, figure video { width: 100%; height: 100%; object-fit: cover; display
   .etq-motivo > * { animation: none; stroke-dashoffset: 0; }
 
   .sabor:hover .etiqueta { transform: none; }
-  .tira-fotos:hover img { transform: none; }
   .gotita-aro { animation: none; }
   .caminante-paso, .caminante-paso img { animation: none; }
   .caminante-paso { left: 6%; }
