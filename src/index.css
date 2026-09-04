@@ -1,0 +1,609 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SOMOS NATURAL — sitio público
+   El lenguaje sale de la etiqueta de Jamaica: fondo crema, un color hondo por
+   sabor, versalitas muy espaciadas y un display setentero SOLO en los títulos.
+   Regla: cero estilos escritos a mano en el JSX. La única excepción es --c,
+   el color del sabor, que es un dato.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --crema:       #FAEDE9;
+  --crema-honda: #F2DED8;
+  --hueso:       #FFFBF9;
+  --vino:        #9B2247;
+  --vino-hondo:  #6E1732;
+  --tinta:       #2B181D;
+  --suave:       #7C6268;
+  --marco:       rgba(43, 24, 29, 0.15);
+  --marco-firme: rgba(43, 24, 29, 0.42);
+
+  /* Display setentero, solo títulos */
+  --d1: clamp(2.9rem, 7.4vw, 5.6rem);
+  --d2: clamp(1.95rem, 4.3vw, 3.1rem);
+  --d3: clamp(1.3rem, 2.2vw, 1.6rem);
+
+  /* Texto */
+  --t1: 1.0625rem;
+  --t2: 0.9375rem;
+  --t3: 0.8125rem;
+  --t4: 0.6875rem;
+
+  --hueco:  1rem;
+  --hueco2: 1.75rem;
+  --hueco3: 3rem;
+  --hueco4: clamp(4rem, 10vw, 8rem);
+  --ancho:  1080px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+
+body {
+  margin: 0;
+  background: var(--crema);
+  color: var(--tinta);
+  font-family: 'Jost', system-ui, -apple-system, sans-serif;
+  font-size: var(--t1);
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3 {
+  font-family: 'Yeseva One', Georgia, serif;
+  font-weight: 400;
+  line-height: 1.06;
+  margin: 0;
+}
+
+p { margin: 0; }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+/* ── Piezas base ─────────────────────────────────────────────────────────── */
+
+.marco {
+  width: 100%;
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 0 clamp(1.15rem, 4vw, 2.25rem);
+}
+
+.seccion { padding: var(--hueco4) 0; }
+.seccion + .seccion { border-top: 1px solid var(--marco); }
+
+/* Versalitas espaciadas: la voz de la etiqueta */
+.caps {
+  font-size: var(--t4);
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+.rotulo {
+  display: block;
+  color: var(--vino);
+  margin-bottom: 1.1rem;
+}
+
+.entrada {
+  font-size: var(--t1);
+  color: var(--suave);
+  max-width: 52ch;
+  font-weight: 300;
+}
+
+.cabeza { max-width: 56ch; margin-bottom: var(--hueco3); }
+.cabeza h2 { font-size: var(--d2); }
+.cabeza .entrada { margin-top: 1.15rem; }
+.cabeza-centro { margin-left: auto; margin-right: auto; text-align: center; }
+.cabeza-centro .entrada { margin-left: auto; margin-right: auto; }
+
+/* ── Botones ─────────────────────────────────────────────────────────────── */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  font-family: inherit;
+  font-size: var(--t4);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 1.02rem 1.7rem;
+  border: 1px solid var(--marco-firme);
+  border-radius: 0;
+  cursor: pointer;
+  background: transparent;
+  color: var(--tinta);
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+  text-align: center;
+}
+.boton:hover { background: var(--tinta); border-color: var(--tinta); color: var(--crema); }
+
+.boton-vino { background: var(--vino); border-color: var(--vino); color: var(--hueso); }
+.boton-vino:hover { background: var(--vino-hondo); border-color: var(--vino-hondo); color: var(--hueso); }
+
+.boton-claro { border-color: rgba(255,251,249,.45); color: var(--hueso); }
+.boton-claro:hover { background: var(--hueso); border-color: var(--hueso); color: var(--vino-hondo); }
+
+.boton svg { width: 1.1em; height: 1.1em; flex-shrink: 0; }
+.boton:disabled,
+.boton[aria-disabled='true'] { opacity: .35; cursor: not-allowed; background: transparent; color: var(--tinta); border-color: var(--marco-firme); }
+
+/* ── Encabezado ──────────────────────────────────────────────────────────── */
+
+.techo {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--crema);
+  border-bottom: 1px solid transparent;
+  transition: border-color .25s;
+}
+.techo-pegado { border-bottom-color: var(--marco); }
+
+.techo-fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hueco);
+  height: 68px;
+}
+
+.marca { display: flex; align-items: center; gap: 0.65rem; }
+.marca img { width: 38px; height: 38px; }
+.marca-nombre {
+  font-family: 'Yeseva One', Georgia, serif;
+  font-size: 1.02rem;
+  line-height: 1;
+  color: var(--vino);
+}
+.marca-lema { display: block; color: var(--suave); margin-top: 0.25rem; }
+
+.menu { display: none; gap: 2rem; }
+.menu a { color: var(--suave); transition: color .18s; }
+.menu a:hover { color: var(--vino); }
+@media (min-width: 900px) { .menu { display: flex; } }
+
+.techo .boton { padding: 0.68rem 1.1rem; }
+
+/* ── Portada ─────────────────────────────────────────────────────────────── */
+
+.portada { padding: clamp(2.5rem, 6vw, 4.5rem) 0 var(--hueco4); }
+
+.portada-caja { display: grid; gap: var(--hueco3); align-items: center; }
+@media (min-width: 940px) {
+  .portada-caja { grid-template-columns: 1.1fr 0.9fr; gap: clamp(2.5rem, 6vw, 5rem); }
+}
+
+.portada h1 { font-size: var(--d1); }
+.portada h1 em { font-style: normal; color: var(--vino); }
+.portada .entrada { margin-top: 1.5rem; max-width: 44ch; }
+
+.portada-botones { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: var(--hueco2); }
+
+.portada-fija {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.75rem;
+  margin-top: var(--hueco3);
+  padding-top: 1.35rem;
+  border-top: 1px solid var(--marco);
+  color: var(--suave);
+}
+.portada-fija span { display: flex; align-items: center; gap: 0.55rem; }
+.portada-fija span::before {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--vino);
+  flex-shrink: 0;
+}
+
+.portada-muestra { display: grid; place-items: center; }
+.portada-muestra .etiqueta { max-width: 420px; }
+
+/* ── La etiqueta (el producto dibujado) ──────────────────────────────────── */
+
+.etiqueta {
+  container-type: inline-size;
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  background: var(--hueso);
+  border: 1px solid var(--marco-firme);
+  padding: clamp(0.85rem, 2.2vw, 1.4rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  color: var(--c, var(--vino));
+}
+.etiqueta-hoja {
+  position: absolute;
+  width: 46%;
+  opacity: 0.5;
+  pointer-events: none;
+}
+.etiqueta-hoja.izq { left: -13%; top: -14%; transform: rotate(-16deg); }
+.etiqueta-hoja.der { right: -13%; bottom: -16%; transform: rotate(158deg); }
+
+.etiqueta-arriba,
+.etiqueta-abajo {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: clamp(0.4rem, 2.6cqw, 0.62rem);
+  letter-spacing: 0.16em;
+}
+.etiqueta-abajo { justify-content: center; }
+.etiqueta-nombre {
+  display: block;
+  position: relative;
+  font-family: 'Yeseva One', Georgia, serif;
+  font-size: clamp(1.55rem, 11cqw, 3.4rem);
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+}
+.etiqueta-sabor {
+  display: block;
+  position: relative;
+  font-size: clamp(0.42rem, 2.9cqw, 0.72rem);
+  letter-spacing: 0.2em;
+}
+.etiqueta-regla {
+  display: block;
+  position: relative;
+  width: 34%;
+  height: 1px;
+  background: currentColor;
+  opacity: .45;
+  margin: 0.5rem auto;
+}
+
+/* ── Tira de textos fijos ────────────────────────────────────────────────── */
+
+.tira {
+  background: var(--vino);
+  color: var(--crema);
+  padding: 1.05rem 0;
+}
+.tira-fila {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.7rem clamp(1.25rem, 4vw, 3rem);
+  text-align: center;
+}
+.tira-fila i {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: .5;
+  flex-shrink: 0;
+}
+@media (max-width: 620px) { .tira-fila i { display: none; } }
+
+/* ── Sabores ─────────────────────────────────────────────────────────────── */
+
+.rejilla-sabores {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(228px, 1fr));
+  gap: clamp(1.1rem, 2.4vw, 2rem);
+}
+
+.sabor .etiqueta { transition: transform .3s cubic-bezier(.2,.8,.3,1); }
+.sabor:hover .etiqueta { transform: translateY(-4px); }
+
+.sabor-pie { margin-top: 0.9rem; }
+.sabor-pie h3 { font-size: var(--d3); color: var(--tinta); }
+.sabor-tipo { display: inline-block; color: var(--c); margin-top: 0.4rem; }
+.sabor-ingredientes {
+  font-size: var(--t3);
+  font-weight: 300;
+  color: var(--suave);
+  margin-top: 0.5rem;
+}
+
+/* ── Pasos ───────────────────────────────────────────────────────────────── */
+
+.pasos { display: grid; gap: var(--hueco2); counter-reset: paso; }
+@media (min-width: 700px)  { .pasos { grid-template-columns: repeat(2, 1fr); gap: var(--hueco3) var(--hueco2); } }
+@media (min-width: 1000px) { .pasos { grid-template-columns: repeat(4, 1fr); } }
+
+.paso { padding-top: 1.15rem; border-top: 1px solid var(--marco); }
+.paso::before {
+  counter-increment: paso;
+  content: '0' counter(paso);
+  display: block;
+  font-family: 'Yeseva One', Georgia, serif;
+  font-size: var(--t2);
+  color: var(--vino);
+  margin-bottom: 0.9rem;
+}
+.paso h3 { font-size: 1.12rem; margin-bottom: 0.45rem; }
+.paso p  { font-size: var(--t2); font-weight: 300; color: var(--suave); }
+
+/* ── Franjas ─────────────────────────────────────────────────────────────── */
+
+.franja-honda {
+  background: var(--vino-hondo);
+  color: var(--crema);
+  border-top: 0;
+}
+.franja-honda .rotulo  { color: #E9B9C6; }
+.franja-honda .entrada { color: rgba(250,237,233,.72); }
+.franja-honda .paso    { border-top-color: rgba(250,237,233,.22); }
+.franja-honda .paso::before { color: #E9B9C6; }
+.franja-honda .paso p  { color: rgba(250,237,233,.68); }
+
+.franja-suave { background: var(--crema-honda); }
+
+/* Lista de argumentos */
+.puntos { display: grid; gap: 0; margin-bottom: var(--hueco3); }
+@media (min-width: 760px) { .puntos { grid-template-columns: repeat(2, 1fr); column-gap: var(--hueco3); } }
+
+.punto { padding: 1.35rem 0; border-top: 1px solid var(--marco); }
+.franja-honda .punto { border-top-color: rgba(250,237,233,.22); }
+.punto h3 { font-size: 1.1rem; margin-bottom: 0.4rem; }
+.punto p  { font-size: var(--t2); font-weight: 300; color: var(--suave); }
+.franja-honda .punto p { color: rgba(250,237,233,.68); }
+
+
+/* ── Grupos de sabores ───────────────────────────────────────────────────── */
+
+.grupo + .grupo { margin-top: var(--hueco4); }
+
+.grupo-cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 1rem;
+  padding-bottom: 0.9rem;
+  margin-bottom: var(--hueco2);
+  border-bottom: 1px solid var(--marco);
+}
+.grupo-cabeza h3 {
+  font-family: 'Jost', sans-serif;
+  font-weight: 500;
+  color: var(--vino);
+}
+.grupo-cabeza span { font-size: var(--t3); font-weight: 300; color: var(--suave); }
+
+/* ── Tamaños y dulzura ───────────────────────────────────────────────────── */
+
+.opciones {
+  display: grid;
+  gap: var(--hueco2);
+  margin-top: var(--hueco4);
+  padding-top: var(--hueco2);
+  border-top: 1px solid var(--marco);
+}
+@media (min-width: 700px) { .opciones { grid-template-columns: 1fr 1fr; gap: var(--hueco3); } }
+
+.opciones h3 {
+  font-family: 'Jost', sans-serif;
+  font-weight: 500;
+  color: var(--vino);
+  margin-bottom: 1rem;
+}
+.opciones ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.55rem; }
+.opciones li { font-size: var(--t2); padding-bottom: 0.55rem; border-bottom: 1px solid var(--marco); }
+.opciones li span { color: var(--suave); }
+.opciones-pie { font-size: var(--t3); font-weight: 300; color: var(--suave); margin-top: 0.9rem; }
+
+/* ── Fichas de elección ──────────────────────────────────────────────────── */
+
+.eleccion + .eleccion { margin-top: var(--hueco2); }
+.eleccion > .caps { display: block; color: var(--suave); margin-bottom: 0.7rem; }
+
+.fichas { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.fichas button {
+  font-family: inherit;
+  font-size: var(--t3);
+  color: var(--suave);
+  background: transparent;
+  border: 1px solid var(--marco);
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+  transition: border-color .18s, color .18s, background .18s;
+}
+.fichas button:hover { border-color: var(--vino); color: var(--vino); }
+.fichas button[data-activo='si'] { background: var(--vino); border-color: var(--vino); color: var(--hueso); }
+
+.minimo { color: var(--vino); text-align: right; margin-top: 0.5rem; }
+
+.cierre { padding-top: var(--hueco2); border-top: 1px solid rgba(250,237,233,.22); }
+
+/* ── Armador de pedido ───────────────────────────────────────────────────── */
+
+.pedido-caja { display: grid; gap: var(--hueco3); align-items: start; }
+@media (min-width: 980px) { .pedido-caja { grid-template-columns: 1.3fr 1fr; } }
+
+.cambiador {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: var(--hueco2);
+  border: 1px solid var(--marco-firme);
+}
+.cambiador button {
+  flex: 1 1 auto;
+  font-family: inherit;
+  font-size: var(--t4);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--suave);
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--marco-firme);
+  padding: 0.85rem 0.9rem;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+  white-space: nowrap;
+}
+.cambiador button:last-child { border-right: 0; }
+.cambiador button:hover { color: var(--vino); }
+.cambiador button[data-activo='si'] { background: var(--vino); color: var(--hueso); }
+
+.linea {
+  display: flex;
+  align-items: center;
+  gap: var(--hueco);
+  padding: 0.78rem 0;
+  border-top: 1px solid var(--marco);
+}
+.linea:last-child { border-bottom: 1px solid var(--marco); }
+
+.gota { width: 10px; height: 10px; border-radius: 50%; background: var(--c); flex-shrink: 0; }
+.linea-nombre { flex: 1; font-size: var(--t2); }
+.linea-ml { color: var(--suave); }
+
+.contador { display: flex; align-items: center; gap: 0.15rem; }
+.contador button {
+  width: 34px; height: 34px;
+  border: 1px solid var(--marco);
+  background: transparent;
+  color: var(--tinta);
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: border-color .18s, background .18s, color .18s;
+}
+.contador button:hover:not(:disabled) { border-color: var(--vino); color: var(--vino); }
+.contador button:disabled { opacity: .28; cursor: not-allowed; }
+.contador output {
+  min-width: 38px;
+  text-align: center;
+  font-family: 'Yeseva One', Georgia, serif;
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+}
+.contador output[data-cero='si'] { color: var(--suave); opacity: .38; }
+
+/* Resumen */
+.resumen { position: sticky; top: 92px; }
+
+.campo { display: block; margin-bottom: 1.1rem; }
+.campo > span { display: block; color: var(--suave); margin-bottom: 0.4rem; }
+.campo input, .campo textarea {
+  width: 100%;
+  font-family: inherit;
+  font-size: var(--t2);
+  color: var(--tinta);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--marco-firme);
+  padding: 0.5rem 0;
+  transition: border-color .18s;
+}
+.campo input::placeholder, .campo textarea::placeholder { color: var(--suave); opacity: .55; }
+.campo input:focus, .campo textarea:focus { outline: 0; border-bottom-color: var(--vino); }
+.campo textarea { resize: vertical; min-height: 56px; }
+
+.campo-par { display: grid; gap: 1.1rem; }
+@media (min-width: 420px) { .campo-par { grid-template-columns: 1fr 1fr; } }
+
+.cuenta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--hueco);
+  padding: 0.85rem 0;
+  border-top: 1px solid var(--marco);
+  color: var(--suave);
+}
+.cuenta b {
+  letter-spacing: 0;
+  text-transform: none;
+  font-family: 'Yeseva One', Georgia, serif;
+  font-size: 1.3rem;
+  color: var(--tinta);
+  font-variant-numeric: tabular-nums;
+}
+
+.pedido-envio { margin-top: var(--hueco2); }
+.pedido-envio .boton { width: 100%; }
+.pedido-pie { font-size: var(--t3); font-weight: 300; color: var(--suave); text-align: center; margin-top: 0.8rem; }
+
+.aviso {
+  border: 1px solid var(--marco-firme);
+  padding: 0.9rem 1rem;
+  color: var(--suave);
+  font-size: var(--t3);
+  font-weight: 300;
+}
+.aviso b { display: block; color: var(--tinta); margin-bottom: 0.25rem; }
+
+/* ── Pie ─────────────────────────────────────────────────────────────────── */
+
+.pie {
+  background: var(--tinta);
+  color: rgba(250,237,233,.6);
+  padding: var(--hueco4) 0 var(--hueco2);
+  font-size: var(--t2);
+  font-weight: 300;
+}
+.pie-caja { display: grid; gap: var(--hueco2); align-items: start; }
+@media (min-width: 780px) { .pie-caja { grid-template-columns: 1.5fr 1fr 1fr; gap: var(--hueco3); } }
+
+.pie .marca-nombre { color: var(--crema); }
+.pie .marca-lema   { color: rgba(250,237,233,.45); }
+.pie h3 {
+  font-family: 'Jost', sans-serif;
+  font-size: var(--t4);
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #E9B9C6;
+  margin-bottom: 1rem;
+}
+.pie ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.55rem; }
+.pie a:hover { color: var(--crema); }
+.pie-texto { margin-top: 1.1rem; max-width: 36ch; }
+
+.pie-fondo {
+  margin-top: var(--hueco3);
+  padding-top: 1.4rem;
+  border-top: 1px solid rgba(250,237,233,.14);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--hueco);
+  justify-content: space-between;
+  color: rgba(250,237,233,.38);
+}
+
+/* ── Flotante ────────────────────────────────────────────────────────────── */
+
+.flotante {
+  position: fixed;
+  right: clamp(1rem, 3vw, 1.75rem);
+  bottom: clamp(1rem, 3vw, 1.75rem);
+  z-index: 60;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: var(--vino);
+  color: var(--crema);
+  display: grid;
+  place-items: center;
+  transition: background .2s;
+}
+.flotante:hover { background: var(--vino-hondo); }
+.flotante svg { width: 26px; height: 26px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}

@@ -1,0 +1,10 @@
+Aquí van las fotos del negocio.
+
+Qué sirve para el sitio:
+  · Horizontales (apaisadas), mínimo 1600 px de ancho.
+  · Con aire alrededor: encima va texto en algunas.
+  · Sin caras de gente que no haya dado permiso.
+  · JPG. Si pesan más de 1 MB hay que comprimirlas antes de subirlas.
+
+Cómo pasarlas: AirDrop del iPhone a esta Mac. Caen en ~/Downloads y de ahí
+se mueven aquí.
