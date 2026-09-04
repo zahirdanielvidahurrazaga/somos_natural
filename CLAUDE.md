@@ -297,7 +297,7 @@ Un solo dibujo, cuatro apariciones:
 
 | Dónde | Cómo |
 |---|---|
-| **Portada** | **Dentro de su aro de texto giratorio**, respirando y caminando hacia la etiqueta |
+| **Portada** | **Dentro de su aro de texto giratorio**, en la esquina de abajo a la derecha |
 | **Entre Sabores y Proceso** | Cruza la página caminando por la línea divisoria |
 | **Panel del pedido** | Asomada por arriba, volteada |
 | **Pie** | Silueta con `mask`, al 13% — atmósfera, no calcomanía |
@@ -310,8 +310,11 @@ Un solo dibujo, cuatro apariciones:
 > —que ya traía la gotita chiquita dentro del logo— **y** la gotita de cuerpo entero: el mismo
 > personaje dos veces. Se fusionaron en `GotitaSello.jsx`. Dos cosas que importan del ajuste:
 > la figura mide **82% del alto del aro**, no más, porque con sus adornos salía más ancha que
-> el aro y le tapaba el texto; y va en la esquina **izquierda**, sobre el hueco entre las dos
-> columnas, porque a la derecha se montaba encima de la firma de la etiqueta y le comía la L.
+> el aro y le tapaba el texto; y va **abajo a la derecha, por debajo de la línea de la firma**,
+> porque a la altura del centro se montaba encima de "NATURAL" y le comía la L.
+>
+> **La gotita NO flota.** Se le quitó el balanceo a pedido del negocio (2026-09-04): el único
+> movimiento de la pieza es el aro girando. No reintroducir el `respirar`.
 
 El caminante lleva **dos animaciones en dos elementos**: una avanza y otra brinca. En el
 mismo elemento se pisarían, porque las dos usan `transform`.
