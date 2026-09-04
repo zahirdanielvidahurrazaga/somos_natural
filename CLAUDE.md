@@ -146,9 +146,62 @@ Las 5 elegidas y para qué:
 
 Se convierten con `sips` (HEIC→JPEG) y se recortan con PIL. Ninguna pasa de 225 KB.
 
-**Los 8 videos (.mov, de 6 a 81 MB) siguen sin usar: no hay `ffmpeg` en la máquina.**
-Para meterlos habría que instalarlo (`brew install ffmpeg`) o que Zahir los exporte ya
-comprimidos. Sin comprimir NO deben subirse: 81 MB en una página es inaceptable.
+**Tratamiento de foto (2026-09-04).** Las fotos NO van en un recuadro con marco encima del
+papel; se pidió expresamente que estuvieran "en armonía, no sobrepuestas". El sistema es:
+
+- **Arco** (`border-radius: 50% 50% 0 0 / 34% 34% 0 0`) — el mismo medio punto de los
+  portones que salen en sus propias fotos. Rompe el rectángulo sin recortar contenido.
+- **Sin marco.** Ninguna foto lleva borde.
+- **Lavado cálido**: velo de `--crema` en `soft-light` al 62% más `saturate(.94)`, para que
+  los blancos de la foto casen con el papel del sitio.
+- **La banda va de borde a borde** (`margin: 0 calc(50% - 50vw); width: 100vw`). Integra por
+  escala, no por caja.
+- El trío no es una fila de tres iguales: **la de en medio va más alta** (4/5.6 contra 4/5).
+
+## Videos
+
+`ffmpeg` se instaló con Homebrew el 2026-09-04. Los 8 originales son **4K, 3–17 s**, de 6 a
+81 MB, y **todos son verticales menos `IMG_4675`**.
+
+- **En el sitio va uno solo:** `public/video/paseo.mp4` ← `IMG_4675`, recortado a 5:3,
+  1600×960, sin audio, CRF 30. **7.1 MB → 447 KB.** Reemplazó a la foto en la banda de
+  Eventos. Va `autoPlay muted loop playsInline` con `paseo.jpg` de cartel para que no
+  parpadee en negro.
+- Los otros 7 quedaron comprimidos en `~/Downloads/videos-web/` (205 MB → 6.3 MB en total),
+  disponibles pero **sin usar**. No meterlos al repo hasta que tengan un lugar.
+
+Receta: `ffmpeg -i X -vf "crop=…,scale=…,fps=30" -an -c:v libx264 -profile:v main
+-pix_fmt yuv420p -crf 30 -preset slow -movflags +faststart`.
+
+## La gotita
+
+El personaje (`public/img/gotita.png`) salió de `Gemini_Generated_Image_t4mjzbt4mjzbt4mj.png`
+en Downloads. Es rubber-hose de los años 30, que cae justo en el registro retro del sitio.
+
+> El fondo blanco se quitó con **relleno por inundación desde los bordes**, no borrando todo
+> el blanco: los guantes y los ojos también son blancos y se habrían perdido.
+> Después se cuantizó a 128 colores: **234 KB → 35 KB**, sin pérdida visible (es dibujo plano).
+
+Un solo dibujo, cuatro apariciones:
+
+| Dónde | Cómo |
+|---|---|
+| **Portada** | Junto a la etiqueta, respirando. **Se tiñe del sabor** que muestra la etiqueta |
+| **Entre Sabores y Proceso** | Cruza la página caminando por la línea divisoria |
+| **Panel del pedido** | Asomada por arriba, volteada |
+| **Pie** | Silueta con `mask`, al 13% — atmósfera, no calcomanía |
+
+El tinte se calcula en **`src/lib/color.js`**: `giroHacia(hex)` saca el tono del color del
+sabor, le resta el azul de la gotita (203°) y devuelve los grados para un `hue-rotate`.
+**No está escrito a mano**: si mañana cambia el color de un sabor, el tinte lo sigue solo.
+`--giro` viaja inline junto a `--c`; los dos son datos, no decisiones de diseño.
+
+El caminante lleva **dos animaciones en dos elementos**: una avanza y otra brinca. En el
+mismo elemento se pisarían, porque las dos usan `transform`.
+
+> ⚠️ En Downloads hay otras dos `Gemini_Generated_Image_*`: una es una **foto de producto
+> generada por IA** —NO usarla, el sitio no lleva nada inventado— y la otra es una foto
+> familiar de Zahir.
 
 ## Stack y despliegue
 
@@ -160,7 +213,7 @@ cuando él lo aprueba.
 
 ## Pendientes
 
-- **Los 8 videos**: falta `ffmpeg` para comprimirlos. Decidir si se instala o se descartan.
+- Decidir si alguno de los 7 videos de `~/Downloads/videos-web/` entra al sitio.
 - Cuadrar el catálogo del menú contra el del ERP.
 - Confirmar si los otros dos teléfonos del menú siguen vivos.
 - Definir con cuánta anticipación se aparta una fecha de evento.

@@ -1,4 +1,4 @@
-import { negocio, eventos, fotos } from '../datos/negocio'
+import { negocio, eventos } from '../datos/negocio'
 import { enlaceWhatsapp } from '../lib/whatsapp'
 import Banda from './Banda'
 
@@ -21,7 +21,9 @@ export default function Eventos() {
         </div>
 
         <Banda
-          foto={fotos.evento}
+          video="/video/paseo.mp4"
+          cartel="/video/paseo.jpg"
+          alt="Recorrido por la fachada de la casa donde se preparan las aguas"
           rotulo="Se hacen para tu evento"
           frase="No salen de una bodega. Se preparan la tarde anterior y llegan frías el día que quedamos."
         />

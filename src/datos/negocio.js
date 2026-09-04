@@ -102,11 +102,6 @@ export const fotos = {
     alt: 'Nueve aguas de distintos sabores formadas sobre una barda de ladrillo',
     ancho: 1200, alto: 1200,
   },
-  evento: {
-    src: '/img/fotos/evento.jpg',
-    alt: 'Agua de frutos rojos parada sobre un seto, junto a una pared blanca',
-    ancho: 2000, alto: 1200,
-  },
   trio: [
     { src: '/img/fotos/detalle-jamaica.jpg', alt: 'Agua de jamaica sostenida frente a una palma',        pie: 'Jamaica' },
     { src: '/img/fotos/detalle-vocho.jpg',   alt: 'Agua de horchata apoyada en un portón, con un Vocho crema atrás', pie: 'Horchata' },

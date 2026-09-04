@@ -4,7 +4,7 @@ export default function Formacion() {
   return (
     <section className="seccion">
       <div className="marco retrato">
-        <figure data-revelar>
+        <figure className="foto arco" data-revelar>
           <img
             src={fotos.formacion.src}
             alt={fotos.formacion.alt}

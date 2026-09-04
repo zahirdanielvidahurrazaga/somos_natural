@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { sabores, tamanos } from '../datos/negocio'
 import Etiqueta from './Etiqueta'
 import Sello from './Sello'
+import { giroHacia } from '../lib/color'
 
 const CADA = 3200
 
@@ -47,9 +48,20 @@ export default function Portada() {
           </div>
         </div>
 
-        <div className="portada-muestra" style={{ '--c': sabor.color }} data-revelar>
+        <div
+          className="portada-muestra"
+          style={{ '--c': sabor.color, '--giro': `${giroHacia(sabor.color)}deg` }}
+          data-revelar
+        >
           <Etiqueta sabor={sabor} />
           <Sello />
+          <img
+            className="gotita-portada"
+            src="/img/gotita.png"
+            alt="La gotita de Somos Natural"
+            width="454"
+            height="550"
+          />
         </div>
       </div>
     </section>

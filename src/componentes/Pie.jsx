@@ -8,6 +8,7 @@ export default function Pie() {
 
   return (
     <footer className="pie">
+      <span className="gotita-marca" aria-hidden="true" />
       <div className="marco">
         <div className="pie-caja">
           <div>

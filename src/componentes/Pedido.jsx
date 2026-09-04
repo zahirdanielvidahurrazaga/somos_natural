@@ -136,6 +136,16 @@ export default function Pedido() {
           </div>
 
           <div className="resumen">
+            <img
+              className="gotita-asomada"
+              src="/img/gotita.png"
+              alt=""
+              width="454"
+              height="550"
+              loading="lazy"
+              decoding="async"
+              aria-hidden="true"
+            />
             <label className="campo">
               <span className="caps">Tu nombre</span>
               <input value={quien} onChange={(e) => setQuien(e.target.value)} placeholder="Cómo te llamas" />
