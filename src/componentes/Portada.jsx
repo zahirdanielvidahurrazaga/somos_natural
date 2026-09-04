@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { sabores, tamanos } from '../datos/negocio'
 import Etiqueta from './Etiqueta'
 import Sello from './Sello'
-import { giroHacia } from '../lib/color'
 
 const CADA = 3200
 
@@ -50,7 +49,7 @@ export default function Portada() {
 
         <div
           className="portada-muestra"
-          style={{ '--c': sabor.color, '--giro': `${giroHacia(sabor.color)}deg` }}
+          style={{ '--c': sabor.color }}
           data-revelar
         >
           <Etiqueta sabor={sabor} />

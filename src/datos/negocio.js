@@ -31,6 +31,16 @@ export const mostrarIngredientes = false
 // Del MENÚ-3.pdf que manda el negocio por Instagram. Tres grupos.
 // ⚠️ No coincide con el catálogo del ERP: ahí no existen "Limón, pepino y chía"
 //    ni "Sandía", y Melón y Piña están apagados. FALTA cuadrar los dos.
+//
+// `etiqueta` apunta a public/img/etiquetas/<nombre>.jpg — el DISEÑO REAL de ese
+// sabor. Los 7 que no la traen caen al dibujo genérico teñido de su color.
+// FALTAN los archivos de: Chocolate, Frutos rojos, Vainilla, Melón, Piña,
+// Sandía y Mango. En Downloads hay además etiquetas de GUANÁBANA y TARO que no
+// están en el menú: si esos sabores existen, hay que darlos de alta.
+//
+// El `color` de los sabores CON etiqueta se cambió al color dominante de su
+// etiqueta real (la horchata es azul marino, el maracuyá olivo…), para que el
+// punto de la lista de pedido y el nombre casen con lo que se ve.
 export const grupos = [
   { llave: 'clasicos',  titulo: 'Los clásicos',  pie: 'Los de siempre, todo el año.' },
   { llave: 'especiales', titulo: 'Especiales',    pie: 'Los que llevan leche o algo más de trabajo.' },
@@ -38,18 +48,18 @@ export const grupos = [
 ]
 
 export const sabores = [
-  { nombre: 'Jamaica',                grupo: 'clasicos',   color: '#9B2247', tipo: 'agua',  ingredientes: ['Agua', 'Azúcar', 'Flor de jamaica'] },
-  { nombre: 'Horchata',               grupo: 'clasicos',   color: '#C2A878', tipo: 'agua',  ingredientes: ['Agua', 'Azúcar', 'Arroz'] },
-  { nombre: 'Maracuyá',               grupo: 'clasicos',   color: '#D98324', tipo: 'agua',  ingredientes: ['Agua', 'Azúcar', 'Concentrado de maracuyá'] },
-  { nombre: 'Tamarindo',              grupo: 'clasicos',   color: '#A9682F', tipo: 'agua',  ingredientes: ['Agua', 'Azúcar', 'Concentrado de tamarindo'] },
-  { nombre: 'Limón, pepino y chía',   grupo: 'clasicos',   color: '#6E8B3D', tipo: 'agua',  ingredientes: [] },
+  { nombre: 'Jamaica',                grupo: 'clasicos',   color: '#9B2247', tipo: 'agua',  etiqueta: 'jamaica',  ingredientes: ['Agua', 'Azúcar', 'Flor de jamaica'] },
+  { nombre: 'Horchata',               grupo: 'clasicos',   color: '#2C4A6E', tipo: 'agua',  etiqueta: 'horchata',  ingredientes: ['Agua', 'Azúcar', 'Arroz'] },
+  { nombre: 'Maracuyá',               grupo: 'clasicos',   color: '#4A4436', tipo: 'agua',  etiqueta: 'maracuya',  ingredientes: ['Agua', 'Azúcar', 'Concentrado de maracuyá'] },
+  { nombre: 'Tamarindo',              grupo: 'clasicos',   color: '#7A5A2E', tipo: 'agua',  etiqueta: 'tamarindo',  ingredientes: ['Agua', 'Azúcar', 'Concentrado de tamarindo'] },
+  { nombre: 'Limón, pepino y chía',   grupo: 'clasicos',   color: '#4F7A3A', tipo: 'agua',  etiqueta: 'limon',  ingredientes: [] },
 
-  { nombre: 'Café',                   grupo: 'especiales', color: '#5A4331', tipo: 'leche', ingredientes: ['Agua', 'Leche entera', 'Café'] },
+  { nombre: 'Café',                   grupo: 'especiales', color: '#B5651D', tipo: 'leche', etiqueta: 'cafe', ingredientes: ['Agua', 'Leche entera', 'Café'] },
   { nombre: 'Chocolate',              grupo: 'especiales', color: '#7A4230', tipo: 'leche', ingredientes: ['Agua', 'Leche entera', 'Chocolate'] },
   { nombre: 'Frutos rojos',           grupo: 'especiales', color: '#7E2C5C', tipo: null,    ingredientes: [] },
   { nombre: 'Vainilla',               grupo: 'especiales', color: '#D9BE86', tipo: 'leche', ingredientes: ['Agua', 'Azúcar', 'Vainilla', 'Leche entera', 'Leche condensada', 'Leche evaporada'] },
 
-  { nombre: 'Naranja',                grupo: 'temporada',  color: '#EF6C1F', tipo: null,    ingredientes: [] },
+  { nombre: 'Naranja',                grupo: 'temporada',  color: '#EF8A3C', tipo: null,    etiqueta: 'naranja',    ingredientes: [] },
   { nombre: 'Melón',                  grupo: 'temporada',  color: '#E88B5A', tipo: null,    ingredientes: [] },
   { nombre: 'Piña',                   grupo: 'temporada',  color: '#D9AE1F', tipo: null,    ingredientes: [] },
   { nombre: 'Sandía',                 grupo: 'temporada',  color: '#D9455F', tipo: null,    ingredientes: [] },
@@ -102,9 +112,10 @@ export const fotos = {
     alt: 'Nueve aguas de distintos sabores formadas sobre una barda de ladrillo',
     ancho: 1200, alto: 1200,
   },
-  trio: [
-    { src: '/img/fotos/detalle-jamaica.jpg', alt: 'Agua de jamaica sostenida frente a una palma',        pie: 'Jamaica' },
-    { src: '/img/fotos/detalle-vocho.jpg',   alt: 'Agua de horchata apoyada en un portón, con un Vocho crema atrás', pie: 'Horchata' },
-    { src: '/img/fotos/detalle-cafe.jpg',    alt: 'Agua de café sostenida entre margaritas moradas',     pie: 'Café' },
+  tira: [
+    { src: '/img/fotos/tira-1.jpg', alt: 'Agua de jamaica junto a una maceta de talavera con geranios' },
+    { src: '/img/fotos/tira-2.jpg', alt: 'Agua de jamaica sostenida frente a una palma' },
+    { src: '/img/fotos/tira-3.jpg', alt: 'Agua de horchata apoyada en un portón, con un Vocho crema atrás' },
+    { src: '/img/fotos/tira-4.jpg', alt: 'Agua de café sostenida entre margaritas moradas' },
   ],
 }

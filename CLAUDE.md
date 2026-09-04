@@ -31,9 +31,20 @@ negocio eligió de entre sus tres etiquetas.
   estructura la dan líneas de 1 px. Se llegó aquí porque la primera versión (morada, con
   animaciones) se sintió sucia.
 
-**La pieza central es `Etiqueta.jsx`**: dibuja la etiqueta real del producto en chiquito.
-Cada sabor se muestra como su propia etiqueta, no como una botella genérica. Esto evita
-depender de fotos de producto que no existen.
+**La pieza central es `Etiqueta.jsx`.** Cada sabor se muestra como su etiqueta, no como una
+botella genérica.
+
+> **Las etiquetas reales NO se parecen entre sí y el sitio lo respeta** (corregido el
+> 2026-09-04, a petición del negocio). La de jamaica es setentera en vino, la de horchata es
+> una serif azul marino con acuarela, la de maracuyá es olivo oscuro, la de café es un sans
+> terracota. Enseñarlas todas con el mismo dibujo era mentir sobre el producto.
+> `Etiqueta.jsx` usa **el arte real** cuando el sabor lo tiene (`sabor.etiqueta` →
+> `public/img/etiquetas/<nombre>.jpg`) y cae al dibujo genérico teñido de su color solo
+> para los siete que aún no tienen archivo.
+
+Además, **el `color` de cada sabor con etiqueta real es el color dominante de SU etiqueta**,
+no el del líquido: la horchata es azul marino y el maracuyá olivo, porque eso es lo que se
+ve en la tarjeta.
 
 ### Reglas
 
@@ -104,6 +115,12 @@ Sale del **`MENÚ-3.pdf`** que el negocio comparte por Instagram, no del ERP.
 Tamaños: 250 ml · **500 ml (el de la etiqueta)** · 1 L · Garrafón 20 L
 Dulzura: con azúcar · poca azúcar · stevia · sin azúcar
 
+**Etiquetas reales en archivo: 7 de 14.** Están Jamaica, Horchata, Café, Tamarindo, Maracuyá,
+Naranja y Limón. **Faltan** Chocolate, Frutos rojos, Vainilla, Melón, Piña, Sandía y Mango —
+esos siete caen al dibujo genérico. En `~/Downloads` hay además etiquetas de **Guanábana** y
+**Taro**, dos sabores que el menú NO lista: si existen, hay que darlos de alta.
+(Las carpetas `mexcali etiqueta*` son de otra marca, de mezcal: no tocarlas.)
+
 > ⚠️ **El menú y el ERP no cuadran.** El ERP no conoce "Limón, pepino y chía" ni "Sandía",
 > y tiene Melón y Piña apagados por no venderse. **Falta cuadrar los dos catálogos**; si no,
 > el sitio ofrece cosas que el sistema no sabe cobrar.
@@ -146,17 +163,26 @@ Las 5 elegidas y para qué:
 
 Se convierten con `sips` (HEIC→JPEG) y se recortan con PIL. Ninguna pasa de 225 KB.
 
-**Tratamiento de foto (2026-09-04).** Las fotos NO van en un recuadro con marco encima del
-papel; se pidió expresamente que estuvieran "en armonía, no sobrepuestas". El sistema es:
+**Tratamiento de foto — la regla es una sola: NINGUNA foto flota dentro de una caja.**
 
-- **Arco** (`border-radius: 50% 50% 0 0 / 34% 34% 0 0`) — el mismo medio punto de los
-  portones que salen en sus propias fotos. Rompe el rectángulo sin recortar contenido.
-- **Sin marco.** Ninguna foto lleva borde.
-- **Lavado cálido**: velo de `--crema` en `soft-light` al 62% más `saturate(.94)`, para que
-  los blancos de la foto casen con el papel del sitio.
-- **La banda va de borde a borde** (`margin: 0 calc(50% - 50vw); width: 100vw`). Integra por
-  escala, no por caja.
-- El trío no es una fila de tres iguales: **la de en medio va más alta** (4/5.6 contra 4/5).
+Se llegó aquí en dos intentos. El primero fue un recuadro con marco de 1 px: se veía pegado.
+El segundo quitó el marco y recortó en arco: **se seguía viendo pegado**. La conclusión, y
+la regla del proyecto:
+
+> **Un recuadro con aire alrededor se lee como calcomanía, con marco o sin él. Lo que
+> integra una foto es la ESCALA, no la forma.** El arco no arregla nada; sangrar hasta el
+> borde de la pantalla sí.
+
+- **Franja de cuatro fotos** (`.tira-fotos`) pegadas sin separación, de borde a borde,
+  cerrando Sabores. Es una franja, no cuatro cuadros.
+- **Banda** (`.banda`) de borde a borde con la frase encima. Es el formato que el negocio
+  aprobó explícitamente al verlo con video.
+- **Retrato** (`.retrato`): la foto **sale por el borde izquierdo** de la pantalla y el texto
+  se queda alineado con el resto de la página. Por eso `Formacion.jsx` **no va dentro de
+  `.marco`**, y el texto lleva su propio
+  `padding-right: max(1.15rem, calc((100vw - var(--ancho)) / 2 + 1.15rem))`.
+- **Lavado cálido** (`.foto`): velo de `--crema` en `soft-light` al 50% más `saturate(.94)`,
+  para que los blancos de la foto casen con el papel.
 
 ## Videos
 
@@ -186,15 +212,14 @@ Un solo dibujo, cuatro apariciones:
 
 | Dónde | Cómo |
 |---|---|
-| **Portada** | Junto a la etiqueta, respirando. **Se tiñe del sabor** que muestra la etiqueta |
+| **Portada** | Junto a la etiqueta, respirando |
 | **Entre Sabores y Proceso** | Cruza la página caminando por la línea divisoria |
 | **Panel del pedido** | Asomada por arriba, volteada |
 | **Pie** | Silueta con `mask`, al 13% — atmósfera, no calcomanía |
 
-El tinte se calcula en **`src/lib/color.js`**: `giroHacia(hex)` saca el tono del color del
-sabor, le resta el azul de la gotita (203°) y devuelve los grados para un `hue-rotate`.
-**No está escrito a mano**: si mañana cambia el color de un sabor, el tinte lo sigue solo.
-`--giro` viaja inline junto a `--c`; los dos son datos, no decisiones de diseño.
+> **Se probó teñir la gotita del color del sabor (`hue-rotate`) y el negocio lo rechazó.**
+> No reintroducirlo. El personaje se queda con sus colores. `src/lib/color.js`, que calculaba
+> el giro, se borró junto con el efecto.
 
 El caminante lleva **dos animaciones en dos elementos**: una avanza y otra brinca. En el
 mismo elemento se pisarían, porque las dos usan `transform`.

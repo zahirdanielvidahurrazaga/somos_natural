@@ -1,5 +1,10 @@
-// La etiqueta real del producto, en chiquito. Es el dibujo del producto y a la
-// vez la unidad de diseño del sitio: cada sabor se ve como su propia etiqueta.
+// La etiqueta del producto.
+//
+// Si el sabor TIENE su diseño real en archivo, se enseña ese. Sus etiquetas no
+// se parecen entre sí —la de jamaica es setentera, la de horchata es una serif
+// azul marino, la de maracuyá es olivo— y enseñarlas todas iguales era mentir
+// sobre el producto. El dibujo genérico queda solo de respaldo, para los siete
+// sabores cuyo archivo todavía no existe.
 //
 // Las hojas llevan pathLength="1": así el trazo se puede animar sin conocer el
 // largo real de cada curva, y todas se dibujan al mismo ritmo.
@@ -17,6 +22,20 @@ function Hoja({ className }) {
 }
 
 export default function Etiqueta({ sabor }) {
+  if (sabor.etiqueta) {
+    return (
+      <img
+        className="etiqueta etiqueta-real"
+        src={`/img/etiquetas/${sabor.etiqueta}.jpg`}
+        alt={`Etiqueta del agua de ${sabor.nombre}`}
+        width="900"
+        height="452"
+        loading="lazy"
+        decoding="async"
+      />
+    )
+  }
+
   return (
     <div className="etiqueta">
       <Hoja className="etiqueta-hoja izq" />

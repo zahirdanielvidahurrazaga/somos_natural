@@ -1,10 +1,12 @@
 import { fotos, sabores } from '../datos/negocio'
 
+// La foto sale por el borde izquierdo de la pantalla en vez de flotar dentro
+// de una caja con márgenes. Por eso esta sección NO va dentro de .marco.
 export default function Formacion() {
   return (
     <section className="seccion">
-      <div className="marco retrato">
-        <figure className="foto arco" data-revelar>
+      <div className="retrato">
+        <figure className="foto">
           <img
             src={fotos.formacion.src}
             alt={fotos.formacion.alt}
@@ -15,7 +17,7 @@ export default function Formacion() {
           />
         </figure>
 
-        <div data-revelar>
+        <div className="retrato-texto" data-revelar>
           <span className="rotulo caps">La formación de un día</span>
           <h2>Así salen, cada mañana.</h2>
           <p className="entrada">
