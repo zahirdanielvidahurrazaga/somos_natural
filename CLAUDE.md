@@ -335,8 +335,31 @@ mismo elemento se pisarían, porque las dos usan `transform`.
 React 19 + Vite 6, sin router (una sola página con anclas) y sin dependencias de más.
 `public/_redirects` ya trae el fallback de SPA para **Cloudflare Pages**, que es a donde va.
 
-**Todavía NO se ha desplegado.** Regla del usuario: se trabaja en local y se despliega
-cuando él lo aprueba.
+**No hay proyecto de Cloudflare para este negocio todavía.** El ERP nunca llegó a
+desplegarse (el `DESPLEGAR-NATURAL.txt` del Escritorio siguen siendo instrucciones
+pendientes), así que este sitio sería el primero, en la cuenta de Cloudflare de siempre.
+
+**El repo es SOLO LOCAL: no tiene remoto en GitHub.** Por eso el despliegue va por **carga
+directa con wrangler**, no por la integración con Git:
+
+```
+npx wrangler login                                   # abre el navegador, lo corre Zahir
+npm run build
+npx wrangler pages deploy dist --project-name=somos-natural
+```
+
+Si más adelante se quiere que se publique solo en cada push, hay que crear el repo en GitHub
+y conectarlo desde el panel de Cloudflare (comando `npm run build`, salida `dist`).
+
+**Dos cosas que hay que deshacer el día del lanzamiento real:**
+
+1. 🔴 **Borrar `public/robots.txt`.** Hoy bloquea a TODOS los buscadores para que no indexen
+   la dirección de pruebas `*.pages.dev`: si Google la indexa y luego el negocio se mueve a
+   su dominio, quedan dos direcciones compitiendo por lo mismo.
+2. ⚠️ **Volver ABSOLUTA la ruta de `og:image`** en `index.html`. WhatsApp y Facebook no
+   resuelven rutas relativas, y el link se va a compartir sobre todo por WhatsApp.
+
+Regla del usuario: se trabaja en local y se despliega cuando él lo aprueba.
 
 ## Pendientes
 

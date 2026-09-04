@@ -1,0 +1,9 @@
+# TEMPORAL — mientras el sitio se termina de pulir.
+#
+# Bloquea a los buscadores para que NO indexen la dirección de pruebas de
+# Cloudflare (*.pages.dev). Si Google la indexa y luego el negocio se mueve a
+# su dominio propio, quedan dos direcciones compitiendo por lo mismo.
+#
+# 🔴 BORRAR ESTE ARCHIVO EL DÍA DEL LANZAMIENTO REAL.
+User-agent: *
+Disallow: /
