@@ -34,17 +34,36 @@ negocio eligió de entre sus tres etiquetas.
 **La pieza central es `Etiqueta.jsx`.** Cada sabor se muestra como su etiqueta, no como una
 botella genérica.
 
-> **Las etiquetas reales NO se parecen entre sí y el sitio lo respeta** (corregido el
-> 2026-09-04, a petición del negocio). La de jamaica es setentera en vino, la de horchata es
-> una serif azul marino con acuarela, la de maracuyá es olivo oscuro, la de café es un sans
-> terracota. Enseñarlas todas con el mismo dibujo era mentir sobre el producto.
-> `Etiqueta.jsx` usa **el arte real** cuando el sabor lo tiene (`sabor.etiqueta` →
-> `public/img/etiquetas/<nombre>.jpg`) y cae al dibujo genérico teñido de su color solo
-> para los siete que aún no tienen archivo.
+> **Las etiquetas van DIBUJADAS, no fotografiadas — y cada una es distinta.**
+> Se probó meter el JPG del arte real y el negocio lo rechazó: le gusta el dibujo. Pero
+> tampoco pueden ser todas iguales, porque **sus etiquetas de verdad no se parecen entre sí**.
+> La solución: `sabor.etiqueta` no es una imagen, es **la receta para dibujarla**.
 
-Además, **el `color` de cada sabor con etiqueta real es el color dominante de SU etiqueta**,
-no el del líquido: la horchata es azul marino y el maracuyá olivo, porque eso es lo que se
-ve en la tarjeta.
+```js
+etiqueta: { real: true, trazo: 'arco', fondo: '#FAEDE9', tinta: '#9B2247',
+            letra: 'groovy', motivo: 'jamaica' }
+```
+
+| Campo | Qué es |
+|---|---|
+| `real` | Si el diseño está copiado de su etiqueta de verdad o es la plantilla de la casa |
+| `trazo` | `arco` · `centro` · `esquinas` · `casa` — cuatro acomodos sacados de sus etiquetas |
+| `fondo` / `tinta` | El papel y la tinta de ESA etiqueta |
+| `letra` | `groovy` · `serif` · `bold` · `redonda` — lo único que cambia de tipografía |
+| `motivo` | Cuál de los 14 dibujos de línea (`Motivos.jsx`) le toca |
+
+Todo mide en **`cqw`**, así que la misma etiqueta sirve en una tarjeta de 230 px y en la
+portada a 420 px sin tocar nada.
+
+**Dos trampas que ya costaron:**
+- Los dibujos de `Motivos.jsx` llevan **`pathLength="1"` en cada figura**. Sin eso,
+  `stroke-dasharray: 1` mide una unidad de usuario y el trazo sale punteado en vez de
+  dibujarse. Si agregas un motivo nuevo, ponle `pathLength`.
+- **El texto en arco se achica solo según su largo** (`Arco.jsx`). El arco mide lo que mide:
+  a tamaño fijo, "Agua de limón con pepino y chía" se sale de la curva y el final desaparece.
+
+Además, **el `color` del sabor es la tinta de su etiqueta**, no el del líquido: la horchata
+es azul marino y el maracuyá olivo, porque eso es lo que se ve en la tarjeta.
 
 ### Reglas
 
@@ -115,10 +134,25 @@ Sale del **`MENÚ-3.pdf`** que el negocio comparte por Instagram, no del ERP.
 Tamaños: 250 ml · **500 ml (el de la etiqueta)** · 1 L · Garrafón 20 L
 Dulzura: con azúcar · poca azúcar · stevia · sin azúcar
 
-**Etiquetas reales en archivo: 7 de 14.** Están Jamaica, Horchata, Café, Tamarindo, Maracuyá,
-Naranja y Limón. **Faltan** Chocolate, Frutos rojos, Vainilla, Melón, Piña, Sandía y Mango —
-esos siete caen al dibujo genérico. En `~/Downloads` hay además etiquetas de **Guanábana** y
-**Taro**, dos sabores que el menú NO lista: si existen, hay que darlos de alta.
+**Diseños reales conocidos: 7 de 14** (`real: true`), sacados del arte en `~/Downloads`:
+
+| Sabor | Papel | Tinta | Letra | Archivo de origen |
+|---|---|---|---|---|
+| Jamaica | blush | vino | groovy | `AGUA DE JAMAICA.png` |
+| Horchata | hueso | azul marino | serif | `AGUA DE HORCHATA.png` |
+| Café | crema | terracota | bold | `AGUA DE CAFÉ.png` |
+| Tamarindo | amarillo pálido | café | serif | `AGUA DE TAMARINDO.png` |
+| Maracuyá | **olivo oscuro** | crema | redonda | `ETIQUETA NATURAL.png` |
+| Naranja | crema | naranja | serif | `Agua de naranja.png` |
+| Limón, pepino y chía | crema | verde | serif | `ETIQUETA LIMÓN.png` |
+
+**FALTAN los 7 restantes** (`real: false`): Chocolate, Frutos rojos, Vainilla, Melón, Piña,
+Sandía y Mango. Llevan el trazo `casa` con su color y su fruta. **No inventan un diseño y lo
+presentan como suyo**: cuando llegue el arte, se cambian `trazo`, `letra`, `fondo` y `tinta`
+en `negocio.js` y ya, sin tocar componentes.
+
+En `~/Downloads` hay además etiquetas de **Guanábana** y **Taro**, dos sabores que el menú NO
+lista: si existen, hay que darlos de alta.
 (Las carpetas `mexcali etiqueta*` son de otra marca, de mezcal: no tocarlas.)
 
 > ⚠️ **El menú y el ERP no cuadran.** El ERP no conoce "Limón, pepino y chía" ni "Sandía",
@@ -132,7 +166,9 @@ src/
   datos/negocio.js        ← TODO lo editable
   lib/whatsapp.js         ← arma los enlaces wa.me; devuelve null si no hay número
   componentes/
-    Etiqueta.jsx          ← la etiqueta del producto (+ Hoja, la línea botánica)
+    Etiqueta.jsx          ← dibuja la etiqueta según la receta del sabor
+    Motivos.jsx           ← los 14 dibujos de línea, uno por fruta
+    Arco.jsx              ← texto curvado, se achica según su largo
     Encabezado.jsx  Portada.jsx  Tira.jsx  Sabores.jsx
     Proceso.jsx     Negocios.jsx Eventos.jsx  Pedido.jsx
     Pie.jsx         Flotante.jsx Iconos.jsx
@@ -238,6 +274,8 @@ cuando él lo aprueba.
 
 ## Pendientes
 
+- **Conseguir el arte de las 7 etiquetas que faltan** (Chocolate, Frutos rojos, Vainilla,
+  Melón, Piña, Sandía, Mango) y pasarlas a `real: true`.
 - Decidir si alguno de los 7 videos de `~/Downloads/videos-web/` entra al sitio.
 - Cuadrar el catálogo del menú contra el del ERP.
 - Confirmar si los otros dos teléfonos del menú siguen vivos.

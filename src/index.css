@@ -207,79 +207,124 @@ a { color: inherit; text-decoration: none; }
 .portada-muestra { display: grid; place-items: center; }
 .portada-muestra .etiqueta { max-width: 420px; }
 
-/* ── La etiqueta (el producto dibujado) ──────────────────────────────────── */
-
-.etiqueta-real {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 1183 / 594;
-  object-fit: cover;
-  /* el arte ya trae su propio filete negro: nada de marco ni relleno encima */
-  padding: 0;
-  border: 0;
-  background: none;
-}
+/* ── La etiqueta ─────────────────────────────────────────────────────────── */
+/* No es una foto del arte: es el arte rehecho con las piezas del sitio. Cada
+   sabor trae su papel, su tinta, su letra y su fruta, porque sus etiquetas de
+   verdad no se parecen entre sí. Todo mide en cqw para que la misma etiqueta
+   sirva en una tarjeta de 230 px y en la portada a 420 px. */
 
 .etiqueta {
   container-type: inline-size;
+  position: relative;
   width: 100%;
-  aspect-ratio: 2 / 1;
-  background: var(--hueso);
-  border: 1px solid var(--marco-firme);
-  padding: clamp(0.85rem, 2.2vw, 1.4rem);
+  aspect-ratio: 1183 / 594;
+  background: var(--papel, var(--hueso));
+  color: var(--pluma, var(--vino));
+  border: 1px solid rgba(20, 12, 14, .62);
+  overflow: hidden;
+  text-align: center;
+}
+
+/* La firma: lo único que cambia de tipografía entre etiquetas. */
+.etq-firma { display: block; line-height: .96; white-space: nowrap; }
+
+[data-letra='serif']   .etq-firma { font-family: 'Yeseva One', Georgia, serif; font-size: 13.5cqw; }
+[data-letra='groovy']  .etq-firma { font-family: 'Yeseva One', Georgia, serif; font-size: 15cqw; letter-spacing: -.015em; }
+[data-letra='bold']    .etq-firma { font-family: 'Jost', sans-serif; font-weight: 700; font-size: 14cqw; letter-spacing: .05em; }
+[data-letra='redonda'] .etq-firma { font-family: 'Bagel Fat One', 'Jost', sans-serif; font-size: 12cqw; letter-spacing: .02em; }
+
+/* Textos chicos */
+.etq-titulo, .etq-pie, .etq-esquinas, .etq-fila {
+  font-size: 3cqw;
+  letter-spacing: .2em;
+  line-height: 1.35;
+}
+.etq-titulo { display: block; }
+.etq-pie { display: block; }
+
+.etq-esquinas {
+  position: absolute;
+  top: 5%;
+  left: 4.5%;
+  right: 4.5%;
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
+  font-size: 2.6cqw;
+}
+
+.etq-regla {
+  display: block;
+  width: 26%;
+  height: 1px;
+  background: currentColor;
+  opacity: .5;
+  margin: .5em auto;
+}
+
+/* El motivo: la fruta de línea. */
+.etq-motivo { position: absolute; pointer-events: none; }
+.etq-motivo-grande { width: 46%; left: 27%; top: 8%; opacity: .3; }
+.etq-motivo-fondo  { width: 34%; left: 33%; top: 4%; opacity: .26; }
+.etq-motivo-izq    { width: 17%; left: 4%;  top: 30%; opacity: .35; }
+.etq-motivo-der    { width: 17%; right: 4%; top: 30%; opacity: .35; transform: scaleX(-1); }
+
+/* El texto curvado */
+.etq-arco { position: absolute; width: 74%; left: 13%; }
+.etq-arco text {
+  fill: currentColor;
+  font-family: 'Jost', sans-serif;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+/* ── Trazo: arco ─────────────────────────────────────────────────────────── */
+[data-trazo='arco'] .etq-arco-alto { top: 9%; }
+[data-trazo='arco'] .etq-arco-bajo { bottom: 13%; }
+[data-trazo='arco'] .etq-firma {
+  position: absolute;
+  top: 47%;
+  left: 0; right: 0;
+  transform: translateY(-50%);
+}
+[data-trazo='arco'] .etq-pie { position: absolute; bottom: 4.5%; left: 0; right: 0; font-size: 2.6cqw; }
+
+/* ── Trazo: centro ───────────────────────────────────────────────────────── */
+[data-trazo='centro'] {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  color: var(--c, var(--vino));
+  padding: 5.5% 5% 5%;
 }
-.etiqueta-hoja {
-  position: absolute;
-  width: 46%;
-  opacity: 0.5;
-  pointer-events: none;
-}
-.etiqueta-hoja.izq { left: -13%; top: -14%; transform: rotate(-16deg); }
-.etiqueta-hoja.der { right: -13%; bottom: -16%; transform: rotate(158deg); }
-
-.etiqueta-arriba,
-.etiqueta-abajo {
-  position: relative;
-  width: 100%;
+[data-trazo='centro'] .etq-titulo { font-weight: 500; font-size: 3.4cqw; }
+[data-trazo='centro'] .etq-medio { position: relative; display: grid; place-items: center; }
+[data-trazo='centro'] .etq-medio .etq-motivo-fondo { position: absolute; width: 42%; left: 29%; top: -18%; }
+[data-trazo='centro'] .etq-medio .etq-firma { position: relative; }
+[data-trazo='centro'] .etq-fila {
   display: flex;
   justify-content: space-between;
-  gap: 0.5rem;
-  font-size: clamp(0.4rem, 2.6cqw, 0.62rem);
-  letter-spacing: 0.16em;
+  align-items: flex-end;
+  gap: .8em;
+  font-size: 2.5cqw;
 }
-.etiqueta-abajo { justify-content: center; }
-.etiqueta-nombre {
-  display: block;
-  position: relative;
-  font-family: 'Yeseva One', Georgia, serif;
-  font-size: clamp(1.55rem, 11cqw, 3.4rem);
-  line-height: 0.95;
-  letter-spacing: -0.01em;
+
+/* ── Trazo: esquinas ─────────────────────────────────────────────────────── */
+[data-trazo='esquinas'] { display: grid; place-items: center; }
+[data-trazo='esquinas'] .etq-esquinas { align-items: flex-start; }
+[data-trazo='esquinas'] .etq-titulo { margin-bottom: .5em; }
+[data-trazo='esquinas'] .etq-pie { margin-top: .55em; }
+
+/* ── Trazo: casa ─────────────────────────────────────────────────────────── */
+[data-trazo='casa'] { display: grid; place-items: center; }
+[data-trazo='casa'] .etq-titulo { font-size: 2.9cqw; }
+[data-trazo='casa'] .etq-pie {
+  position: absolute;
+  bottom: 5%;
+  left: 0; right: 0;
+  font-size: 2.6cqw;
 }
-.etiqueta-sabor {
-  display: block;
-  position: relative;
-  font-size: clamp(0.42rem, 2.9cqw, 0.72rem);
-  letter-spacing: 0.2em;
-}
-.etiqueta-regla {
-  display: block;
-  position: relative;
-  width: 34%;
-  height: 1px;
-  background: currentColor;
-  opacity: .45;
-  margin: 0.5rem auto;
-}
+
+.etq-medio-suelto { position: relative; z-index: 1; }
 
 /* ── Tira de textos fijos ────────────────────────────────────────────────── */
 
@@ -767,30 +812,25 @@ figure img, figure video { width: 100%; height: 100%; object-fit: cover; display
 .portada-muestra { position: relative; }
 
 /* El color del sabor cruza en lugar de saltar. */
-.portada-muestra,
-.portada-muestra .etiqueta { transition: color .9s ease; }
+.portada-muestra .etiqueta { transition: background .9s ease, color .9s ease; }
 
-.portada-muestra .etiqueta-sabor { animation: entrar-nombre .6s cubic-bezier(.22,.7,.3,1) both; }
+/* ── La fruta se dibuja sola ─────────────────────────────────────────────── */
+/* pathLength="1" normaliza cada curva, así todas se trazan al mismo ritmo sin
+   tener que medirlas. */
 
-@keyframes entrar-nombre {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: none; }
-}
-
-/* ── Las hojas se dibujan solas ──────────────────────────────────────────── */
-
-.etiqueta-hoja path {
+.etq-motivo path, .etq-motivo circle, .etq-motivo ellipse {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
 }
-[data-visible='si'] .etiqueta-hoja path,
-.portada-muestra .etiqueta-hoja path {
-  animation: dibujar 1.5s cubic-bezier(.4,.5,.2,1) forwards;
+[data-visible='si'] .etq-motivo > *,
+.portada-muestra .etq-motivo > * {
+  animation: dibujar 1.6s cubic-bezier(.4,.5,.2,1) forwards;
 }
-.etiqueta-hoja path:nth-child(2) { animation-delay: .16s; }
-.etiqueta-hoja path:nth-child(3) { animation-delay: .30s; }
-.etiqueta-hoja path:nth-child(4) { animation-delay: .44s; }
-.etiqueta-hoja path:nth-child(5) { animation-delay: .58s; }
+.etq-motivo > *:nth-child(2) { animation-delay: .1s; }
+.etq-motivo > *:nth-child(3) { animation-delay: .2s; }
+.etq-motivo > *:nth-child(4) { animation-delay: .3s; }
+.etq-motivo > *:nth-child(5) { animation-delay: .4s; }
+.etq-motivo > *:nth-child(n+6) { animation-delay: .5s; }
 
 @keyframes dibujar { to { stroke-dashoffset: 0; } }
 
@@ -817,10 +857,6 @@ figure img, figure video { width: 100%; height: 100%; object-fit: cover; display
               border-color .35s ease;
 }
 .sabor:hover .etiqueta { transform: translateY(-6px) rotate(-1.1deg); }
-.sabor:hover .etiqueta:not(.etiqueta-real) {
-  background: color-mix(in srgb, var(--c) 7%, var(--hueso));
-  border-color: color-mix(in srgb, var(--c) 55%, transparent);
-}
 .sabor .sabor-pie h3 { transition: color .3s ease; }
 .sabor:hover .sabor-pie h3 { color: var(--c); }
 
@@ -934,10 +970,7 @@ figure img, figure video { width: 100%; height: 100%; object-fit: cover; display
 
   .sello-aro,
   .tira-fila,
-  .etiqueta-hoja path,
-  .portada-muestra .etiqueta-sabor { animation: none; }
-
-  .etiqueta-hoja path { stroke-dashoffset: 0; }
+  .etq-motivo > * { animation: none; stroke-dashoffset: 0; }
 
   .sabor:hover .etiqueta { transform: none; }
   .tira-fotos:hover img { transform: none; }

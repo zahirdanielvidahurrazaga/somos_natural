@@ -1,64 +1,106 @@
-// La etiqueta del producto.
+import Motivo from './Motivos'
+import Arco from './Arco'
+import { negocio } from '../datos/negocio'
+
+// La etiqueta del producto, DIBUJADA. No es una foto del arte: es el arte
+// rehecho con las piezas del sitio, para que 14 etiquetas distintas se sigan
+// viendo de la misma familia.
 //
-// Si el sabor TIENE su diseño real en archivo, se enseña ese. Sus etiquetas no
-// se parecen entre sí —la de jamaica es setentera, la de horchata es una serif
-// azul marino, la de maracuyá es olivo— y enseñarlas todas iguales era mentir
-// sobre el producto. El dibujo genérico queda solo de respaldo, para los siete
-// sabores cuyo archivo todavía no existe.
-//
-// Las hojas llevan pathLength="1": así el trazo se puede animar sin conocer el
-// largo real de cada curva, y todas se dibujan al mismo ritmo.
-function Hoja({ className }) {
-  return (
-    <svg viewBox="0 0 120 120" className={className} fill="none" stroke="currentColor"
-         strokeWidth="1.1" strokeLinecap="round" aria-hidden="true">
-      <path pathLength="1" d="M60 116 C60 78 54 44 30 14" />
-      <path pathLength="1" d="M56 92 C36 90 22 78 16 60 C36 58 50 70 56 92 Z" />
-      <path pathLength="1" d="M52 66 C34 60 24 46 22 28 C40 32 51 46 52 66 Z" />
-      <path pathLength="1" d="M58 96 C74 90 84 76 86 58 C70 62 60 76 58 96 Z" />
-      <path pathLength="1" d="M50 44 C38 34 33 20 34 6 C46 14 51 30 50 44 Z" />
-    </svg>
-  )
+// Sus etiquetas de verdad no se parecen entre sí —la de jamaica es setentera en
+// vino, la de horchata una serif azul marino, la de maracuyá olivo oscuro— así
+// que cada sabor trae su propia receta en `sabor.etiqueta`.
+
+const TELEFONO = negocio.whatsapp.replace(/^52/, '').replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3')
+
+function comoSeLlama(sabor) {
+  return sabor.enEtiqueta || `Agua de ${sabor.nombre}`
 }
 
-export default function Etiqueta({ sabor }) {
-  if (sabor.etiqueta) {
-    return (
-      <img
-        className="etiqueta etiqueta-real"
-        src={`/img/etiquetas/${sabor.etiqueta}.jpg`}
-        alt={`Etiqueta del agua de ${sabor.nombre}`}
-        width="900"
-        height="452"
-        loading="lazy"
-        decoding="async"
-      />
-    )
-  }
+// ── Los cuatro trazos ────────────────────────────────────────────────────────
 
+function Arcada({ sabor }) {
   return (
-    <div className="etiqueta">
-      <Hoja className="etiqueta-hoja izq" />
-      <Hoja className="etiqueta-hoja der" />
-
-      <div className="etiqueta-arriba caps">
+    <>
+      <Motivo nombre={sabor.etiqueta.motivo} className="etq-motivo etq-motivo-grande" />
+      <div className="etq-esquinas caps">
         <span>500 ml</span>
         <span>Sin conservadores</span>
       </div>
-
-      <div>
-        {/* la llave hace que el nombre se vuelva a montar al cambiar de sabor,
-            y con eso se repite la animación de entrada */}
-        <span className="etiqueta-sabor caps" key={sabor.nombre}>Agua de {sabor.nombre}</span>
-        <span className="etiqueta-regla" />
-        <span className="etiqueta-nombre">NATURAL</span>
-      </div>
-
-      <div className="etiqueta-abajo caps">
-        <span>Agítese antes de beber</span>
-      </div>
-    </div>
+      <Arco texto={comoSeLlama(sabor)} hacia="arriba" className="etq-arco etq-arco-alto" />
+      <span className="etq-firma">NATURAL</span>
+      <Arco texto={`Pedidos al: ${TELEFONO}`} hacia="abajo" className="etq-arco etq-arco-bajo" />
+      <span className="etq-pie caps">Agítese antes de beber</span>
+    </>
   )
 }
 
-export { Hoja }
+function Centrada({ sabor }) {
+  return (
+    <>
+      <span className="etq-titulo caps">{comoSeLlama(sabor)}</span>
+      <div className="etq-medio">
+        <Motivo nombre={sabor.etiqueta.motivo} className="etq-motivo etq-motivo-fondo" />
+        <span className="etq-firma">NATURAL</span>
+      </div>
+      <div className="etq-fila caps">
+        <span>500 ml · Sin conservadores</span>
+        <span>Agítese antes de beber</span>
+        <span>Pedidos al: {TELEFONO}</span>
+      </div>
+    </>
+  )
+}
+
+function Esquinada({ sabor }) {
+  return (
+    <>
+      <Motivo nombre={sabor.etiqueta.motivo} className="etq-motivo etq-motivo-izq" />
+      <Motivo nombre={sabor.etiqueta.motivo} className="etq-motivo etq-motivo-der" />
+      <div className="etq-esquinas caps">
+        <span>Agítese antes de beber</span>
+        <span>Sin conservadores · 500 ml</span>
+      </div>
+      <div className="etq-medio etq-medio-suelto">
+        <span className="etq-titulo caps">{comoSeLlama(sabor)}</span>
+        <span className="etq-firma">NATURAL</span>
+        <span className="etq-pie caps">Pedidos al: {TELEFONO}</span>
+      </div>
+    </>
+  )
+}
+
+function Casa({ sabor }) {
+  return (
+    <>
+      <Motivo nombre={sabor.etiqueta.motivo} className="etq-motivo etq-motivo-fondo" />
+      <div className="etq-esquinas caps">
+        <span>500 ml</span>
+        <span>Sin conservadores</span>
+      </div>
+      <div className="etq-medio etq-medio-suelto">
+        <span className="etq-titulo caps">{comoSeLlama(sabor)}</span>
+        <span className="etq-regla" />
+        <span className="etq-firma">NATURAL</span>
+      </div>
+      <span className="etq-pie caps">Agítese antes de beber</span>
+    </>
+  )
+}
+
+const TRAZOS = { arco: Arcada, centro: Centrada, esquinas: Esquinada, casa: Casa }
+
+export default function Etiqueta({ sabor }) {
+  const e = sabor.etiqueta
+  const Trazo = TRAZOS[e.trazo] || Casa
+
+  return (
+    <div
+      className="etiqueta"
+      data-letra={e.letra}
+      data-trazo={e.trazo}
+      style={{ '--papel': e.fondo, '--pluma': e.tinta }}
+    >
+      <Trazo sabor={sabor} />
+    </div>
+  )
+}

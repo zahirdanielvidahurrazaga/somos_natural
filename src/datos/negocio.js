@@ -32,15 +32,18 @@ export const mostrarIngredientes = false
 // ⚠️ No coincide con el catálogo del ERP: ahí no existen "Limón, pepino y chía"
 //    ni "Sandía", y Melón y Piña están apagados. FALTA cuadrar los dos.
 //
-// `etiqueta` apunta a public/img/etiquetas/<nombre>.jpg — el DISEÑO REAL de ese
-// sabor. Los 7 que no la traen caen al dibujo genérico teñido de su color.
-// FALTAN los archivos de: Chocolate, Frutos rojos, Vainilla, Melón, Piña,
+// Cada sabor lleva su `etiqueta`: NO es una imagen, es la receta para DIBUJARLA.
+//   real   — si el diseño está copiado de su etiqueta de verdad o es la plantilla
+//   trazo  — 'arco' | 'centro' | 'esquinas' | 'casa'
+//   fondo  — el papel de la etiqueta      tinta — la tinta
+//   letra  — 'groovy' | 'serif' | 'bold' | 'redonda'   motivo — el dibujo
+//
+// FALTAN los diseños reales de: Chocolate, Frutos rojos, Vainilla, Melón, Piña,
 // Sandía y Mango. En Downloads hay además etiquetas de GUANÁBANA y TARO que no
 // están en el menú: si esos sabores existen, hay que darlos de alta.
 //
-// El `color` de los sabores CON etiqueta se cambió al color dominante de su
-// etiqueta real (la horchata es azul marino, el maracuyá olivo…), para que el
-// punto de la lista de pedido y el nombre casen con lo que se ve.
+// El `color` es el acento del sabor en el resto del sitio (el punto de la lista
+// de pedido, el nombre al pasar el mouse). Suele ser la tinta de su etiqueta.
 export const grupos = [
   { llave: 'clasicos',  titulo: 'Los clásicos',  pie: 'Los de siempre, todo el año.' },
   { llave: 'especiales', titulo: 'Especiales',    pie: 'Los que llevan leche o algo más de trabajo.' },
@@ -48,22 +51,78 @@ export const grupos = [
 ]
 
 export const sabores = [
-  { nombre: 'Jamaica',                grupo: 'clasicos',   color: '#9B2247', tipo: 'agua',  etiqueta: 'jamaica',  ingredientes: ['Agua', 'Azúcar', 'Flor de jamaica'] },
-  { nombre: 'Horchata',               grupo: 'clasicos',   color: '#2C4A6E', tipo: 'agua',  etiqueta: 'horchata',  ingredientes: ['Agua', 'Azúcar', 'Arroz'] },
-  { nombre: 'Maracuyá',               grupo: 'clasicos',   color: '#4A4436', tipo: 'agua',  etiqueta: 'maracuya',  ingredientes: ['Agua', 'Azúcar', 'Concentrado de maracuyá'] },
-  { nombre: 'Tamarindo',              grupo: 'clasicos',   color: '#7A5A2E', tipo: 'agua',  etiqueta: 'tamarindo',  ingredientes: ['Agua', 'Azúcar', 'Concentrado de tamarindo'] },
-  { nombre: 'Limón, pepino y chía',   grupo: 'clasicos',   color: '#4F7A3A', tipo: 'agua',  etiqueta: 'limon',  ingredientes: [] },
+  // ── Los 7 que SÍ tienen etiqueta real (`real: true`) ──────────────────────
+  // El trazo, el fondo, la tinta y la tipografía copian su etiqueta de verdad.
+  {
+    nombre: 'Jamaica', grupo: 'clasicos', color: '#9B2247', tipo: 'agua',
+    ingredientes: ['Agua', 'Azúcar', 'Flor de jamaica'],
+    etiqueta: { real: true, trazo: 'arco', fondo: '#FAEDE9', tinta: '#9B2247', letra: 'groovy', motivo: 'jamaica' },
+  },
+  {
+    nombre: 'Horchata', grupo: 'clasicos', color: '#2C4A6E', tipo: 'agua',
+    ingredientes: ['Agua', 'Azúcar', 'Arroz'],
+    etiqueta: { real: true, trazo: 'centro', fondo: '#EFEFE8', tinta: '#2C4A6E', letra: 'serif', motivo: 'horchata' },
+  },
+  {
+    nombre: 'Maracuyá', grupo: 'clasicos', color: '#4A4436', tipo: 'agua',
+    ingredientes: ['Agua', 'Azúcar', 'Concentrado de maracuyá'],
+    etiqueta: { real: true, trazo: 'arco', fondo: '#4A4436', tinta: '#F2EADA', letra: 'redonda', motivo: 'maracuya' },
+  },
+  {
+    nombre: 'Tamarindo', grupo: 'clasicos', color: '#7A5A2E', tipo: 'agua',
+    ingredientes: ['Agua', 'Azúcar', 'Concentrado de tamarindo'],
+    etiqueta: { real: true, trazo: 'centro', fondo: '#FAF3D8', tinta: '#7A5A2E', letra: 'serif', motivo: 'tamarindo' },
+  },
+  {
+    nombre: 'Limón, pepino y chía', enEtiqueta: 'Agua de limón con pepino y chía',
+    grupo: 'clasicos', color: '#4F7A3A', tipo: 'agua', ingredientes: [],
+    etiqueta: { real: true, trazo: 'arco', fondo: '#FAF6E8', tinta: '#4F7A3A', letra: 'serif', motivo: 'limon' },
+  },
+  {
+    nombre: 'Café', grupo: 'especiales', color: '#B5651D', tipo: 'leche',
+    ingredientes: ['Agua', 'Leche entera', 'Café'],
+    etiqueta: { real: true, trazo: 'esquinas', fondo: '#F3EFE7', tinta: '#B5651D', letra: 'bold', motivo: 'cafe' },
+  },
+  {
+    nombre: 'Naranja', grupo: 'temporada', color: '#EF8A3C', tipo: null, ingredientes: [],
+    etiqueta: { real: true, trazo: 'arco', fondo: '#FDF8EE', tinta: '#E07B2A', letra: 'serif', motivo: 'naranja' },
+  },
 
-  { nombre: 'Café',                   grupo: 'especiales', color: '#B5651D', tipo: 'leche', etiqueta: 'cafe', ingredientes: ['Agua', 'Leche entera', 'Café'] },
-  { nombre: 'Chocolate',              grupo: 'especiales', color: '#7A4230', tipo: 'leche', ingredientes: ['Agua', 'Leche entera', 'Chocolate'] },
-  { nombre: 'Frutos rojos',           grupo: 'especiales', color: '#7E2C5C', tipo: null,    ingredientes: [] },
-  { nombre: 'Vainilla',               grupo: 'especiales', color: '#D9BE86', tipo: 'leche', ingredientes: ['Agua', 'Azúcar', 'Vainilla', 'Leche entera', 'Leche condensada', 'Leche evaporada'] },
-
-  { nombre: 'Naranja',                grupo: 'temporada',  color: '#EF8A3C', tipo: null,    etiqueta: 'naranja',    ingredientes: [] },
-  { nombre: 'Melón',                  grupo: 'temporada',  color: '#E88B5A', tipo: null,    ingredientes: [] },
-  { nombre: 'Piña',                   grupo: 'temporada',  color: '#D9AE1F', tipo: null,    ingredientes: [] },
-  { nombre: 'Sandía',                 grupo: 'temporada',  color: '#D9455F', tipo: null,    ingredientes: [] },
-  { nombre: 'Mango',                  grupo: 'temporada',  color: '#F2A82B', tipo: 'agua',  ingredientes: ['Agua', 'Azúcar', 'Concentrado de mango'] },
+  // ── Los 7 SIN etiqueta real (`real: false`) ───────────────────────────────
+  // Llevan la plantilla de la casa con su color y su fruta. NO inventan un
+  // diseño y lo presentan como el suyo: en cuanto llegue el arte, se cambian
+  // el trazo y la letra aquí mismo y ya.
+  {
+    nombre: 'Chocolate', grupo: 'especiales', color: '#6E3B2A', tipo: 'leche',
+    ingredientes: ['Agua', 'Leche entera', 'Chocolate'],
+    etiqueta: { real: false, trazo: 'casa', fondo: '#F5ECE6', tinta: '#6E3B2A', letra: 'serif', motivo: 'chocolate' },
+  },
+  {
+    nombre: 'Frutos rojos', grupo: 'especiales', color: '#7E2C5C', tipo: null, ingredientes: [],
+    etiqueta: { real: false, trazo: 'casa', fondo: '#F8EBF1', tinta: '#7E2C5C', letra: 'serif', motivo: 'frutos-rojos' },
+  },
+  {
+    nombre: 'Vainilla', grupo: 'especiales', color: '#A9873F', tipo: 'leche',
+    ingredientes: ['Agua', 'Azúcar', 'Vainilla', 'Leche entera', 'Leche condensada', 'Leche evaporada'],
+    etiqueta: { real: false, trazo: 'casa', fondo: '#FBF4E4', tinta: '#A9873F', letra: 'serif', motivo: 'vainilla' },
+  },
+  {
+    nombre: 'Melón', grupo: 'temporada', color: '#D9793F', tipo: null, ingredientes: [],
+    etiqueta: { real: false, trazo: 'casa', fondo: '#FDF2E9', tinta: '#D9793F', letra: 'serif', motivo: 'melon' },
+  },
+  {
+    nombre: 'Piña', grupo: 'temporada', color: '#B98F14', tipo: null, ingredientes: [],
+    etiqueta: { real: false, trazo: 'casa', fondo: '#FBF6E0', tinta: '#B98F14', letra: 'serif', motivo: 'pina' },
+  },
+  {
+    nombre: 'Sandía', grupo: 'temporada', color: '#C33B52', tipo: null, ingredientes: [],
+    etiqueta: { real: false, trazo: 'casa', fondo: '#FCEEF0', tinta: '#C33B52', letra: 'serif', motivo: 'sandia' },
+  },
+  {
+    nombre: 'Mango', grupo: 'temporada', color: '#D98A1B', tipo: 'agua',
+    ingredientes: ['Agua', 'Azúcar', 'Concentrado de mango'],
+    etiqueta: { real: false, trazo: 'casa', fondo: '#FDF4E4', tinta: '#D98A1B', letra: 'serif', motivo: 'mango' },
+  },
 ]
 
 // ── Tamaños y dulzura ────────────────────────────────────────────────────────
