@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { sabores, tamanos } from '../datos/negocio'
 import Etiqueta from './Etiqueta'
-import Sello from './Sello'
+import GotitaSello from './GotitaSello'
 
 const CADA = 3200
 
@@ -53,14 +53,7 @@ export default function Portada() {
           data-revelar
         >
           <Etiqueta sabor={sabor} key={sabor.nombre} />
-          <Sello />
-          <img
-            className="gotita-portada"
-            src="/img/gotita.png"
-            alt="La gotita de Somos Natural"
-            width="454"
-            height="550"
-          />
+          <GotitaSello />
         </div>
       </div>
     </section>

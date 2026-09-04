@@ -111,7 +111,7 @@ sale del vocabulario de la marca**; no hay efectos prestados.
 
 | Qué | Dónde | Por qué es suyo |
 |---|---|---|
-| **Sello giratorio** | Portada, encima de la etiqueta | Su logo YA es un timbre redondo, y sus etiquetas ya traen texto en arco |
+| **La gotita en su aro** | Portada | Su logo YA es un timbre redondo y sus etiquetas ya traen texto en arco: el personaje y el aro son la misma idea |
 | **La etiqueta cambia de sabor** sola cada 3.2 s | Portada | Enseña los 14 sabores sin llenar la primera pantalla de tarjetas |
 | **Las hojas se dibujan** al entrar en pantalla | Cada etiqueta | La línea botánica es de la etiqueta de Jamaica; dibujarla la vuelve gesto |
 | **Tira que corre** | Bajo la portada | Los tres textos fijos de sus etiquetas, como marquesina de época |
@@ -297,7 +297,7 @@ Un solo dibujo, cuatro apariciones:
 
 | Dónde | Cómo |
 |---|---|
-| **Portada** | Junto a la etiqueta, respirando |
+| **Portada** | **Dentro de su aro de texto giratorio**, respirando y caminando hacia la etiqueta |
 | **Entre Sabores y Proceso** | Cruza la página caminando por la línea divisoria |
 | **Panel del pedido** | Asomada por arriba, volteada |
 | **Pie** | Silueta con `mask`, al 13% — atmósfera, no calcomanía |
@@ -305,6 +305,13 @@ Un solo dibujo, cuatro apariciones:
 > **Se probó teñir la gotita del color del sabor (`hue-rotate`) y el negocio lo rechazó.**
 > No reintroducirlo. El personaje se queda con sus colores. `src/lib/color.js`, que calculaba
 > el giro, se borró junto con el efecto.
+
+> **Eran dos personajes y ahora es uno** (2026-09-04). La portada tenía el timbre redondo
+> —que ya traía la gotita chiquita dentro del logo— **y** la gotita de cuerpo entero: el mismo
+> personaje dos veces. Se fusionaron en `GotitaSello.jsx`. Dos cosas que importan del ajuste:
+> la figura mide **82% del alto del aro**, no más, porque con sus adornos salía más ancha que
+> el aro y le tapaba el texto; y va en la esquina **izquierda**, sobre el hueco entre las dos
+> columnas, porque a la derecha se montaba encima de la firma de la etiqueta y le comía la L.
 
 El caminante lleva **dos animaciones en dos elementos**: una avanza y otra brinca. En el
 mismo elemento se pisarían, porque las dos usan `transform`.

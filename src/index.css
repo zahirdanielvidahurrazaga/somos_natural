@@ -839,40 +839,52 @@ figure img, figure video { width: 100%; height: 100%; object-fit: cover; display
 [data-revelar]:nth-child(5) { transition-delay: 280ms; }
 [data-revelar]:nth-child(n+6) { transition-delay: 350ms; }
 
-/* ── El sello giratorio ──────────────────────────────────────────────────── */
+/* ── La gotita con su aro ──────────────────────────────────────────────── */
+/* Un solo elemento donde antes había dos. El aro gira despacio, la gotita
+   respira, y la figura mide MÁS que el aro para que la cabeza y los pies se
+   salgan: así se lee como personaje y no como sello. */
 
-.sello {
+.gotita-sello {
   position: absolute;
-  left: -6%;
-  bottom: -10%;
-  width: clamp(104px, 24%, 156px);
+  left: -17%;
+  bottom: -18%;
+  z-index: 3;
+  width: clamp(168px, 38%, 252px);
   aspect-ratio: 1;
   display: grid;
   place-items: center;
-  z-index: 2;
 }
-.sello-aro {
+
+.gotita-aro {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   fill: var(--vino);
-  animation: girar 30s linear infinite;
+  animation: girar 34s linear infinite;
 }
-.sello-aro text {
+.gotita-aro text {
   font-family: 'Jost', sans-serif;
-  font-size: 12px;
   font-weight: 500;
-  letter-spacing: 0.12em;
+  font-size: 12.5px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
-.sello-centro {
+
+.gotita-figura {
   position: relative;
-  width: 56%;
-  height: auto;
+  width: auto;
+  height: 82%;
+  filter: drop-shadow(0 12px 16px rgba(43, 24, 29, .16));
+  animation: respirar 4.5s ease-in-out infinite;
 }
 
 @keyframes girar { to { transform: rotate(360deg); } }
+
+@keyframes respirar {
+  0%, 100% { translate: 0 0; rotate: -1.5deg; }
+  50%      { translate: 0 -9px; rotate: 1.5deg; }
+}
 
 /* ── La etiqueta que cambia de sabor ─────────────────────────────────────── */
 
@@ -961,21 +973,7 @@ figure img, figure video { width: 100%; height: 100%; object-fit: cover; display
    pie es solo una silueta recortada con máscara, para que no compita.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-.gotita-portada {
-  position: absolute;
-  right: -13%;
-  bottom: -16%;
-  width: clamp(96px, 26%, 168px);
-  height: auto;
-  z-index: 3;
-  filter: drop-shadow(0 14px 18px rgba(43,24,29,.16));
-  animation: respirar 4.5s ease-in-out infinite;
-}
 
-@keyframes respirar {
-  0%, 100% { translate: 0 0; rotate: -1.5deg; }
-  50%      { translate: 0 -9px; rotate: 1.5deg; }
-}
 
 /* Caminante: cruza la línea que separa dos secciones. */
 .caminante {
@@ -1046,13 +1044,12 @@ figure img, figure video { width: 100%; height: 100%; object-fit: cover; display
 
   [data-revelar] { opacity: 1; transform: none; transition: none; }
 
-  .sello-aro,
-  .tira-fila,
+  .tira-fila { animation: none; }
   .etq-motivo > * { animation: none; stroke-dashoffset: 0; }
 
   .sabor:hover .etiqueta { transform: none; }
   .tira-fotos:hover img { transform: none; }
-  .gotita-portada { animation: none; }
+  .gotita-figura, .gotita-aro { animation: none; }
   .caminante-paso, .caminante-paso img { animation: none; }
   .caminante-paso { left: 6%; }
 }
