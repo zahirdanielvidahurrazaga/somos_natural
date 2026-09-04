@@ -41,7 +41,8 @@ export const mostrarIngredientes = false
 //   onda   — color de las ondas y de la fruta sembrada
 //   letra  — 'groovy' | 'serif' | 'bold' | 'redonda' | 'fina'
 //   motivo — cuál de los 15 dibujos
-//   ondas / sembrado — adornos de fondo de esa etiqueta
+//   ondas / goteo / sembrado / rincones — adornos de fondo de esa etiqueta
+//   selloRect — el sello va de estampilla rectangular, no redondo
 //
 // FALTA UNA SOLA: la de SANDÍA. Lleva la plantilla de la casa hasta que llegue.
 // GUANÁBANA se dio de alta como sabor de temporada el 2026-09-04.
@@ -59,7 +60,7 @@ export const sabores = [
   {
     nombre: 'Jamaica', grupo: 'clasicos', color: '#9B2247', tipo: 'agua',
     ingredientes: ['Agua', 'Azúcar', 'Flor de jamaica'],
-    etiqueta: { real: true, trazo: 'arco', fondo: '#FAEDE9', tinta: '#9B2247', letra: 'groovy', motivo: 'jamaica' },
+    etiqueta: { real: true, trazo: 'centro', fondo: '#FAEDE9', tinta: '#9B2247', letra: 'groovy', motivo: 'jamaica', rincones: 'jamaica-rama' },
   },
   {
     nombre: 'Horchata', grupo: 'clasicos', color: '#2C4A6E', tipo: 'agua',
@@ -91,7 +92,7 @@ export const sabores = [
   {
     nombre: 'Chocolate', grupo: 'especiales', color: '#6E3B2A', tipo: 'leche',
     ingredientes: ['Agua', 'Leche entera', 'Chocolate'],
-    etiqueta: { real: true, trazo: 'arco', fondo: '#2E1D16', tinta: '#F5DFC0', letra: 'bold', motivo: 'chocolate' },
+    etiqueta: { real: true, trazo: 'arco', fondo: '#2E1D16', tinta: '#F5DFC0', onda: '#6B4230', letra: 'bold', motivo: 'chocolate', goteo: true },
   },
   {
     nombre: 'Frutos rojos', grupo: 'especiales', color: '#5E2323', tipo: null, ingredientes: [],
@@ -100,7 +101,7 @@ export const sabores = [
   {
     nombre: 'Vainilla', grupo: 'especiales', color: '#B8952F', tipo: 'leche',
     ingredientes: ['Agua', 'Azúcar', 'Vainilla', 'Leche entera', 'Leche condensada', 'Leche evaporada'],
-    etiqueta: { real: true, trazo: 'sello', fondo: '#1C1A17', tinta: '#C9A227', papel: '#F7F1EE', letra: 'serif', motivo: 'vainilla' },
+    etiqueta: { real: true, trazo: 'sello', selloRect: true, fondo: '#1C1A17', tinta: '#C9A227', papel: '#F7F1EE', onda: '#7E8B5A', letra: 'serif', motivo: 'vainilla' },
   },
 
   // ── POR TEMPORADA ────────────────────────────────────────────────────────

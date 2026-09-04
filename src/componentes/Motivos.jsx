@@ -25,6 +25,18 @@ const D = {
     </>
   ),
 
+  // Rama de jamaica: la línea fina que va en las cuatro esquinas de su etiqueta.
+  'jamaica-rama': (
+    <>
+      <path pathLength="1" d="M6 6c14 10 26 24 34 40s12 34 12 50" />
+      <path pathLength="1" d="M18 18c10-4 20-2 27 5-9 6-20 5-27-5z" />
+      <path pathLength="1" d="M30 36c11-3 21 0 27 8-10 5-21 3-27-8z" />
+      <path pathLength="1" d="M42 58c11-2 21 2 26 10-10 4-21 1-26-10z" />
+      <path pathLength="1" d="M14 30c-6 8-8 17-5 26 8-6 11-16 5-26z" />
+      <path pathLength="1" d="M28 54c-6 9-7 18-3 27 8-7 10-17 3-27z" />
+    </>
+  ),
+
   // Vaso de horchata con su raja de canela.
   horchata: (
     <>
