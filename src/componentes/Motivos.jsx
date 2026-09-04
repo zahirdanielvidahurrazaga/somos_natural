@@ -10,18 +10,18 @@ const base = {
 }
 
 const D = {
-  // Flor de jamaica: cinco pétalos y el estambre largo.
+  // Cáliz de jamaica: la flor seca que se hierve, con sus sépalos abiertos.
   jamaica: (
     <>
-      <path pathLength="1" d="M50 52c-6-9-3-19 4-23 6 4 8 14 2 23" />
-      <path pathLength="1" d="M50 52c-11 1-18-6-18-14 7-4 16 0 20 12" />
-      <path pathLength="1" d="M50 52c-9 7-19 4-22-3 4-6 14-7 22 1" />
-      <path pathLength="1" d="M50 52c11 1 18-6 18-14-7-4-16 0-20 12" />
-      <path pathLength="1" d="M50 52c9 7 19 4 22-3-4-6-14-7-22 1" />
-      <path pathLength="1" d="M50 52c4 8 12 14 22 16" />
-      <circle pathLength="1" cx="74" cy="69" r="3" />
-      <path pathLength="1" d="M44 60c-6 8-9 18-8 28" />
-      <path pathLength="1" d="M36 74c-6-2-11-1-15 2" />
+      <path pathLength="1" d="M50 78c-9 0-16-8-16-19 0-9 5-17 16-25 11 8 16 16 16 25 0 11-7 19-16 19z" />
+      <path pathLength="1" d="M50 34c-7-5-11-11-12-19 8 2 13 7 15 14" />
+      <path pathLength="1" d="M50 34c7-5 11-11 12-19-8 2-13 7-15 14" />
+      <path pathLength="1" d="M34 52c-8-2-14-6-18-13 8-1 15 2 19 8" />
+      <path pathLength="1" d="M66 52c8-2 14-6 18-13-8-1-15 2-19 8" />
+      <path pathLength="1" d="M38 68c-7 3-13 8-16 15 8 1 15-2 19-8" />
+      <path pathLength="1" d="M62 68c7 3 13 8 16 15-8 1-15-2-19-8" />
+      <path pathLength="1" d="M50 44v30" />
+      <path pathLength="1" d="M50 15V6" />
     </>
   ),
 
@@ -179,6 +179,15 @@ const D = {
       <ellipse pathLength="1" cx="52" cy="48" rx="2" ry="3" />
       <ellipse pathLength="1" cx="61" cy="43" rx="2" ry="3" />
       <ellipse pathLength="1" cx="50" cy="38" rx="2" ry="3" />
+    </>
+  ),
+
+  // Guanábana con sus espinitas.
+  guanabana: (
+    <>
+      <path pathLength="1" d="M50 26c14 0 26 12 26 27 0 17-13 29-27 29-13 0-25-11-25-26 0-17 12-30 26-30z" />
+      <path pathLength="1" d="M50 26c1-6 3-11 6-16" />
+      <path pathLength="1" d="M40 40l-5-5M52 38l-4-6M64 46l6-4M38 56l-6-3M50 56l-3-6M62 60l6-3M42 70l-5 4M56 72l5 4M50 84v6" />
     </>
   ),
 

@@ -47,20 +47,34 @@ etiqueta: { real: true, trazo: 'arco', fondo: '#FAEDE9', tinta: '#9B2247',
 | Campo | Qué es |
 |---|---|
 | `real` | Si el diseño está copiado de su etiqueta de verdad o es la plantilla de la casa |
-| `trazo` | `arco` · `centro` · `esquinas` · `casa` — cuatro acomodos sacados de sus etiquetas |
+| `trazo` | `arco` · `centro` · `esquinas` · `sello` · `casa` — cinco acomodos sacados de sus etiquetas |
 | `fondo` / `tinta` | El papel y la tinta de ESA etiqueta |
-| `letra` | `groovy` · `serif` · `bold` · `redonda` — lo único que cambia de tipografía |
+| `letra` | `groovy` · `serif` · `bold` · `redonda` · `fina` — lo único que cambia de tipografía |
+| `acento` / `onda` | Color del texto en arco / de las ondas y la fruta sembrada. **Van separados**: el arco del mango en amarillo sobre naranja no se leía |
 | `motivo` | Cuál de los 14 dibujos de línea (`Motivos.jsx`) le toca |
 
 Todo mide en **`cqw`**, así que la misma etiqueta sirve en una tarjeta de 230 px y en la
 portada a 420 px sin tocar nada.
 
-**Dos trampas que ya costaron:**
+**El "500 ml" NO va en ninguna etiqueta** (decisión del negocio, 2026-09-04): el sitio vende
+cuatro tamaños y ponerlo en cada etiqueta contradecía la sección de Tamaños.
+
+**Tres trampas que ya costaron:**
+
+- 🔴 **Nunca poner `position` en una regla que solo quiere `z-index`.** Se agregó
+  `.etq-arco, .etq-firma, .etq-esquinas … { position: relative; z-index: 2 }` DESPUÉS de las
+  reglas base, con la misma especificidad, y le borró el `absolute` a los arcos y a las
+  esquinas: **el acomodo entero de las quince etiquetas se cayó al flujo normal.** La forma
+  correcta: `z-index` en la regla base de cada pieza, y `position: relative` solo en las que
+  son estáticas —las que un trazo vuelve absolutas ganan por especificidad
+  (`[data-trazo=x] .etq-firma` le gana a `.etq-firma`).
 - Los dibujos de `Motivos.jsx` llevan **`pathLength="1"` en cada figura**. Sin eso,
   `stroke-dasharray: 1` mide una unidad de usuario y el trazo sale punteado en vez de
   dibujarse. Si agregas un motivo nuevo, ponle `pathLength`.
 - **El texto en arco se achica solo según su largo** (`Arco.jsx`). El arco mide lo que mide:
   a tamaño fijo, "Agua de limón con pepino y chía" se sale de la curva y el final desaparece.
+- Las tarjetas piden **mínimo 290 px** (`minmax(290px, 1fr)`, 3 por fila). A 228 px no cabía
+  el texto de las esquinas y se cortaba.
 
 Además, **el `color` del sabor es la tinta de su etiqueta**, no el del líquido: la horchata
 es azul marino y el maracuyá olivo, porque eso es lo que se ve en la tarjeta.
@@ -134,25 +148,31 @@ Sale del **`MENÚ-3.pdf`** que el negocio comparte por Instagram, no del ERP.
 Tamaños: 250 ml · **500 ml (el de la etiqueta)** · 1 L · Garrafón 20 L
 Dulzura: con azúcar · poca azúcar · stevia · sin azúcar
 
-**Diseños reales conocidos: 7 de 14** (`real: true`), sacados del arte en `~/Downloads`:
+**Diseños reales conocidos: 14 de 15.** Los 7 primeros salieron del arte en `~/Downloads`;
+los 7 siguientes los mandó Zahir el 2026-09-04 desde Canva.
 
-| Sabor | Papel | Tinta | Letra | Archivo de origen |
+| Sabor | Papel | Tinta | Letra | Trazo |
 |---|---|---|---|---|
-| Jamaica | blush | vino | groovy | `AGUA DE JAMAICA.png` |
-| Horchata | hueso | azul marino | serif | `AGUA DE HORCHATA.png` |
-| Café | crema | terracota | bold | `AGUA DE CAFÉ.png` |
-| Tamarindo | amarillo pálido | café | serif | `AGUA DE TAMARINDO.png` |
-| Maracuyá | **olivo oscuro** | crema | redonda | `ETIQUETA NATURAL.png` |
-| Naranja | crema | naranja | serif | `Agua de naranja.png` |
-| Limón, pepino y chía | crema | verde | serif | `ETIQUETA LIMÓN.png` |
+| Jamaica | blush | vino | groovy | arco |
+| Horchata | hueso | azul marino | serif | centro |
+| Café | crema | terracota | bold | esquinas |
+| Tamarindo | amarillo pálido | café | serif | centro |
+| Maracuyá | olivo oscuro | crema | redonda | arco |
+| Naranja | crema | naranja | serif | arco |
+| Limón, pepino y chía | crema | verde | serif | arco |
+| Chocolate | café muy oscuro | crema | bold | arco |
+| Frutos rojos | vino oscuro | crema | groovy | arco |
+| Vainilla | casi negro | oro | serif | **sello** |
+| Mango | naranja con **ondas** | crema | redonda | arco |
+| Piña | verde pálido, fruta **sembrada** | crema | redonda | arco |
+| Melón | salmón | negro | **fina** | arco |
+| Guanábana | verde salvia | verde hondo | redonda | **sello** |
 
-**FALTAN los 7 restantes** (`real: false`): Chocolate, Frutos rojos, Vainilla, Melón, Piña,
-Sandía y Mango. Llevan el trazo `casa` con su color y su fruta. **No inventan un diseño y lo
-presentan como suyo**: cuando llegue el arte, se cambian `trazo`, `letra`, `fondo` y `tinta`
-en `negocio.js` y ya, sin tocar componentes.
+**FALTA UNA SOLA: SANDÍA** (`real: false`). Lleva el trazo `casa` hasta que llegue su arte.
 
-En `~/Downloads` hay además etiquetas de **Guanábana** y **Taro**, dos sabores que el menú NO
-lista: si existen, hay que darlos de alta.
+**GUANÁBANA se dio de alta** como sabor de temporada el 2026-09-04: tenía etiqueta y no
+estaba en el menú. **TARO también tiene etiqueta y sigue fuera** — el negocio no la pidió.
+
 (Las carpetas `mexcali etiqueta*` son de otra marca, de mezcal: no tocarlas.)
 
 > ⚠️ **El menú y el ERP no cuadran.** El ERP no conoce "Limón, pepino y chía" ni "Sandía",

@@ -226,12 +226,14 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* La firma: lo único que cambia de tipografía entre etiquetas. */
-.etq-firma { display: block; line-height: .96; white-space: nowrap; }
+.etq-firma { display: block; position: relative; z-index: 2; line-height: .96; white-space: nowrap; }
+.etq-titulo, .etq-pie, .etq-fila, .etq-medio, .etq-regla { position: relative; z-index: 2; }
 
 [data-letra='serif']   .etq-firma { font-family: 'Yeseva One', Georgia, serif; font-size: 13.5cqw; }
 [data-letra='groovy']  .etq-firma { font-family: 'Yeseva One', Georgia, serif; font-size: 15cqw; letter-spacing: -.015em; }
 [data-letra='bold']    .etq-firma { font-family: 'Jost', sans-serif; font-weight: 700; font-size: 14cqw; letter-spacing: .05em; }
 [data-letra='redonda'] .etq-firma { font-family: 'Bagel Fat One', 'Jost', sans-serif; font-size: 12cqw; letter-spacing: .02em; }
+[data-letra='fina']    .etq-firma { font-family: 'Jost', sans-serif; font-weight: 300; font-size: 12.5cqw; letter-spacing: .16em; }
 
 /* Textos chicos */
 .etq-titulo, .etq-pie, .etq-esquinas, .etq-fila {
@@ -244,14 +246,18 @@ a { color: inherit; text-decoration: none; }
 
 .etq-esquinas {
   position: absolute;
+  z-index: 2;
   top: 5%;
   left: 4.5%;
   right: 4.5%;
   display: flex;
   justify-content: space-between;
-  gap: 1em;
-  font-size: 2.6cqw;
+  gap: .6em;
+  font-size: 2.3cqw;
+  letter-spacing: .12em;
+  line-height: 1.25;
 }
+.etq-esquinas > span { max-width: 46%; }
 
 .etq-regla {
   display: block;
@@ -263,31 +269,77 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* El motivo: la fruta de línea. */
-.etq-motivo { position: absolute; pointer-events: none; }
-.etq-motivo-grande { width: 46%; left: 27%; top: 8%; opacity: .3; }
-.etq-motivo-fondo  { width: 34%; left: 33%; top: 4%; opacity: .26; }
+.etq-motivo { position: absolute; pointer-events: none; z-index: 0; }
+.etq-motivo-grande { width: 40%; left: 30%; top: 7%; opacity: .22; }
+.etq-motivo-fondo  { width: 32%; left: 34%; top: 6%; opacity: .22; }
 .etq-motivo-izq    { width: 17%; left: 4%;  top: 30%; opacity: .35; }
 .etq-motivo-der    { width: 17%; right: 4%; top: 30%; opacity: .35; transform: scaleX(-1); }
 
 /* El texto curvado */
-.etq-arco { position: absolute; width: 74%; left: 13%; }
+.etq-arco { position: absolute; z-index: 2; width: 74%; left: 13%; }
 .etq-arco text {
-  fill: currentColor;
+  fill: var(--acento, currentColor);
   font-family: 'Jost', sans-serif;
   font-weight: 500;
   text-transform: uppercase;
 }
 
+
+/* ── Adornos de fondo ────────────────────────────────────────────────────── */
+
+.etq-ondas {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: var(--onda);
+  pointer-events: none;
+}
+
+.etq-sembrado { position: absolute; z-index: 0; inset: 0; pointer-events: none; }
+.etq-sembrado > span { position: absolute; display: block; }
+.etq-sembrado svg { width: 100%; height: auto; color: var(--onda); opacity: .55; }
+
+/* ── Trazo: sello ────────────────────────────────────────────────────────── */
+
+.etq-feston {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: var(--sello);
+  pointer-events: none;
+}
+[data-trazo='sello'] .etq-motivo-sello {
+  width: 24%;
+  left: 38%;
+  top: 26%;
+  opacity: .45;
+  z-index: 1;
+}
+[data-trazo='sello'] .etq-arco { width: 82%; left: 9%; }
+[data-trazo='sello'] .etq-arco-alto { top: 4%; }
+[data-trazo='sello'] .etq-arco-bajo { bottom: 3%; }
+[data-trazo='sello'] .etq-firma {
+  position: absolute;
+  top: 50%;
+  left: 0; right: 0;
+  transform: translateY(-50%);
+  font-size: 9.5cqw;
+}
+[data-trazo='sello'] .etq-esquinas { color: var(--acento); }
+
 /* ── Trazo: arco ─────────────────────────────────────────────────────────── */
 [data-trazo='arco'] .etq-arco-alto { top: 9%; }
-[data-trazo='arco'] .etq-arco-bajo { bottom: 13%; }
+[data-trazo='arco'] .etq-arco-bajo { bottom: 7%; }
 [data-trazo='arco'] .etq-firma {
   position: absolute;
-  top: 47%;
+  top: 50%;
   left: 0; right: 0;
   transform: translateY(-50%);
 }
-[data-trazo='arco'] .etq-pie { position: absolute; bottom: 4.5%; left: 0; right: 0; font-size: 2.6cqw; }
 
 /* ── Trazo: centro ───────────────────────────────────────────────────────── */
 [data-trazo='centro'] {
@@ -298,15 +350,18 @@ a { color: inherit; text-decoration: none; }
 }
 [data-trazo='centro'] .etq-titulo { font-weight: 500; font-size: 3.4cqw; }
 [data-trazo='centro'] .etq-medio { position: relative; display: grid; place-items: center; }
-[data-trazo='centro'] .etq-medio .etq-motivo-fondo { position: absolute; width: 42%; left: 29%; top: -18%; }
+[data-trazo='centro'] .etq-medio .etq-motivo-fondo { position: absolute; width: 30%; left: 35%; top: -46%; }
 [data-trazo='centro'] .etq-medio .etq-firma { position: relative; }
 [data-trazo='centro'] .etq-fila {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: end;
   gap: .8em;
-  font-size: 2.5cqw;
+  font-size: 2.2cqw;
+  letter-spacing: .1em;
 }
+[data-trazo='centro'] .etq-fila > span:first-child { text-align: left; }
+[data-trazo='centro'] .etq-fila > span:last-child  { text-align: right; }
 
 /* ── Trazo: esquinas ─────────────────────────────────────────────────────── */
 [data-trazo='esquinas'] { display: grid; place-items: center; }
@@ -351,7 +406,7 @@ a { color: inherit; text-decoration: none; }
 
 .rejilla-sabores {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(228px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
   gap: clamp(1.1rem, 2.4vw, 2rem);
 }
 
@@ -812,7 +867,12 @@ figure img, figure video { width: 100%; height: 100%; object-fit: cover; display
 .portada-muestra { position: relative; }
 
 /* El color del sabor cruza en lugar de saltar. */
-.portada-muestra .etiqueta { transition: background .9s ease, color .9s ease; }
+.portada-muestra .etiqueta { animation: aparecer .55s ease both; }
+
+@keyframes aparecer {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
 
 /* ── La fruta se dibuja sola ─────────────────────────────────────────────── */
 /* pathLength="1" normaliza cada curva, así todas se trazan al mismo ritmo sin
@@ -885,8 +945,8 @@ figure img, figure video { width: 100%; height: 100%; object-fit: cover; display
 
 .gotita-portada {
   position: absolute;
-  left: -4%;
-  bottom: -12%;
+  right: -13%;
+  bottom: -16%;
   width: clamp(96px, 26%, 168px);
   height: auto;
   z-index: 3;

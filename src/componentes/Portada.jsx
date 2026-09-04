@@ -52,7 +52,7 @@ export default function Portada() {
           style={{ '--c': sabor.color }}
           data-revelar
         >
-          <Etiqueta sabor={sabor} />
+          <Etiqueta sabor={sabor} key={sabor.nombre} />
           <Sello />
           <img
             className="gotita-portada"
