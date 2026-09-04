@@ -4,7 +4,7 @@ export default function Proceso() {
   return (
     <section className="seccion franja-suave" id="proceso">
       <div className="marco">
-        <div className="cabeza">
+        <div className="cabeza" data-revelar>
           <span className="rotulo caps">Cómo trabajamos</span>
           <h2>Se echan a perder rápido. Por eso trabajamos así.</h2>
           <p className="entrada">
@@ -15,7 +15,7 @@ export default function Proceso() {
 
         <div className="pasos">
           {proceso.map((p) => (
-            <div className="paso" key={p.titulo}>
+            <div className="paso" key={p.titulo} data-revelar>
               <h3>{p.titulo}</h3>
               <p>{p.texto}</p>
             </div>

@@ -72,7 +72,7 @@ export default function Pedido() {
   return (
     <section className="seccion franja-suave" id="pedido">
       <div className="marco">
-        <div className="cabeza cabeza-centro">
+        <div className="cabeza cabeza-centro" data-revelar>
           <span className="rotulo caps">Hacer un pedido</span>
           <h2>Ármalo aquí y te lo mandas por WhatsApp.</h2>
           <p className="entrada">

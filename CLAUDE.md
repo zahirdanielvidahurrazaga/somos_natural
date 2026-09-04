@@ -44,6 +44,36 @@ depender de fotos de producto que no existen.
 - **Un toggle que nadie lee no es un toggle.** Se borró `mostrarPrecios` cuando se quitaron
   los precios: dejarlo habría hecho creer que ponerlo en `true` los devolvía.
 
+## Movimiento
+
+Se agregó el 2026-09-04 porque el sitio quieto se sentía genérico. **Todo el movimiento
+sale del vocabulario de la marca**; no hay efectos prestados.
+
+| Qué | Dónde | Por qué es suyo |
+|---|---|---|
+| **Sello giratorio** | Portada, encima de la etiqueta | Su logo YA es un timbre redondo, y sus etiquetas ya traen texto en arco |
+| **La etiqueta cambia de sabor** sola cada 3.2 s | Portada | Enseña los 14 sabores sin llenar la primera pantalla de tarjetas |
+| **Las hojas se dibujan** al entrar en pantalla | Cada etiqueta | La línea botánica es de la etiqueta de Jamaica; dibujarla la vuelve gesto |
+| **Tira que corre** | Bajo la portada | Los tres textos fijos de sus etiquetas, como marquesina de época |
+| **Revelado en cascada** | Todo el sitio | Quita lo estático sin agregar adorno |
+| **Calcomanía** (gira y se tiñe al pasar el mouse) | Tarjetas de sabor | Trata cada tarjeta como lo que es: una etiqueta pegada |
+
+Reglas del movimiento:
+
+- **`[data-revelar]` + `useRevelar()`**: UN solo `IntersectionObserver` para todo el sitio,
+  y cada elemento se deja de observar al entrar. Nada se re-anima al volver a subir.
+- La cascada se hace con `:nth-child()` en CSS, **no** con un índice inline, para no romper
+  la regla de cero estilos en el JSX.
+- Las hojas usan `pathLength="1"`: así el trazo se anima sin conocer el largo real de cada
+  curva y todas se dibujan al mismo ritmo.
+- **`prefers-reduced-motion` se respeta con criterio**, no a martillazos. Se apaga lo que
+  se mueve solo y lo que entra; se conservan los cambios de color al pasar el mouse, que
+  no son movimiento y sí dan respuesta. (Antes había un `* { animation: none !important }`
+  que hoy habría matado el diseño entero.)
+- El texto del aro está calibrado para que **una sola vuelta ≈ la circunferencia**. Si se
+  cambia la frase o el tamaño de letra, hay que volver a mirarlo: si sobra, se corta a
+  media palabra en la costura.
+
 ## Datos
 
 **Todo lo editable vive en `src/datos/negocio.js`.** No hay que tocar componentes para

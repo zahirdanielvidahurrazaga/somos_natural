@@ -278,11 +278,8 @@ a { color: inherit; text-decoration: none; }
 }
 .tira-fila {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
   align-items: center;
-  gap: 0.7rem clamp(1.25rem, 4vw, 3rem);
-  text-align: center;
+  gap: clamp(1.25rem, 4vw, 3rem);
 }
 .tira-fila i {
   width: 4px; height: 4px;
@@ -603,7 +600,157 @@ a { color: inherit; text-decoration: none; }
 .flotante:hover { background: var(--vino-hondo); }
 .flotante svg { width: 26px; height: 26px; }
 
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOVIMIENTO
+   Todo sale del vocabulario de la marca: el sello redondo gira, la etiqueta
+   cambia de sabor, las hojas se dibujan y la tira corre. Nada de efectos
+   prestados. Al final del archivo se apaga entero si el sistema lo pide.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Revelado al entrar ──────────────────────────────────────────────────── */
+
+[data-revelar] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .75s cubic-bezier(.22,.7,.3,1), transform .75s cubic-bezier(.22,.7,.3,1);
+}
+[data-revelar][data-visible='si'] { opacity: 1; transform: none; }
+
+/* Cascada: los hermanos entran uno tras otro, no todos de golpe. */
+[data-revelar]:nth-child(2) { transition-delay: 70ms; }
+[data-revelar]:nth-child(3) { transition-delay: 140ms; }
+[data-revelar]:nth-child(4) { transition-delay: 210ms; }
+[data-revelar]:nth-child(5) { transition-delay: 280ms; }
+[data-revelar]:nth-child(n+6) { transition-delay: 350ms; }
+
+/* ── El sello giratorio ──────────────────────────────────────────────────── */
+
+.sello {
+  position: absolute;
+  left: -6%;
+  bottom: -10%;
+  width: clamp(104px, 24%, 156px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  z-index: 2;
+}
+.sello-aro {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: var(--vino);
+  animation: girar 30s linear infinite;
+}
+.sello-aro text {
+  font-family: 'Jost', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.sello-centro {
+  position: relative;
+  width: 56%;
+  height: auto;
+}
+
+@keyframes girar { to { transform: rotate(360deg); } }
+
+/* ── La etiqueta que cambia de sabor ─────────────────────────────────────── */
+
+.portada-muestra { position: relative; }
+
+/* El color del sabor cruza en lugar de saltar. */
+.portada-muestra,
+.portada-muestra .etiqueta { transition: color .9s ease; }
+
+.portada-muestra .etiqueta-sabor { animation: entrar-nombre .6s cubic-bezier(.22,.7,.3,1) both; }
+
+@keyframes entrar-nombre {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── Las hojas se dibujan solas ──────────────────────────────────────────── */
+
+.etiqueta-hoja path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+[data-visible='si'] .etiqueta-hoja path,
+.portada-muestra .etiqueta-hoja path {
+  animation: dibujar 1.5s cubic-bezier(.4,.5,.2,1) forwards;
+}
+.etiqueta-hoja path:nth-child(2) { animation-delay: .16s; }
+.etiqueta-hoja path:nth-child(3) { animation-delay: .30s; }
+.etiqueta-hoja path:nth-child(4) { animation-delay: .44s; }
+.etiqueta-hoja path:nth-child(5) { animation-delay: .58s; }
+
+@keyframes dibujar { to { stroke-dashoffset: 0; } }
+
+/* ── La tira corre ───────────────────────────────────────────────────────── */
+
+.tira { overflow: hidden; display: flex; }
+.tira-fila {
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  white-space: nowrap;
+  animation: correr 54s linear infinite;
+  padding-right: clamp(1.25rem, 4vw, 3rem);
+}
+.tira-fila i { display: block; }
+
+@keyframes correr { to { transform: translateX(-100%); } }
+
+/* ── Las tarjetas de sabor son calcomanías ───────────────────────────────── */
+
+.sabor .etiqueta {
+  transition: transform .35s cubic-bezier(.22,.7,.3,1),
+              background .35s ease,
+              border-color .35s ease;
+}
+.sabor:hover .etiqueta {
+  transform: translateY(-6px) rotate(-1.1deg);
+  background: color-mix(in srgb, var(--c) 7%, var(--hueso));
+  border-color: color-mix(in srgb, var(--c) 55%, transparent);
+}
+.sabor .sabor-pie h3 { transition: color .3s ease; }
+.sabor:hover .sabor-pie h3 { color: var(--c); }
+
+/* ── Subrayado del menú ──────────────────────────────────────────────────── */
+
+.menu a { position: relative; }
+.menu a::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -3px;
+  height: 1px;
+  background: var(--vino);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform .3s cubic-bezier(.22,.7,.3,1);
+}
+.menu a:hover::after { transform: scaleX(1); transform-origin: left; }
+
+/* ── Menos movimiento ────────────────────────────────────────────────────── */
+/* Se apaga lo que se mueve solo y lo que entra; se conservan los cambios de
+   color al pasar el mouse, que no son movimiento y sí dan respuesta. */
+
 @media (prefers-reduced-motion: reduce) {
-  * { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
+
+  [data-revelar] { opacity: 1; transform: none; transition: none; }
+
+  .sello-aro,
+  .tira-fila,
+  .etiqueta-hoja path,
+  .portada-muestra .etiqueta-sabor { animation: none; }
+
+  .etiqueta-hoja path { stroke-dashoffset: 0; }
+
+  .sabor:hover .etiqueta { transform: none; }
 }

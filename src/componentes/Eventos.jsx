@@ -10,7 +10,7 @@ export default function Eventos() {
   return (
     <section className="seccion" id="eventos">
       <div className="marco">
-        <div className="cabeza">
+        <div className="cabeza" data-revelar>
           <span className="rotulo caps">Fiestas y reuniones</span>
           <h2>Para tu fiesta, hechas ese día.</h2>
           <p className="entrada">
@@ -21,14 +21,14 @@ export default function Eventos() {
 
         <div className="puntos">
           {eventos.map((e) => (
-            <div className="punto" key={e.titulo}>
+            <div className="punto" key={e.titulo} data-revelar>
               <h3>{e.titulo}</h3>
               <p>{e.texto}</p>
             </div>
           ))}
         </div>
 
-        <div className="portada-botones">
+        <div className="portada-botones" data-revelar>
           {enlace && (
             <a className="boton boton-vino" href={enlace} target="_blank" rel="noopener noreferrer">
               Apartar una fecha

@@ -11,7 +11,7 @@ export default function Negocios() {
   return (
     <section className="seccion franja-honda" id="negocios">
       <div className="marco">
-        <div className="cabeza">
+        <div className="cabeza" data-revelar>
           <span className="rotulo caps">Tiendas, torterías y restaurantes</span>
           <h2>Nosotros pasamos a ver cuánto te queda.</h2>
           <p className="entrada">
@@ -22,7 +22,7 @@ export default function Negocios() {
 
         <div className="puntos">
           {ventajas.map((v) => (
-            <div className="punto" key={v.titulo}>
+            <div className="punto" key={v.titulo} data-revelar>
               <h3>{v.titulo}</h3>
               <p>{v.texto}</p>
             </div>
@@ -30,7 +30,7 @@ export default function Negocios() {
         </div>
 
         {enlace && (
-          <div className="cierre">
+          <div className="cierre" data-revelar>
             <a className="boton boton-claro" href={enlace} target="_blank" rel="noopener noreferrer">
               Que pasen a mi negocio
             </a>

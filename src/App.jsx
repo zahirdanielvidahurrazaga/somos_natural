@@ -1,3 +1,4 @@
+import { useRevelar } from './lib/useRevelar'
 import Encabezado from './componentes/Encabezado'
 import Portada from './componentes/Portada'
 import Tira from './componentes/Tira'
@@ -10,6 +11,8 @@ import Pie from './componentes/Pie'
 import Flotante from './componentes/Flotante'
 
 export default function App() {
+  useRevelar()
+
   return (
     <>
       <Encabezado />

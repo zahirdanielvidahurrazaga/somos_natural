@@ -7,7 +7,7 @@ export default function Sabores() {
   return (
     <section className="seccion" id="sabores">
       <div className="marco">
-        <div className="cabeza">
+        <div className="cabeza" data-revelar>
           <span className="rotulo caps">Los sabores</span>
           <h2>{sabores.length} sabores, en {tamanos.length} tamaños.</h2>
           <p className="entrada">
@@ -22,14 +22,14 @@ export default function Sabores() {
 
           return (
             <div className="grupo" key={g.llave}>
-              <div className="grupo-cabeza">
+              <div className="grupo-cabeza" data-revelar>
                 <h3 className="caps">{g.titulo}</h3>
                 <span>{g.pie}</span>
               </div>
 
               <div className="rejilla-sabores">
                 {suyos.map((s) => (
-                  <article className="sabor" key={s.nombre} style={{ '--c': s.color }}>
+                  <article className="sabor" key={s.nombre} style={{ '--c': s.color }} data-revelar>
                     <Etiqueta sabor={s} />
                     <div className="sabor-pie">
                       <h3>{s.nombre}</h3>
@@ -45,7 +45,7 @@ export default function Sabores() {
           )
         })}
 
-        <div className="opciones">
+        <div className="opciones" data-revelar>
           <div>
             <h3 className="caps">Tamaños</h3>
             <ul>
