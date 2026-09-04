@@ -356,6 +356,79 @@ a { color: inherit; text-decoration: none; }
 .franja-honda .punto p { color: rgba(250,237,233,.68); }
 
 
+
+/* ── Fotos ───────────────────────────────────────────────────────────────── */
+
+figure { margin: 0; }
+figure img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Trío: las botellas de verdad, después de las etiquetas dibujadas. */
+.trio {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.6rem, 1.6vw, 1.25rem);
+  margin-top: var(--hueco4);
+}
+.trio figure { border: 1px solid var(--marco-firme); overflow: hidden; }
+.trio figure img {
+  aspect-ratio: 1;
+  transition: transform .7s cubic-bezier(.2,.7,.3,1);
+}
+.trio figure:hover img { transform: scale(1.045); }
+.trio figcaption {
+  padding: 0.7rem 0.85rem;
+  border-top: 1px solid var(--marco);
+  color: var(--vino);
+  background: var(--hueso);
+}
+
+/* Banda: foto ancha con frase encima. */
+.banda {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--marco-firme);
+  margin-bottom: var(--hueco3);
+}
+.banda img { aspect-ratio: 5 / 3; }
+.banda::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg,
+    rgba(43,24,29,.86) 0%,
+    rgba(43,24,29,.55) 46%,
+    rgba(43,24,29,.16) 100%);
+}
+.banda figcaption {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 2;
+  padding: clamp(1.2rem, 4vw, 3rem);
+  max-width: 34ch;
+  color: var(--crema);
+}
+.banda figcaption > .caps { display: block; color: #E9B9C6; margin-bottom: 0.8rem; }
+.banda-frase { font-family: 'Yeseva One', Georgia, serif; font-size: var(--d3); line-height: 1.18; }
+
+@media (max-width: 560px) {
+  .banda img { aspect-ratio: 4 / 3; }
+  .trio { grid-template-columns: 1fr 1fr; }
+  .trio figure:last-child { grid-column: 1 / -1; }
+  .trio figure:last-child img { aspect-ratio: 16 / 9; }
+}
+
+/* Retrato: foto cuadrada junto a un bloque de texto. */
+.retrato { display: grid; gap: var(--hueco2); align-items: center; }
+@media (min-width: 860px) {
+  .retrato { grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4.5rem); }
+}
+.retrato figure { border: 1px solid var(--marco-firme); overflow: hidden; }
+.retrato figure img { aspect-ratio: 1; }
+.retrato h2 { font-size: var(--d2); }
+.retrato .entrada { margin-top: 1.15rem; }
+.retrato .portada-fija { margin-top: var(--hueco2); }
+
 /* ── Grupos de sabores ───────────────────────────────────────────────────── */
 
 .grupo + .grupo { margin-top: var(--hueco4); }
@@ -753,4 +826,5 @@ a { color: inherit; text-decoration: none; }
   .etiqueta-hoja path { stroke-dashoffset: 0; }
 
   .sabor:hover .etiqueta { transform: none; }
+  .trio figure:hover img { transform: none; }
 }

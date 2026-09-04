@@ -92,3 +92,24 @@ export const eventos = [
   { titulo: `Desde ${minimo} aguas`,   texto: 'Ese es el mínimo. De ahí para arriba, nos dices cuánta gente va y sacamos el número contigo.' },
   { titulo: 'Llegan frías ese día',    texto: 'Se hacen para tu evento, no salen de una bodega. Te las entregamos el día que quedamos.' },
 ]
+
+// ── Fotos ────────────────────────────────────────────────────────────────────
+// Del AirDrop del 2026-09-04 (96 fotos). Ya vienen recortadas y comprimidas a
+// public/img/fotos/. Los originales siguen en ~/Downloads como IMG_46xx/47xx.
+export const fotos = {
+  formacion: {
+    src: '/img/fotos/formacion.jpg',
+    alt: 'Nueve aguas de distintos sabores formadas sobre una barda de ladrillo',
+    ancho: 1200, alto: 1200,
+  },
+  evento: {
+    src: '/img/fotos/evento.jpg',
+    alt: 'Agua de frutos rojos parada sobre un seto, junto a una pared blanca',
+    ancho: 2000, alto: 1200,
+  },
+  trio: [
+    { src: '/img/fotos/detalle-jamaica.jpg', alt: 'Agua de jamaica sostenida frente a una palma',        pie: 'Jamaica' },
+    { src: '/img/fotos/detalle-vocho.jpg',   alt: 'Agua de horchata apoyada en un portón, con un Vocho crema atrás', pie: 'Horchata' },
+    { src: '/img/fotos/detalle-cafe.jpg',    alt: 'Agua de café sostenida entre margaritas moradas',     pie: 'Café' },
+  ],
+}

@@ -1,5 +1,6 @@
 import { sabores, grupos, tamanos, dulzura, mostrarIngredientes } from '../datos/negocio'
 import Etiqueta from './Etiqueta'
+import Trio from './Trio'
 
 const TIPO = { agua: 'De agua', leche: 'Con leche' }
 
@@ -44,6 +45,8 @@ export default function Sabores() {
             </div>
           )
         })}
+
+        <Trio />
 
         <div className="opciones" data-revelar>
           <div>

@@ -121,8 +121,34 @@ src/
     Pie.jsx         Flotante.jsx Iconos.jsx
 public/img/
   logo.png                ← el sello morado con la gotita
-  fotos/                  ← fotos del negocio (ver LEEME.txt)
+  fotos/                  ← 5 fotos ya recortadas y comprimidas (ver abajo)
 ```
+
+### Fotos
+
+Llegaron por AirDrop el 2026-09-04: **96 fotos y 8 videos**, `IMG_4632`–`IMG_4740`, en
+`~/Downloads`. Son cuadradas de 6048×6048 y todas siguen el mismo lenguaje: una mano
+sosteniendo la botella contra plantas y flores, a plena luz.
+
+> ⚠️ **Buscarlas por fecha de modificación NO funciona.** El AirDrop conserva la fecha
+> original de la foto, así que un `find -newermt` no las ve aunque Finder las muestre en
+> "Hoy" (Finder ordena por *fecha de incorporación*). Buscar por nombre: `IMG_4[5-7]*`.
+
+Las 5 elegidas y para qué:
+
+| Archivo | Original | Dónde | Por qué esa |
+|---|---|---|---|
+| `formacion.jpg` | 4730 | Sección propia tras Proceso | Nueve sabores de un jalón: es la prueba del catálogo |
+| `evento.jpg` | 4707 | Banda en Eventos | Recorte 5:3, el más ancho que deja la botella entera |
+| `detalle-jamaica.jpg` | 4648 | Trío tras Sabores | **Trae la etiqueta de Jamaica REAL**, la misma que da el diseño al sitio |
+| `detalle-vocho.jpg` | 4697 | Trío | Un Vocho crema de fondo: regalo para lo setentero |
+| `detalle-cafe.jpg` | 4640 | Trío | Margaritas moradas, la más "natural" del lote |
+
+Se convierten con `sips` (HEIC→JPEG) y se recortan con PIL. Ninguna pasa de 225 KB.
+
+**Los 8 videos (.mov, de 6 a 81 MB) siguen sin usar: no hay `ffmpeg` en la máquina.**
+Para meterlos habría que instalarlo (`brew install ffmpeg`) o que Zahir los exporte ya
+comprimidos. Sin comprimir NO deben subirse: 81 MB en una página es inaceptable.
 
 ## Stack y despliegue
 
@@ -134,8 +160,7 @@ cuando él lo aprueba.
 
 ## Pendientes
 
-- **Fotos.** Zahir las tiene en el teléfono (fotos en la naturaleza). Van por AirDrop a
-  `public/img/fotos/`. Sin usar todavía.
+- **Los 8 videos**: falta `ffmpeg` para comprimirlos. Decidir si se instala o se descartan.
 - Cuadrar el catálogo del menú contra el del ERP.
 - Confirmar si los otros dos teléfonos del menú siguen vivos.
 - Definir con cuánta anticipación se aparta una fecha de evento.

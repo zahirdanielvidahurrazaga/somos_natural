@@ -1,5 +1,6 @@
-import { negocio, eventos } from '../datos/negocio'
+import { negocio, eventos, fotos } from '../datos/negocio'
 import { enlaceWhatsapp } from '../lib/whatsapp'
+import Banda from './Banda'
 
 export default function Eventos() {
   const enlace = enlaceWhatsapp(
@@ -18,6 +19,12 @@ export default function Eventos() {
             mañana te las llevamos frías: en botella o en garrafón de 20&nbsp;L.
           </p>
         </div>
+
+        <Banda
+          foto={fotos.evento}
+          rotulo="Se hacen para tu evento"
+          frase="No salen de una bodega. Se preparan la tarde anterior y llegan frías el día que quedamos."
+        />
 
         <div className="puntos">
           {eventos.map((e) => (
