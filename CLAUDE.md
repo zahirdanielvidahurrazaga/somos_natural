@@ -171,7 +171,12 @@ los 7 siguientes los mandó Zahir el 2026-09-04 desde Canva.
 **FALTA UNA SOLA: SANDÍA** (`real: false`). Lleva el trazo `casa` hasta que llegue su arte.
 
 **GUANÁBANA se dio de alta** como sabor de temporada el 2026-09-04: tenía etiqueta y no
-estaba en el menú. **TARO también tiene etiqueta y sigue fuera** — el negocio no la pidió.
+estaba en el menú.
+
+> 🚫 **TARO está DESCONTINUADO. No darlo de alta.** Existe `Agua de taro.png` en
+> `~/Downloads` y es una etiqueta bonita, pero **el negocio ya no lo maneja** (confirmado el
+> 2026-09-04). Nunca estuvo en el sitio ni en el catálogo del ERP; el archivo suelto es lo
+> único que queda. Si aparece de nuevo la tentación de agregarlo, la respuesta ya está dada.
 
 (Las carpetas `mexcali etiqueta*` son de otra marca, de mezcal: no tocarlas.)
 
