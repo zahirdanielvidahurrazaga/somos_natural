@@ -339,6 +339,31 @@ export const mapa = {
   ],
 }
 
+// Los nombres de las avenidas que cruzan el encuadre. Ocho, no ciento cincuenta:
+// el mapa es para ubicarse, no para navegar. Salen de `name` en OpenStreetMap y
+// se abrevian como se dicen ("Blvd.", "11 Sur"). La posición es el punto medio
+// dirección de la calle ahí, medida entre dos puntos a 38 unidades de distancia
+// (el segmento suelto más largo era demasiado corto para orientar un nombre).
+//
+// El SITIO del rótulo no es el punto medio: se prueban 41 puntos a lo largo del
+// tramo y gana el que quede más lejos de los otros rótulos, de los puntos de
+// venta y de los bordes. Con el punto medio, "Juan Pablo II" se cruzaba encima
+// de "Héroes del 5 de Mayo" y Valsequillo se salía cortado por abajo.
+//
+// Las COLONIAS no están: OpenStreetMap solo tiene tres en toda esta zona de
+// Puebla y las tres caen fuera del encuadre. Google solo devuelve la colonia en
+// tres de los diecinueve puntos. No se inventan.
+export const calles = [
+  { texto: "Juan Pablo II", x: 438, y: 546, rot: 32.2 },
+  { texto: "Héroes del 5 de Mayo", x: 585, y: 466, rot: -45.4 },
+  { texto: "Valsequillo", x: 594, y: 955, rot: 71.5 },
+  { texto: "Municipio Libre", x: 324, y: 858, rot: 25.9 },
+  { texto: "11 Sur", x: 285, y: 580, rot: -45.6 },
+  { texto: "14 Sur", x: 516, y: 800, rot: -57.2 },
+  { texto: "Las Margaritas", x: 407, y: 677, rot: 24.0 },
+  { texto: "Periférico", x: 322, y: 1069, rot: 30.2 },
+]
+
 // Dónde cae cada punto de venta en el lienzo del mapa. La llave es el mismo
 // `nombre` de `puntosDeVenta` en negocio.js: si no coincide, el punto no se
 // dibuja (y el sitio lo aguanta).

@@ -1,4 +1,4 @@
-import { mapa, marcas } from '../datos/mapa'
+import { mapa, marcas, calles } from '../datos/mapa'
 
 // El mapa dibujado. Recibe cuál punto está señalado para resaltarlo, y avisa
 // cuando el dedo o el ratón pasan por uno.
@@ -15,6 +15,17 @@ export default function Mapa({ puntos, activo, onSenalar }) {
         </g>
         <g className="mapa-grandes">
           {mapa.grandes.map((d, i) => <path d={d} key={i} />)}
+        </g>
+
+        {/* Los nombres van encima del trazo pero debajo de los puntos, y llevan
+            un halo del color del papel (paint-order) para leerse sobre las
+            calles sin taparlas con una caja. */}
+        <g className="mapa-calles">
+          {calles.map((c) => (
+            <text key={c.texto} x={c.x} y={c.y} transform={`rotate(${c.rot} ${c.x} ${c.y})`}>
+              {c.texto}
+            </text>
+          ))}
         </g>
 
         {/* Igual que en la lista: el apagado va en el grupo, no en cada pin. */}

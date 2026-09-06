@@ -341,6 +341,19 @@ relativos en enteros. **De 46 KB a 8 KB**, 314 recorridos. Todo vive ya resuelto
 - La posición de cada punto sale de **las coordenadas de su enlace de Google Maps**. La llave
   de `marcas` es el mismo `nombre` de `puntosDeVenta`: si no coincide, ese punto no se dibuja
   y el sitio lo aguanta.
+- **Ocho avenidas rotuladas** (`calles` en `mapa.js`), no las 152 que traen nombre: el mapa es
+  para ubicarse, no para navegar. Van abreviadas como se dicen —"Juan Pablo II", "11 Sur",
+  "Valsequillo"—, siguen el giro de su calle y llevan un halo del color del papel
+  (`paint-order: stroke fill`) para leerse encima del trazo sin taparlo con una caja.
+  El sitio de cada rótulo **no es el punto medio de la calle**: se prueban 41 puntos a lo
+  largo de su tramo y gana el que quede más lejos de los otros rótulos, de los puntos de venta
+  y de los bordes. Con el punto medio, "Juan Pablo II" se cruzaba encima de "Héroes del 5 de
+  Mayo" y Valsequillo salía cortado por abajo.
+- 🟡 **Las colonias NO están, y no por descuido.** OpenStreetMap solo tiene tres colonias en
+  toda esta zona de Puebla (Centro Histórico, La Luz y Analco) y las tres caen fuera del
+  encuadre; Google devuelve la colonia en tres de los diecinueve puntos; Nominatim no conoce
+  ninguna. **La única forma de tenerlas es que la familia las dicte.** Ayudarían más que las
+  calles: la gente dice "vivo en San Manuel", no "vivo en la 24 Sur".
 - **La atribución a OpenStreetMap es obligatoria** (ODbL) y va en el pie del mapa.
 - 🔴 **Nunca `overflow: visible` en el SVG del mapa.** El archivo trae calles fuera del
   encuadre; con overflow visible se salían del marco por la izquierda y se dibujaban encima
