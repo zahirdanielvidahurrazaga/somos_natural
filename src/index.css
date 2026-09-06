@@ -33,6 +33,12 @@
   --hueco3: 3rem;
   --hueco4: clamp(4rem, 10vw, 8rem);
   --ancho:  1080px;
+
+  /* Del contenido del marco al borde de la pantalla: el padding del marco más
+     lo que sobra a cada lado cuando la pantalla es más ancha que --ancho. Lo
+     usan el estante (para sangrar) y la gotita de la portada (para no salirse). */
+  --pad:   clamp(1.15rem, 4vw, 2.25rem);
+  --borde: max(var(--pad), calc((100vw - var(--ancho)) / 2 + var(--pad)));
 }
 
 * { box-sizing: border-box; }
@@ -486,8 +492,6 @@ a { color: inherit; text-decoration: none; }
    la primera tarjeta queda alineada con el resto de la página y la última
    puede llegar hasta esa misma línea. */
 .estante {
-  --pad: clamp(1.15rem, 4vw, 2.25rem);
-  --borde: max(var(--pad), calc((100vw - var(--ancho)) / 2 + var(--pad)));
   display: flex;
   column-gap: clamp(1.1rem, 2.4vw, 1.75rem);
   width: 100vw;
@@ -948,7 +952,9 @@ figure img, figure video {
 
 .gotita-sello {
   position: absolute;
-  right: -7%;
+  /* En la esquina de abajo a la derecha de la pila (pedido de Zahir, 2026-09-06),
+     con tope: nunca más allá de 1rem del borde de la pantalla. */
+  right: max(-26%, calc(1rem - var(--borde)));
   bottom: -32%;
   z-index: 4;
   width: clamp(142px, 32%, 196px);
