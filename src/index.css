@@ -713,10 +713,17 @@ figure img, figure video {
   .puntos-caja { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 4rem); align-items: start; }
 }
 
-.mapa-google { position: relative; aspect-ratio: 0.72; }
+/* Con el mapa de Google va a lo ancho y la lista debajo: un mapa de Google en
+   una columna angosta y vertical se lee apretado, y lo que la gente reconoce es
+   el formato ancho. El dibujado sí va al lado, porque es vertical de origen. */
+.puntos-caja-ancha { grid-template-columns: 1fr; }
 @media (min-width: 900px) {
-  .mapa-google { position: sticky; top: calc(76px + var(--hueco2)); }
+  .puntos-caja-ancha { grid-template-columns: 1fr; }
 }
+
+.mapa-google { position: relative; aspect-ratio: 4 / 3; }
+@media (min-width: 700px)  { .mapa-google { aspect-ratio: 16 / 9; } }
+@media (min-width: 1000px) { .mapa-google { aspect-ratio: 2 / 1; } }
 .mapa-google iframe {
   position: absolute;
   inset: 0;
@@ -783,6 +790,8 @@ figure img, figure video {
    (a tres nunca: "Vinos y Licores San Manuel" no cabía en un renglón junto a su
    enlace y dejaba un escalón en toda esa fila). */
 @media (min-width: 620px) and (max-width: 899px) { .puntos-lista { grid-template-columns: 1fr 1fr; } }
+.puntos-caja-ancha .puntos-lista { grid-template-columns: 1fr; }
+@media (min-width: 620px) { .puntos-caja-ancha .puntos-lista { grid-template-columns: 1fr 1fr; } }
 
 .puntos-lista a {
   display: flex;
@@ -798,6 +807,9 @@ figure img, figure video {
 @media (min-width: 620px) and (max-width: 899px) {
   /* Con dos columnas, cada una cierra con su propio filete, no solo la última. */
   .puntos-lista li:nth-last-child(-n+2) a { border-bottom: 1px solid var(--marco); }
+}
+@media (min-width: 620px) {
+  .puntos-caja-ancha .puntos-lista li:nth-last-child(-n+2) a { border-bottom: 1px solid var(--marco); }
 }
 
 

@@ -324,12 +324,31 @@ nombres y `pypdf` saca de cada página la anotación `/URI` con su enlace de Goo
   poner la colonia de unos sí y de otros no se lee como error, igual que pasó con "de agua"
   en las tarjetas de sabor. Ni Nominatim ni el HTML de Maps sirven: Puebla no tiene las
   colonias mapeadas en OpenStreetMap y Google bloquea la lectura directa.
-### El mapa va dibujado
+### El mapa: primero el de Google, y el dibujado de respaldo
 
-**No hay Google Maps incrustado.** Pide llave de API, pesa y se ve igual que el de cualquier
-otro sitio; en un sitio donde las quince etiquetas van dibujadas a mano, desentonaba. En su
-lugar, `Mapa.jsx` dibuja **las calles de verdad reducidas a líneas**, con los dieciocho puntos
-encima. El nombre no se rotula sobre el dibujo: vive en la lista de al lado.
+**Manda el de Google.** El 2026-09-06 Zahir pidió cambiarlo: *"creo que sería más rápido y más
+sencillo para los clientes"*, porque la gente ya sabe usar Google Maps, puede navegar desde
+ahí y él edita las tiendas sin tocar código. Se creó un **Google My Maps** importando un CSV
+con los doce puntos y sus coordenadas —así no hubo que poner pin por pin— y su dirección vive
+en `mapaGoogle` (negocio.js). Si ese campo se vacía, el sitio vuelve solo al mapa dibujado.
+
+- 🔴 **Google entrega la dirección con `/u/1/`**, que es la segunda cuenta de quien lo creó, y
+  así **redirige (302) a quien no tenga esa sesión**. Hay que quitarlo: sin `/u/1/` responde
+  200 y se ve sin iniciar sesión. Comprobado con curl.
+- `ehbc` pinta la barra del mapa. Va la **tinta** de la marca (`2B181D`), la misma del pie. No
+  un color claro: Google escribe su texto en claro encima y con el crema no se leía.
+- Con el de Google la sección cambia de acomodo (`.puntos-caja-ancha`): **mapa a lo ancho
+  arriba y lista debajo en dos columnas**. Un mapa de Google en columna angosta y vertical se
+  lee apretado. El dibujado sí va al lado, porque es vertical de origen.
+- **Google resuelve de paso lo de las colonias**: su mapa ya las rotula. El campo `colonia` de
+  `puntosDeVenta` solo hace falta si algún día se quieren también en la lista de texto.
+
+### El mapa dibujado (respaldo)
+
+`Mapa.jsx` dibuja **las calles de verdad reducidas a líneas**, con los puntos encima. El
+nombre no se rotula sobre el dibujo: vive en la lista de al lado. Se hizo porque un Google
+Maps incrustado pide llave de API, pesa y se ve igual que el de cualquier otro sitio; sigue
+sirviendo si algún día se quiere volver a él.
 
 **De dónde salen las calles.** De OpenStreetMap, con la API de Overpass, el recuadro
 `(18.968, -98.252, 19.068, -98.166)` y las vías `motorway|trunk|primary|secondary`. Vienen

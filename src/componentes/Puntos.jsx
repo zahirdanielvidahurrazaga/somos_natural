@@ -30,7 +30,7 @@ export default function Puntos() {
           </p>
         </div>
 
-        <div className="puntos-caja">
+        <div className={mapaGoogle ? 'puntos-caja puntos-caja-ancha' : 'puntos-caja'}>
           {mapaGoogle ? (
             // El de Google gana cuando existe: la gente ya sabe usarlo y puede
             // navegar desde ahí. El dibujado queda de respaldo, no de adorno.

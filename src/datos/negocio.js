@@ -175,9 +175,16 @@ export const eventos = [
 // gente ya sabe usar Google Maps y puede navegar desde ahí.
 //
 // Va SOLO la parte del `src` del iframe que Google entrega en "Insertar en mi
-// sitio web": algo como https://www.google.com/maps/d/embed?mid=XXXX
-// Si se deja vacío, el sitio dibuja su propio mapa (src/datos/mapa.js).
-export const mapaGoogle = ''
+// sitio web". Si se deja vacío, el sitio dibuja su propio mapa (datos/mapa.js).
+//
+// 🔴 Google entrega la dirección con `/u/1/` —la segunda cuenta de quien lo
+// creó— y así **redirige (302) a quien no tiene esa sesión**. Se le quita: sin
+// `/u/1/` responde 200 y se ve sin iniciar sesión. Comprobado con curl.
+// `ehbc` es el color de la barra del mapa. Va la TINTA de la marca (#2B181D),
+// la misma del pie. No un color claro: Google escribe su texto en claro encima
+// y con el crema no se leía.
+export const mapaGoogle =
+  'https://www.google.com/maps/d/embed?mid=1GMoR6_5cunknwX-zmbkdqFlKUs6uYks&ehbc=2B181D&noprof=1'
 
 // ── Puntos de venta ──────────────────────────────────────────────────────────
 // Salen del PDF "Puntos de venta" que el negocio comparte en su historia
