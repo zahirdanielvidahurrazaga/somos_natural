@@ -384,6 +384,21 @@ en `mapaGoogle` (negocio.js). Si ese campo se vacía, el sitio vuelve solo al ma
 > extensión de Chrome**: esa tabla se abre en una ventana aparte que no entra en el grupo de
 > pestañas, y no hay URL directa (`/maps/d/u/1/datatable?mid=…` da 404).
 >
+> 🔴 **En el mapa INCRUSTADO la ficha se comporta peor que en el visor completo**
+> (2026-09-06): se abre como un panel que **tapa la mitad del mapa**, lista la columna
+> `nombre` con su encabezado y **no trae el botón de direcciones**. Es decir, desde el sitio
+> no hay forma de arrancar la navegación tocando un pin.
+>
+> La salida es meter el enlace nosotros: el KML lleva en cada `<description>` un
+> `<a href="https://www.google.com/maps/dir/?api=1&destination=LAT,LON">Cómo llegar</a>`
+> dentro de CDATA. Así la ficha del embed muestra el nombre y un enlace que abre la
+> navegación. El archivo ya está generado en el Escritorio.
+>
+> ⚠️ **Subir ese archivo NO se puede desde la extensión de Chrome.** El importador de My Maps
+> abre el selector de archivos de Google (un componente aislado del resto de la página), y ahí
+> no hay ningún `input type="file"` que se pueda alcanzar. Lo mismo pasó con el icono
+> personalizado, que sí se pudo solo porque acepta una URL en vez de un archivo.
+
 > ⚠️ **El visor público tarda en reflejar el borrado de una capa.** Justo después de eliminar
 > la vieja, `/maps/d/viewer` seguía enseñando las dos; el editor ya tenía una sola. Es caché:
 > no hay que volver a borrar nada.
