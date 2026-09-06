@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { puntosDeVenta, minimo, mapaGoogle } from '../datos/negocio'
+import { puntosDeVenta, minimo, mapaGoogle, mapaGoogleVer } from '../datos/negocio'
 import Mapa from './Mapa'
 
 // Dónde comprar una sola botella, sin llegar al mínimo del pedido por WhatsApp.
@@ -34,13 +34,25 @@ export default function Puntos() {
           {mapaGoogle ? (
             // El de Google gana cuando existe: la gente ya sabe usarlo y puede
             // navegar desde ahí. El dibujado queda de respaldo, no de adorno.
-            <div className="mapa-google" data-revelar>
-              <iframe
-                src={mapaGoogle}
-                title="Mapa con los puntos de venta de Somos Natural"
-                loading="lazy"
-                allowFullScreen
-              />
+            <div data-revelar>
+              <div className="mapa-google">
+                <iframe
+                  src={mapaGoogle}
+                  title="Mapa con los puntos de venta de Somos Natural"
+                  loading="lazy"
+                  allowFullScreen
+                />
+              </div>
+              {/* La barra de Google va recortada, así que su botón de pantalla
+                  completa se repone aquí, con la voz del sitio. */}
+              <a
+                className="mapa-abrir caps"
+                href={mapaGoogleVer}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Abrir el mapa completo
+              </a>
             </div>
           ) : (
             <Mapa puntos={puntosDeVenta} activo={activo} onSenalar={setActivo} />

@@ -186,6 +186,11 @@ export const eventos = [
 export const mapaGoogle =
   'https://www.google.com/maps/d/embed?mid=1GMoR6_5cunknwX-zmbkdqFlKUs6uYks&ehbc=2B181D&noprof=1'
 
+// El mismo mapa a pantalla completa, para el enlace de abajo. Reemplaza al
+// botón de pantalla completa que traía la barra recortada.
+export const mapaGoogleVer =
+  'https://www.google.com/maps/d/viewer?mid=1GMoR6_5cunknwX-zmbkdqFlKUs6uYks'
+
 // ── Puntos de venta ──────────────────────────────────────────────────────────
 // Salen del PDF "Puntos de venta" que el negocio comparte en su historia
 // destacada de Instagram (📍Donde comprar). Revisado el 2026-09-06; el PDF es

@@ -353,6 +353,7 @@ en `mapaGoogle` (negocio.js). Si ese campo se vacía, el sitio vuelve solo al ma
 | Icono | **El sello de la marca**, apuntando a `somos-natural.pages.dev/img/logo.png` |
 | Vista | Guardada centrada en los doce puntos |
 | Mapa base | El **normal**. Se probó el claro y pierde las calles, que son la referencia |
+| Barra negra | **Recortada** en el sitio (no en My Maps): a Zahir no le pegaba con el diseño |
 
 > 🔴 **El icono depende de que el logo siga publicado en esa dirección.** Si se renombra o se
 > borra `public/img/logo.png`, los pines se quedan sin icono.
@@ -363,7 +364,24 @@ en `mapaGoogle` (negocio.js). Si ese campo se vacía, el sitio vuelve solo al ma
 > `somos-natural-puntos-de-venta.csv`).
 >
 > Queda sin hacer: la ficha que sale al tocar un pin muestra **Latitud y Longitud**, que al
-> cliente no le sirven. Se limpian borrando esas columnas en "Abrir tabla de datos".
+> cliente no le sirven. Se limpian borrando esas columnas en "Abrir tabla de datos" del menú
+> de la capa. **No se puede hacer desde la extensión de Chrome**: esa tabla se abre en una
+> ventana emergente aparte que no entra en el grupo de pestañas.
+
+### La barra negra del embed va recortada
+
+El iframe de My Maps trae una barra negra arriba con el título, el aviso "Este mapa se hizo
+con Google My Maps" y los botones de compartir y pantalla completa. **No pega con el sitio y
+no hay parámetro para quitarla**, así que se recorta: la caja `.mapa-google` lleva `overflow:
+hidden` y el iframe se sube 60 px siendo 60 px más alto (`--barra`). No se tapa con nada
+encima, se recorta de verdad.
+
+- **La atribución de Google se conserva**, que es lo que sus términos exigen: su logo, "Datos
+  del mapa ©INEGI" y el enlace a Condiciones viven DENTRO del área del mapa, abajo, y no se
+  tocan. Lo recortado es el título (que ya lo dice la cabeza de la sección) y sus dos botones.
+- El de pantalla completa se repone con el enlace **"Abrir el mapa completo"** debajo del
+  mapa, que apunta a `mapaGoogleVer` y lo abre en Google Maps.
+- Si algún día Google cambia el alto de esa barra, se ajusta `--barra`.
 
 ### El mapa dibujado (respaldo)
 

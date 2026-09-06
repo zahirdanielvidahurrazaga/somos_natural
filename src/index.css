@@ -721,16 +721,39 @@ figure img, figure video {
   .puntos-caja-ancha { grid-template-columns: 1fr; }
 }
 
-.mapa-google { position: relative; aspect-ratio: 4 / 3; }
+/* La barra negra de Google va RECORTADA: no pega con el sitio y su título ya lo
+   dice la cabeza de la sección. Se recorta desplazando el iframe hacia arriba
+   dentro de una caja con overflow, no tapándolo con algo encima.
+   Lo que Google pide que se vea sigue viéndose: su logo, "Datos del mapa" y el
+   enlace a Condiciones viven DENTRO del mapa, abajo, y no se tocan. Lo que se
+   pierde son sus botones de compartir y pantalla completa; el segundo se repone
+   con el enlace de abajo. */
+.mapa-google {
+  --barra: 60px;
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid var(--marco-firme);
+}
 @media (min-width: 700px)  { .mapa-google { aspect-ratio: 16 / 9; } }
 @media (min-width: 1000px) { .mapa-google { aspect-ratio: 2 / 1; } }
 .mapa-google iframe {
   position: absolute;
-  inset: 0;
+  top: calc(-1 * var(--barra));
+  left: 0;
   width: 100%;
-  height: 100%;
-  border: 1px solid var(--marco-firme);
+  height: calc(100% + var(--barra));
+  border: 0;
 }
+
+.mapa-abrir {
+  display: inline-block;
+  margin-top: 0.9rem;
+  color: var(--vino);
+  border-bottom: 1px solid currentColor;
+  transition: color .2s ease;
+}
+.mapa-abrir:hover { color: var(--vino-hondo); }
 
 .mapa { margin: 0; }
 /* La lista es casi el doble de alta que el mapa; sin esto quedaba un hueco
