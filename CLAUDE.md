@@ -426,21 +426,25 @@ mismo elemento se pisarían, porque las dos usan `transform`.
 React 19 + Vite 6, sin router (una sola página con anclas) y sin dependencias de más.
 `public/_redirects` ya trae el fallback de SPA para **Cloudflare Pages**, que es a donde va.
 
-**No hay proyecto de Cloudflare para este negocio todavía.** El ERP nunca llegó a
-desplegarse (el `DESPLEGAR-NATURAL.txt` del Escritorio siguen siendo instrucciones
-pendientes), así que este sitio sería el primero, en la cuenta de Cloudflare de siempre.
+**Repo en GitHub desde el 2026-09-06:** `zahirdanielvidahurrazaga/somos_natural` (privado),
+remoto `origin`, rama `main`. Lo creó Zahir; el primer push llevó 14 commits.
 
-**El repo es SOLO LOCAL: no tiene remoto en GitHub.** Por eso el despliegue va por **carga
-directa con wrangler**, no por la integración con Git:
+**Despliegue: Cloudflare Pages conectado al repo por Git** (proyecto `somos-natural`,
+dirección `somos-natural.pages.dev`), configurado por Zahir el 2026-09-06. Cada push a `main`
+reconstruye el sitio. Valores del proyecto: rama de producción `main`, build `npm run build`,
+salida `dist`, sin variables de entorno. Es el primer proyecto de este negocio en Cloudflare
+(el ERP nunca se desplegó).
+
+> Al crear el proyecto, el menú "Production branch" salía vacío ("No labels found") porque el
+> repo aún no tenía ramas. Se resolvió con el primer push.
+
+Si algún día hace falta subir a mano sin pasar por Git:
 
 ```
-npx wrangler login                                   # abre el navegador, lo corre Zahir
+npx wrangler login
 npm run build
 npx wrangler pages deploy dist --project-name=somos-natural
 ```
-
-Si más adelante se quiere que se publique solo en cada push, hay que crear el repo en GitHub
-y conectarlo desde el panel de Cloudflare (comando `npm run build`, salida `dist`).
 
 **Dos cosas que hay que deshacer el día del lanzamiento real:**
 
@@ -460,7 +464,6 @@ Regla del usuario: se trabaja en local y se despliega cuando él lo aprueba.
 - Cuadrar el catálogo del menú contra el del ERP.
 - Confirmar si los otros dos teléfonos del menú siguen vivos.
 - Definir con cuánta anticipación se aparta una fecha de evento.
-- Desplegar en Cloudflare Pages.
 - **Revisar en teléfono la pila de la portada y los estantes** (2026-09-05): son nuevos y
   nunca se han visto en pantalla chica.
 
