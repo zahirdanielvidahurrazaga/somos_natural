@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { puntosDeVenta, minimo } from '../datos/negocio'
+import { puntosDeVenta, minimo, mapaGoogle } from '../datos/negocio'
 import Mapa from './Mapa'
 
 // Dónde comprar una sola botella, sin llegar al mínimo del pedido por WhatsApp.
@@ -31,7 +31,20 @@ export default function Puntos() {
         </div>
 
         <div className="puntos-caja">
-          <Mapa puntos={puntosDeVenta} activo={activo} onSenalar={setActivo} />
+          {mapaGoogle ? (
+            // El de Google gana cuando existe: la gente ya sabe usarlo y puede
+            // navegar desde ahí. El dibujado queda de respaldo, no de adorno.
+            <div className="mapa-google" data-revelar>
+              <iframe
+                src={mapaGoogle}
+                title="Mapa con los puntos de venta de Somos Natural"
+                loading="lazy"
+                allowFullScreen
+              />
+            </div>
+          ) : (
+            <Mapa puntos={puntosDeVenta} activo={activo} onSenalar={setActivo} />
+          )}
 
           {/* El apagado va en la lista entera, no en cada renglón: al saltar de uno
               a otro el `mouseleave` del anterior no siempre llega, y se quedaban

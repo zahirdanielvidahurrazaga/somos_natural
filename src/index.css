@@ -713,6 +713,18 @@ figure img, figure video {
   .puntos-caja { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 4rem); align-items: start; }
 }
 
+.mapa-google { position: relative; aspect-ratio: 0.72; }
+@media (min-width: 900px) {
+  .mapa-google { position: sticky; top: calc(76px + var(--hueco2)); }
+}
+.mapa-google iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--marco-firme);
+}
+
 .mapa { margin: 0; }
 /* La lista es casi el doble de alta que el mapa; sin esto quedaba un hueco
    enorme a su lado. Pegado, el mapa acompaña la lectura y se ve cómo se

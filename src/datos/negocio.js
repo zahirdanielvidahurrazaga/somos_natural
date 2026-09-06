@@ -170,6 +170,15 @@ export const eventos = [
   { titulo: 'Llegan frías ese día',    texto: 'Se hacen para tu evento, no salen de una bodega. Te las entregamos el día que quedamos.' },
 ]
 
+// Mapa de Google (My Maps) con los puntos marcados. En cuanto tenga la dirección
+// del mapa incrustado, el sitio la usa en lugar del mapa dibujado, porque la
+// gente ya sabe usar Google Maps y puede navegar desde ahí.
+//
+// Va SOLO la parte del `src` del iframe que Google entrega en "Insertar en mi
+// sitio web": algo como https://www.google.com/maps/d/embed?mid=XXXX
+// Si se deja vacío, el sitio dibuja su propio mapa (src/datos/mapa.js).
+export const mapaGoogle = ''
+
 // ── Puntos de venta ──────────────────────────────────────────────────────────
 // Salen del PDF "Puntos de venta" que el negocio comparte en su historia
 // destacada de Instagram (📍Donde comprar). Revisado el 2026-09-06; el PDF es
