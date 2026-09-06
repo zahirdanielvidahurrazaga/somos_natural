@@ -14,6 +14,10 @@ export default function Puntos() {
 
   if (puntosDeVenta.length === 0) return null
 
+  // Todas o ninguna: con la colonia de unas sí y de otras no, los renglones
+  // sin ella se leen como un dato que falta por descuido.
+  const hayColonias = puntosDeVenta.every((p) => p.colonia)
+
   return (
     <section className="seccion" id="puntos">
       <div className="marco">
@@ -43,7 +47,10 @@ export default function Puntos() {
                   onFocus={() => setActivo(p.nombre)}
                   onBlur={() => setActivo(null)}
                 >
-                  <span className="punto-nombre">{p.nombre}</span>
+                  <span className="punto-nombre">
+                    {p.nombre}
+                    {hayColonias && <span className="punto-colonia">{p.colonia}</span>}
+                  </span>
                   <span className="punto-mapa caps">Ver en el mapa</span>
                 </a>
               </li>

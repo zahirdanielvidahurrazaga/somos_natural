@@ -349,11 +349,23 @@ relativos en enteros. **De 46 KB a 8 KB**, 314 recorridos. Todo vive ya resuelto
   largo de su tramo y gana el que quede más lejos de los otros rótulos, de los puntos de venta
   y de los bordes. Con el punto medio, "Juan Pablo II" se cruzaba encima de "Héroes del 5 de
   Mayo" y Valsequillo salía cortado por abajo.
-- 🟡 **Las colonias NO están, y no por descuido.** OpenStreetMap solo tiene tres colonias en
-  toda esta zona de Puebla (Centro Histórico, La Luz y Analco) y las tres caen fuera del
-  encuadre; Google devuelve la colonia en tres de los diecinueve puntos; Nominatim no conoce
-  ninguna. **La única forma de tenerlas es que la familia las dicte.** Ayudarían más que las
-  calles: la gente dice "vivo en San Manuel", no "vivo en la 24 Sur".
+- 🟡 **Las colonias NO están todavía, y no por descuido.** Ayudarían más que las calles —la
+  gente dice "vivo en San Manuel", no "vivo en la 24 Sur"— pero no se pueden sacar solas:
+  - Con `place=neighbourhood|suburb|quarter`, OpenStreetMap devuelve **tres** en toda la zona
+    y las tres caen fuera del encuadre.
+  - Ampliando a `landuse=residential`, `place=*` de cualquier tipo y límites administrativos
+    de nivel 9-11, salen **trece** dentro del encuadre, **pero casi todas en la mitad sur**,
+    donde casi no hay puntos de venta. Tras descartar las que chocan con un punto o con un
+    nombre de avenida, **sobreviven dos**. Dos colonias sueltas se ven peor que ninguna.
+  - Las colonias de la zona donde SÍ están los puntos —Jardines de San Manuel, Bugambilias,
+    El Patrimonio, Infonavit La Margarita— **existen en Google Maps y no en OpenStreetMap**.
+  - Google devuelve la colonia en tres de los diecinueve puntos; Nominatim, en ninguno.
+
+  **Así que las dicta la familia.** `puntosDeVenta` ya trae el campo `colonia`, con las tres
+  que se pudieron verificar (La Hacienda, Arboledas de Loma Bella, 22 de Septiembre) y nueve
+  vacías. `Puntos.jsx` las enseña **solo cuando las doce están llenas** (`hayColonias`):
+  mostrar la colonia de unas sí y de otras no se lee como un error, igual que pasó con "de
+  agua" en las tarjetas de sabor.
 - **La atribución a OpenStreetMap es obligatoria** (ODbL) y va en el pie del mapa.
 - 🔴 **Nunca `overflow: visible` en el SVG del mapa.** El archivo trae calles fuera del
   encuadre; con overflow visible se salían del marco por la izquierda y se dibujaban encima

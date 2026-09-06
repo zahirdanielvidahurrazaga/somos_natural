@@ -790,6 +790,12 @@ figure img, figure video {
 
 
 .punto-nombre { font-size: var(--t2); }
+.punto-colonia {
+  display: block;
+  font-size: var(--t3);
+  color: var(--suave);
+  margin-top: 0.15rem;
+}
 .punto-mapa {
   color: var(--suave);
   flex-shrink: 0;

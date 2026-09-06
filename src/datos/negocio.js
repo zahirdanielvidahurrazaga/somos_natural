@@ -184,23 +184,30 @@ export const eventos = [
 // "super" y su enlace apunta a un punto del mapa sin ficha de negocio. Se deja
 // fuera hasta saber su nombre.
 //
+// `colonia` está VACÍA en nueve de los doce y el sitio no la enseña hasta que
+// estén las doce: mostrar la colonia de unas sí y de otras no se lee como un
+// error, igual que pasó con "de agua" en las tarjetas de sabor. Las tres que
+// hay salieron de la dirección completa que devolvió Google; las otras nueve
+// las tiene que dictar la familia, porque OpenStreetMap no mapea las colonias
+// de esta zona de Puebla (ver CLAUDE.md).
+//
 // BAJAS del 2026-09-06, dichas por Zahir: Colegio Miguel Hidalgo, Miscelánea
 // Nachito, Miscelánea de la 10, Minisuper Ricky's y Miscelánea Never ya no las
 // venden. Y "Super Sanm" era el mismo local que Miscelánea Tity —compartían
 // coordenadas exactas—, así que se quedó solo Tity.
 export const puntosDeVenta = [
-  { nombre: 'Super La Hacienda',          mapa: 'https://maps.app.goo.gl/tiQj7iBJUtnRdpGk8' },
-  { nombre: 'Mini Super San Manuel',      mapa: 'https://maps.app.goo.gl/Ubiak52zsApYK6neA' },
-  { nombre: 'Abarrotes Andy SM',          mapa: 'https://maps.app.goo.gl/uvCcZXFtYnWA8vuQ8' },
-  { nombre: 'El Super Poblano',           mapa: 'https://maps.app.goo.gl/xmR5Ms2zhBUMhc32A' },
-  { nombre: 'Vinos y Licores San Manuel', mapa: 'https://maps.app.goo.gl/xhi1oYvYaBPBtFmK7' },
-  { nombre: 'Cocina Mateo',               mapa: 'https://maps.app.goo.gl/HVBPuYGYHtqmPfme7' },
-  { nombre: 'Tortas Máximo',              mapa: 'https://maps.app.goo.gl/GZ3gyYKrdEpCY59D9' },
-  { nombre: 'Vinos y Licores Caribe',     mapa: 'https://maps.app.goo.gl/5pwLrjzxMvd1opzJ9' },
-  { nombre: 'Miscelánea Tity',            mapa: 'https://maps.app.goo.gl/EvEzCgpk27QegR6z5' },
-  { nombre: 'Super Pablito',              mapa: 'https://maps.app.goo.gl/YYZh1gJU1h84TToc8' },
-  { nombre: 'Súper Milenio',              mapa: 'https://maps.app.goo.gl/vEsacbhXf9FGrCgM9' },
-  { nombre: 'El Perro Mago Hot Dogs',     mapa: 'https://maps.app.goo.gl/Y6SkHP6cSpZWuzLj6' },
+  { nombre: 'Super La Hacienda',          mapa: 'https://maps.app.goo.gl/tiQj7iBJUtnRdpGk8' , colonia: 'La Hacienda' },
+  { nombre: 'Mini Super San Manuel',      mapa: 'https://maps.app.goo.gl/Ubiak52zsApYK6neA' , colonia: '' },
+  { nombre: 'Abarrotes Andy SM',          mapa: 'https://maps.app.goo.gl/uvCcZXFtYnWA8vuQ8' , colonia: '' },
+  { nombre: 'El Super Poblano',           mapa: 'https://maps.app.goo.gl/xmR5Ms2zhBUMhc32A' , colonia: '' },
+  { nombre: 'Vinos y Licores San Manuel', mapa: 'https://maps.app.goo.gl/xhi1oYvYaBPBtFmK7' , colonia: '' },
+  { nombre: 'Cocina Mateo',               mapa: 'https://maps.app.goo.gl/HVBPuYGYHtqmPfme7' , colonia: 'Arboledas de Loma Bella' },
+  { nombre: 'Tortas Máximo',              mapa: 'https://maps.app.goo.gl/GZ3gyYKrdEpCY59D9' , colonia: '22 de Septiembre' },
+  { nombre: 'Vinos y Licores Caribe',     mapa: 'https://maps.app.goo.gl/5pwLrjzxMvd1opzJ9' , colonia: '' },
+  { nombre: 'Miscelánea Tity',            mapa: 'https://maps.app.goo.gl/EvEzCgpk27QegR6z5' , colonia: '' },
+  { nombre: 'Super Pablito',              mapa: 'https://maps.app.goo.gl/YYZh1gJU1h84TToc8' , colonia: '' },
+  { nombre: 'Súper Milenio',              mapa: 'https://maps.app.goo.gl/vEsacbhXf9FGrCgM9' , colonia: '' },
+  { nombre: 'El Perro Mago Hot Dogs',     mapa: 'https://maps.app.goo.gl/Y6SkHP6cSpZWuzLj6' , colonia: '' },
 ]
 
 // ── Fotos ────────────────────────────────────────────────────────────────────
