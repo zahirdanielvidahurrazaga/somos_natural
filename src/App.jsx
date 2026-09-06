@@ -5,6 +5,7 @@ import Tira from './componentes/Tira'
 import Sabores from './componentes/Sabores'
 import Proceso from './componentes/Proceso'
 import Formacion from './componentes/Formacion'
+import Puntos from './componentes/Puntos'
 import Negocios from './componentes/Negocios'
 import Eventos from './componentes/Eventos'
 import Pedido from './componentes/Pedido'
@@ -23,6 +24,7 @@ export default function App() {
         <Sabores />
         <Proceso />
         <Formacion />
+        <Puntos />
         <Negocios />
         <Eventos />
         <Pedido />

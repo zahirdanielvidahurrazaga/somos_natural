@@ -697,6 +697,50 @@ figure img, figure video {
 }
 .grupo-cabeza span { font-size: var(--t3); font-weight: 400; color: var(--suave); }
 
+/* ── Puntos de venta ─────────────────────────────────────────────────────── */
+/* Una lista de nombres con su enlace, no un mapa incrustado: el mapa pesa, pide
+   llave de API y se ve genérico. Cada renglón es un filete, como el pie de una
+   etiqueta. */
+
+.puntos-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0 clamp(1.5rem, 4vw, 3.5rem);
+}
+/* Dos columnas, no tres: a tres, "Vinos y Licores San Manuel" no cabía en un
+   renglón junto a su enlace, se partía en dos líneas y dejaba un escalón en
+   toda esa fila. */
+@media (min-width: 620px) { .puntos-lista { grid-template-columns: 1fr 1fr; } }
+
+.puntos-lista a {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.3rem 1rem;
+  padding: 0.95rem 0;
+  border-top: 1px solid var(--marco);
+  transition: color .2s ease, border-color .2s ease;
+}
+.puntos-lista li:last-child a { border-bottom: 1px solid var(--marco); }
+@media (min-width: 620px) {
+  /* Cada columna cierra con su propio filete abajo, no solo la última de todas. */
+  .puntos-lista li:nth-last-child(-n+2) a { border-bottom: 1px solid var(--marco); }
+}
+
+
+.punto-nombre { font-size: var(--t2); }
+.punto-mapa {
+  color: var(--suave);
+  flex-shrink: 0;
+  transition: color .2s ease;
+}
+.puntos-lista a:hover { border-color: var(--marco-firme); color: var(--vino); }
+.puntos-lista a:hover .punto-mapa { color: var(--vino); }
+.puntos-lista a:focus-visible { outline: 2px solid var(--vino); outline-offset: 3px; }
+
 /* ── Tamaños y dulzura ───────────────────────────────────────────────────── */
 
 .opciones {
@@ -855,6 +899,13 @@ figure img, figure video {
 .pedido-envio { margin-top: var(--hueco2); }
 .pedido-envio .boton { width: 100%; }
 .pedido-pie { font-size: var(--t3); font-weight: 400; color: var(--suave); text-align: center; margin-top: 0.8rem; }
+.minimo-salida {
+  font-size: var(--t3);
+  color: var(--suave);
+  text-align: center;
+  margin-top: 0.55rem;
+}
+.minimo-salida a { color: var(--vino); border-bottom: 1px solid currentColor; }
 
 .aviso {
   border: 1px solid var(--marco-firme);

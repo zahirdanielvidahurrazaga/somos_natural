@@ -299,6 +299,72 @@ estaba en el menú.
 > y tiene Melón y Piña apagados por no venderse. **Falta cuadrar los dos catálogos**; si no,
 > el sitio ofrece cosas que el sistema no sabe cobrar.
 
+## Puntos de venta
+
+Sección `Puntos.jsx` (id `puntos`), entre Formación y Tu negocio, agregada el 2026-09-06.
+Responde la pregunta que el sitio no contestaba: **el pedido por WhatsApp pide mínimo 10, así
+que quien quiere una sola no tenía a dónde ir.** El aviso "faltan N para el mínimo" del
+armador ahora enlaza aquí, y el pie también.
+
+**De dónde salen los datos.** Del PDF `Puntos de venta` que el negocio comparte en su historia
+destacada de Instagram **📍Donde comprar** (el botón CLICK del segundo cuadro). Se abre desde
+Instagram con sesión iniciada, se copia el enlace de Drive y se baja el PDF; `pdftotext` da los
+nombres y `pypdf` saca de cada página la anotación `/URI` con su enlace de Google Maps.
+
+- Son **19 en el PDF y 18 en el sitio**: el de la página 6 viene rotulado solo como "super" y
+  su enlace apunta a un punto del mapa sin ficha de negocio. **Falta preguntarle su nombre.**
+- **Super Sanm y Miscelánea Tity comparten coordenadas exactas.** O son el mismo local o uno
+  de los dos enlaces está mal. Falta confirmarlo.
+- **No hay colonias.** Google solo devuelve dirección completa en tres de los diecinueve, y
+  poner la colonia de unos sí y de otros no se lee como error, igual que pasó con "de agua"
+  en las tarjetas de sabor. Ni Nominatim ni el HTML de Maps sirven: Puebla no tiene las
+  colonias mapeadas en OpenStreetMap y Google bloquea la lectura directa.
+- **Sin mapa incrustado**, a propósito: pesa, pide llave de API y se ve genérico.
+- La lista va en **dos columnas**, no tres: a tres, "Vinos y Licores San Manuel" no cabía en
+  un renglón junto a su enlace y dejaba un escalón en toda esa fila.
+- El PDF es de **marzo de 2026**. Conviene confirmar la lista antes de cada temporada.
+
+## Lo que dice su Instagram
+
+Revisadas las cinco historias destacadas el 2026-09-06. Esto es voz del propio negocio y
+**sirve para no inventar nada**; lo que todavía no está en el sitio queda anotado.
+
+**💡 Dudas** — seis preguntas con su respuesta:
+
+| Pregunta | Respuesta |
+|---|---|
+| ¿Son 100% naturales? | Sí, fruta fresca y nada artificial |
+| ¿Puedo pedir para eventos grandes? | Sí, con anticipación |
+| ¿Surtimos a negocios? | Sí, tiendas, cafeterías y más |
+| **¿Cuánto duran?** | **Refrigeradas, de 5 a 7 días** |
+| ¿Tienen opciones sin azúcar? | Sí, sin azúcar y con stevia |
+| ¿Son aptas para toda la familia? | Sí, clásicas y saludables sin azúcar |
+
+> **"De 5 a 7 días refrigeradas" no está en el sitio y debería.** Proceso dice "se echan a
+> perder rápido" sin decir cuánto duran, que es justo lo que el cliente quiere saber.
+> Falta confirmarlo con la familia antes de publicarlo: es una declaración sobre comida.
+
+**🥳 Celebra** — el flujo de eventos tal como ellos lo cuentan: mándanos DM → cotiza tu
+paquete → selecciona tus sabores → **aparta con un anticipo**. Cierra con "escríbenos ya y
+reserva tu fecha".
+
+> **El anticipo tampoco está en el sitio.** Eventos dice "apartas la fecha" y ya. Falta saber
+> de cuánto es y con cuánta anticipación, que era un pendiente viejo.
+
+**🤝 Haz equipo** — el argumento a los negocios: "¿Tienes una tienda, cafetería o negocio?
+Haz equipo con nosotros. Escríbenos por DM para más info". Es lo mismo que dice la sección
+Tu negocio, con otras palabras.
+
+**❤️ Familia Natural** — reposts de clientes reales sosteniendo las botellas, etiquetando
+`@somos_natural_mx`. Uno de ellos dice **"Las mejores aguas de sabores de Puebla"**.
+
+> 🟡 **Aquí SÍ hay testimonios reales.** La regla de "nada inventado" no los prohíbe: prohíbe
+> inventarlos. Si el negocio quiere ponerlos, hay que **pedir permiso a cada persona** antes,
+> porque son cuentas de gente real. Decisión pendiente de Zahir.
+
+> En un repost aparece una botella de **agua de taro**. Confirma que existió, pero **sigue
+> descontinuado**: no darlo de alta.
+
 ## Estructura
 
 ```
@@ -310,6 +376,7 @@ src/
     Motivos.jsx           ← los 14 dibujos de línea, uno por fruta
     Arco.jsx              ← texto curvado, se achica según su largo
     Estante.jsx           ← una fila de sabores que se desliza de lado (flechas solo si desborda)
+    Puntos.jsx            ← dónde comprar una sola botella
     Encabezado.jsx  Portada.jsx  Tira.jsx  Sabores.jsx
     Proceso.jsx     Negocios.jsx Eventos.jsx  Pedido.jsx
     Pie.jsx         Flotante.jsx Iconos.jsx
@@ -465,7 +532,13 @@ Regla del usuario: se trabaja en local y se despliega cuando él lo aprueba.
 - Decidir si alguno de los 7 videos de `~/Downloads/videos-web/` entra al sitio.
 - Cuadrar el catálogo del menú contra el del ERP.
 - Confirmar si los otros dos teléfonos del menú siguen vivos.
-- Definir con cuánta anticipación se aparta una fecha de evento.
+- Definir con cuánta anticipación se aparta una fecha de evento, y **de cuánto es el anticipo**
+  (su Instagram dice que hay uno, pero no dice cuánto).
+- **Confirmar la duración "5 a 7 días refrigeradas"** con la familia y ponerla en Proceso.
+- **Decidir si se usan los testimonios reales** de la destacada Familia Natural, pidiendo
+  permiso a cada persona.
+- **Preguntar el nombre del punto de venta 6** (el que el PDF rotula solo como "super") y si
+  Super Sanm y Miscelánea Tity son el mismo local.
 - **Revisar en teléfono la pila de la portada y los estantes** (2026-09-05): son nuevos y
   nunca se han visto en pantalla chica.
 

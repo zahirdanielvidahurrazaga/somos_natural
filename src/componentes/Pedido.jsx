@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { negocio, sabores, tamanos, dulzura, minimo } from '../datos/negocio'
+import { negocio, sabores, tamanos, dulzura, minimo, puntosDeVenta } from '../datos/negocio'
 import { enlaceWhatsapp } from '../lib/whatsapp'
 
 const VACIO = () => Object.fromEntries(sabores.map((s) => [s.nombre, 0]))
@@ -182,6 +182,14 @@ export default function Pedido() {
             {faltan > 0 && (
               <p className="minimo caps">
                 Faltan {faltan} para el mínimo de {minimo}
+              </p>
+            )}
+
+            {/* Quien no llega al mínimo no se queda sin salida: las tiendas
+                venden por botella. */}
+            {faltan > 0 && puntosDeVenta.length > 0 && (
+              <p className="minimo-salida">
+                ¿Solo quieres una? <a href="#puntos">Mira dónde comprarla</a>.
               </p>
             )}
 

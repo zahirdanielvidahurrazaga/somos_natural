@@ -30,6 +30,7 @@ export default function Pie() {
             <ul>
               <li><a href="#sabores">Sabores</a></li>
               <li><a href="#proceso">Cómo trabajamos</a></li>
+              <li><a href="#puntos">Dónde comprar</a></li>
               <li><a href="#negocios">Tu negocio</a></li>
               <li><a href="#eventos">Eventos</a></li>
               <li><a href="#pedido">Hacer un pedido</a></li>
