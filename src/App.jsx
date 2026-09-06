@@ -24,9 +24,12 @@ export default function App() {
         <Sabores />
         <Proceso />
         <Formacion />
-        <Puntos />
+        {/* Primero los dos caminos por los que el negocio vende —tiendas y
+            eventos—, y después dónde comprar una sola, pegado al armador: el
+            aviso de "faltan N para el mínimo" enlaza justo ahí arriba. */}
         <Negocios />
         <Eventos />
+        <Puntos />
         <Pedido />
       </main>
       <Pie />

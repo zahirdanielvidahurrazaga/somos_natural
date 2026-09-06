@@ -30,6 +30,7 @@ export default function Encabezado() {
           <a href="#proceso">Cómo trabajamos</a>
           <a href="#negocios">Tu negocio</a>
           <a href="#eventos">Eventos</a>
+          <a href="#puntos">Dónde comprar</a>
           <a href="#pedido">Pedir</a>
         </nav>
 

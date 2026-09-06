@@ -524,6 +524,27 @@ Tu negocio, con otras palabras.
 > En un repost aparece una botella de **agua de taro**. Confirma que existió, pero **sigue
 > descontinuado**: no darlo de alta.
 
+## Orden de las secciones
+
+Revisado el 2026-09-06 con criterio de venta. Queda así:
+
+```
+Portada → Tira → Sabores → Proceso → Formación → Tu negocio → Eventos → Dónde comprar → Pedido
+```
+
+- La portada engancha a los tres públicos con sus tres botones; **Sabores** enseña el producto
+  y **Proceso** da el argumento (por qué son distintos). Eso vale para todos.
+- Después van **los dos caminos por los que el negocio cobra**: tiendas y eventos. Tu negocio
+  es el cliente fuerte, así que va primero.
+- **Dónde comprar** se movió detrás de ellos y **justo antes del armador**, porque es la
+  salida para quien no llega al mínimo: el aviso de "faltan N" enlaza ahí mismo.
+
+**"Dónde comprar" entró al menú** el 2026-09-06 (pedido de Zahir). Con eso son seis enlaces
+y ya no caben desde 900 px: la marca y el botón llevan `flex-shrink: 0`, así que el menú los
+empujaba fuera y "Somos Natural" se partía en dos renglones. Se recuperó espacio con hueco
+menor y **versalitas menos abiertas solo por debajo de 1200 px**; de ahí para arriba el menú
+vuelve al espaciado de la marca. El menú aparece desde **980 px**.
+
 ## Estructura
 
 ```
