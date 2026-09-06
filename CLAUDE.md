@@ -391,8 +391,14 @@ en `mapaGoogle` (negocio.js). Si ese campo se vacía, el sitio vuelve solo al ma
 >
 > La salida es meter el enlace nosotros: el KML lleva en cada `<description>` un
 > `<a href="https://www.google.com/maps/dir/?api=1&destination=LAT,LON">Cómo llegar</a>`
-> dentro de CDATA. Así la ficha del embed muestra el nombre y un enlace que abre la
-> navegación. El archivo ya está generado en el Escritorio.
+> dentro de CDATA. **Ya está aplicado**: la ficha muestra el nombre y un enlace que abre la
+> navegación hacia esa tienda.
+>
+> ⚠️ **My Maps NO acepta enlaces con texto propio.** Al importar el KML degrada el `<a>` a
+> texto plano y deja `Cómo llegar (https://…)`, con la dirección a la vista. Y si se escribe
+> el HTML a mano en el editor de la descripción, lo **escapa** y enseña las etiquetas
+> literales, que es peor: se probó el 2026-09-06 y se revirtió. La dirección visible es el
+> precio de que haya enlace; la alternativa es una ficha limpia sin forma de navegar.
 >
 > ⚠️ **Subir ese archivo NO se puede desde la extensión de Chrome.** El importador de My Maps
 > abre el selector de archivos de Google (un componente aislado del resto de la página), y ahí
