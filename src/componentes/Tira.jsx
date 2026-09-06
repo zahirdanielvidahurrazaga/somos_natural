@@ -1,24 +1,25 @@
 import { Fragment } from 'react'
+import { negocio } from '../datos/negocio'
 
-// Los textos que van en TODAS sus etiquetas, corriendo despacio.
-// Van DOS trenes idénticos pegados: cuando el primero sale de cuadro el
-// segundo ya ocupa su lugar, y el ciclo no se nota. El segundo es decorativo,
-// así que se esconde de los lectores de pantalla.
-const FIJOS = ['Sin conservadores', 'Agítese antes de beber', 'Personaliza la dulzura', 'Hechas el mismo día']
+// La línea fija, como el pie de una etiqueta: lo que aplica a TODAS las aguas.
+// Antes corría como marquesina. Se detuvo el 2026-09-06: la marquesina es la
+// firma del "retro de hamburguesería" que está de moda, y el retro de esta
+// marca es el de una etiqueta de imprenta, que no se mueve. "Agítese antes de
+// beber" no va por la misma razón que en las etiquetas del sitio: es una
+// instrucción para quien ya trae la botella en la mano, no para quien pide.
+const FIJOS = ['Sin conservadores', `Reparto en ${negocio.zona}`, 'Personaliza la dulzura', 'Hechas el mismo día']
 
 export default function Tira() {
   return (
     <div className="tira">
-      {[1, 2].map((n) => (
-        <div className="tira-fila caps" key={n} aria-hidden={n === 2 || undefined}>
-          {FIJOS.map((t) => (
-            <Fragment key={t}>
-              <span>{t}</span>
-              <i />
-            </Fragment>
-          ))}
-        </div>
-      ))}
+      <div className="tira-fila caps">
+        {FIJOS.map((t, i) => (
+          <Fragment key={t}>
+            {i > 0 && <i />}
+            <span>{t}</span>
+          </Fragment>
+        ))}
+      </div>
     </div>
   )
 }

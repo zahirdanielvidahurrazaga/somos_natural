@@ -5,18 +5,41 @@ import GotitaSello from './GotitaSello'
 
 const CADA = 3200
 
-export default function Portada() {
-  const [i, setI] = useState(() => Math.max(0, sabores.findIndex((s) => s.nombre === 'Jamaica')))
+// Luminosidad del papel de una etiqueta (0 = negro, 1 = blanco).
+function luz(hex) {
+  const n = parseInt(hex.slice(1), 16)
+  const [r, g, b] = [n >> 16, (n >> 8) & 255, n & 255].map((v) => v / 255)
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
 
-  // La etiqueta de la portada va cambiando de sabor sola: es la forma de
-  // enseñar los 14 sin llenar la primera pantalla de tarjetas.
+// En el orden del menú se juntan tres papeles claros seguidos (tamarindo,
+// limón, café) y la pila se queda sin color. Aquí se intercalan: el más
+// oscuro, el más claro, el siguiente más oscuro… así siempre asoman papeles
+// distintos detrás del de adelante. Sale de los datos: si llega la etiqueta
+// de sandía o cambia un papel, el orden se acomoda solo.
+function intercalarPorPapel(lista) {
+  const porLuz = [...lista].sort((a, b) => luz(a.etiqueta.fondo) - luz(b.etiqueta.fondo))
+  const orden = []
+  while (porLuz.length) {
+    orden.push(porLuz.shift())
+    if (porLuz.length) orden.push(porLuz.pop())
+  }
+  return orden
+}
+
+const PILA = intercalarPorPapel(sabores)
+
+export default function Portada() {
+  const [i, setI] = useState(() => Math.max(0, PILA.findIndex((s) => s.nombre === 'Jamaica')))
+
+  // La pila va rotando sola: la de adelante se va al fondo y asoma la que
+  // sigue. Es la forma de enseñar los 15 sabores sin llenar la primera
+  // pantalla de tarjetas, y de meter color: tres papeles distintos a la vez.
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    const reloj = setInterval(() => setI((n) => (n + 1) % sabores.length), CADA)
+    const reloj = setInterval(() => setI((n) => (n + 1) % PILA.length), CADA)
     return () => clearInterval(reloj)
   }, [])
-
-  const sabor = sabores[i]
 
   return (
     <section className="portada" id="arriba">
@@ -47,12 +70,22 @@ export default function Portada() {
           </div>
         </div>
 
-        <div
-          className="portada-muestra"
-          style={{ '--c': sabor.color }}
-          data-revelar
-        >
-          <Etiqueta sabor={sabor} key={sabor.nombre} />
+        <div className="portada-muestra" data-revelar>
+          {/* Se renderizan las 15 y el CSS enseña solo las de adelante. Así cada
+              etiqueta conserva su nodo cuando cambia de puesto y la transición
+              la lleva de un lugar al otro en vez de aparecer de golpe. */}
+          <div className="pila">
+            {PILA.map((s, k) => (
+              <div
+                className="pila-hoja"
+                data-pos={(k - i + PILA.length) % PILA.length}
+                key={s.nombre}
+                style={{ '--c': s.color }}
+              >
+                <Etiqueta sabor={s} />
+              </div>
+            ))}
+          </div>
           <GotitaSello />
         </div>
       </div>

@@ -27,6 +27,9 @@ negocio eligió de entre sus tres etiquetas.
   Cada sabor trae además **su propio color**, que viaja como `--c`.
 - **Tipografía:** `Yeseva One` (display setentero) **solo en títulos**; `Jost` en todo lo
   demás, casi siempre en versalitas muy espaciadas (`.caps`) como en la etiqueta.
+  **El texto corrido va a peso 400** (2026-09-05): el 300 pasaba contraste pero se veía
+  tímido junto a la tinta vino saturada de la etiqueta. Solo la firma `fina` de melón
+  conserva el 300, porque copia su arte real.
 - **Sin efectos.** Nada de sombras, degradados, resplandores ni bordes redondeados. La
   estructura la dan líneas de 1 px. Se llegó aquí porque la primera versión (morada, con
   animaciones) se sintió sucia.
@@ -57,12 +60,68 @@ etiqueta: { real: true, trazo: 'arco', fondo: '#FAEDE9', tinta: '#9B2247',
 Todo mide en **`cqw`**, así que la misma etiqueta sirve en una tarjeta de 230 px y en la
 portada a 420 px sin tocar nada.
 
+### Retro de etiqueta, no de hamburguesería
+
+Criterio fijado el 2026-09-06 a pedido de Zahir: el sitio debe verse retro **como sus
+etiquetas** —imprenta, papel, una tinta, versalitas espaciadas, filetes, dibujo de línea,
+sello redondo— y **no como la ola actual de "retro de comida rápida"** (marquesinas que
+corren, mascotas rubber-hose por todos lados, calcomanías, letras burbuja, sunbursts,
+mostaza y turquesa). Al agregar algo, preguntar de cuál de los dos lados viene.
+
+De su lado (se queda): Yeseva + Jost en versalitas, crema y vino, líneas de 1 px, las
+etiquetas dibujadas, el sello, el texto en arco del aro, las fotos con lavado cálido, el
+**filete doble** entre secciones (`3px double var(--marco-firme)`, agregado el 2026-09-06).
+
+Del lado de la moda (se quitó o se vigila):
+
+- **La marquesina se detuvo** (2026-09-06). La tira sigue siendo la banda vino con los cuatro
+  textos fijos, pero quieta y centrada, como el pie de una etiqueta. Era la firma más clara
+  del retro de hamburguesería.
+- **La gotita** es del negocio y se queda, pero es rubber-hose de los años 30, que es
+  exactamente lo que usan las hamburgueserías retro. Hoy aparece cuatro veces. **Propuesta
+  pendiente de Zahir:** quitar el caminante (la que cruza brincando entre Sabores y Proceso),
+  que es la aparición más caricaturesca, y dejarla en portada, pedido y pie.
+- La pila de la portada tiene aire de calcomanías, pero a −7°/−1.5°/+5° se lee como
+  etiquetas sobre la mesa y no como *sticker bomb*. No aumentar los ángulos.
+- `Bagel Fat One` (letra burbuja) solo vive en la firma `redonda` de maracuyá, mango, piña y
+  guanábana **porque copia sus etiquetas reales**. No usarla fuera de ahí.
+
+### La portada es una pila
+
+**Tres etiquetas en abanico** (`Portada.jsx` + `.pila`), no una sola. Se llegó aquí el
+2026-09-05 después de dos intentos medidos en el navegador:
+
+- Una sola etiqueta que se desvanecía **flotaba en el aire como calcomanía en una caja**: el
+  mismo problema que ya se había diagnosticado con las fotos.
+- Una **hoja de color** detrás (el `color` del sabor, a sangre hasta el borde derecho) se
+  veía bien con horchata, pero **maracuyá, chocolate, frutos rojos, vainilla, mango y
+  guanábana se fundían con ella** porque su papel ES su color. Descartada.
+
+Cómo funciona:
+
+- Se renderizan **las 15** y el CSS enseña solo tres por `data-pos` (0, 1, 2). Cada etiqueta
+  conserva su nodo al cambiar de puesto, así la transición de `rotate`/`translate` la lleva
+  de un lugar al otro: la de adelante **se va al fondo** y asoma la siguiente. Solo la de
+  adelante dibuja su fruta (`[data-pos='0'] .etq-motivo`).
+- **El orden intercala papeles oscuros y claros** por la luminosidad de `etiqueta.fondo`
+  (`intercalarPorPapel`): en el orden del menú se juntaban tamarindo, limón y café, tres
+  cremas seguidas, y la pila se quedaba sin color. Sale de los datos: si cambia un papel o
+  llega la sandía, se acomoda solo.
+- La pila mide **112 % de su celda** a partir de 940 px y se derrama hacia el hueco y fuera
+  del marco. Lo que integra una pieza es la escala, no la caja. La columna se quedó en
+  `1.1fr 0.9fr`: con `1fr 1fr` el tercer botón de la portada se caía a otra línea.
+- La gotita con su aro va con `z-index: 4`, encima de la etiqueta de adelante (3).
+
 **Qué NO va en las etiquetas del sitio** (decisiones del negocio, 2026-09-04):
 
 - **"500 ml"** — el sitio vende cuatro tamaños; ponerlo en cada etiqueta contradecía Tamaños.
 - **El teléfono** — ya está en el encabezado, el botón flotante, el armador y el pie. En la
   etiqueta era además lo que chocaba con la firma: quitarlo destrabó el acomodo de todas.
 - **"Agítese antes de beber"** — es una instrucción para quien ya trae la botella en la mano.
+
+**Tampoco se rotula "de agua" en las tarjetas** (2026-09-05): es lo normal y, como no todos
+los sabores traen `tipo`, la mitad lo decía y la otra mitad no, como si fuera un error. Solo
+se rotula lo distinto: "con leche".
 
 **Sí se queda "sin conservadores"**: es argumento de venta y va en todas sus etiquetas de
 verdad. Vive en `.etq-pie` de cada trazo; quitarlo sería borrar esa línea.
@@ -89,8 +148,8 @@ y se borra por donde empezó. El desplazamiento sigue de largo hasta `-1` en vez
   especificidad, así que gana el último. El "sin conservadores" de vainilla se iba al filo de
   abajo porque la regla del sello redondo venía después; se resolvió subiendo la de la
   estampilla a `[data-trazo='sello'][data-sello='rect']`.
-- Las tarjetas piden **mínimo 290 px** (`minmax(290px, 1fr)`, 3 por fila). A 228 px no cabía
-  el texto de las esquinas y se cortaba.
+- Las tarjetas piden **mínimo 290 px** (`clamp(290px, 78vw, 340px)` en el estante). A 228 px
+  no cabía el texto de las esquinas y se cortaba.
 
 Además, **el `color` del sabor es la tinta de su etiqueta**, no el del líquido: la horchata
 es azul marino y el maracuyá olivo, porque eso es lo que se ve en la tarjeta.
@@ -104,6 +163,34 @@ es azul marino y el maracuyá olivo, porque eso es lo que se ve en la tarjeta.
 - **Un toggle que nadie lee no es un toggle.** Se borró `mostrarPrecios` cuando se quitaron
   los precios: dejarlo habría hecho creer que ponerlo en `true` los devolvía.
 
+### Sabores son estantes, no una rejilla
+
+Hasta el 2026-09-05 los 15 sabores iban en una rejilla de 3 por fila: **cinco filas de
+rectángulos iguales, un tercio del sitio**, con filas huérfanas de 2 y de 1. Ahora cada grupo
+es **un estante** (`Estante.jsx` + `.estante`): una fila que se desliza de lado y **sale por
+el borde derecho de la pantalla**. Se ven tres y media; la que asoma invita a deslizar.
+
+- Se saca del `.marco` con el mismo truco que la franja (`margin: 0 calc(50% - 50vw)`) y se
+  le devuelve el margen como `padding` (`--borde`), así la primera tarjeta queda alineada con
+  el resto de la página y `scroll-padding-left` hace que las demás caigan en esa misma línea.
+- **Las flechas solo aparecen si de verdad hay algo escondido** (`ResizeObserver` sobre
+  `scrollWidth > clientWidth`) y solo de 860 px para arriba; en teléfono se desliza con el
+  dedo. La barra de scroll va oculta: la tarjeta que asoma y las flechas son la señal.
+- `overflow: auto hidden` con `padding` arriba y abajo, para que el estante no recorte el
+  levantón de 4 px del hover ni el revelado.
+- ⚠️ **En una pestaña oculta de Chrome el `scrollBy` suave no corre** (no hay cuadros de
+  animación). Si al probar con la extensión parece que la flecha no hace nada, no es el
+  código: se comprobó con `behavior: 'auto'` que mueve exactamente una tarjeta.
+
+### Cabezas editoriales
+
+Las cinco secciones abrían igual —rótulo, título, párrafo, todo en la columna izquierda— y la
+**mitad derecha quedaba vacía**; se leía como plantilla. Desde el 2026-09-05, de 860 px para
+arriba `.cabeza` es una rejilla `7fr 5fr`: **título a la izquierda, entrada a la derecha,
+apoyadas en el mismo piso** (`align-items: end` + `padding-bottom: .25em` en la entrada para
+compensar el descenso del título). La de **Pedido sigue centrada** a propósito (es el cierre)
+y la de **Formación** no es `.cabeza`: va junto a la foto.
+
 ## Movimiento
 
 Se agregó el 2026-09-04 porque el sitio quieto se sentía genérico. **Todo el movimiento
@@ -112,11 +199,14 @@ sale del vocabulario de la marca**; no hay efectos prestados.
 | Qué | Dónde | Por qué es suyo |
 |---|---|---|
 | **La gotita en su aro** | Portada | Su logo YA es un timbre redondo y sus etiquetas ya traen texto en arco: el personaje y el aro son la misma idea |
-| **La etiqueta cambia de sabor** sola cada 3.2 s | Portada | Enseña los 14 sabores sin llenar la primera pantalla de tarjetas |
+| **La pila rota** sola cada 3.2 s | Portada | Tres papeles a la vez; la de adelante se va al fondo. Enseña los 15 sin llenar la primera pantalla de tarjetas |
 | **Las hojas se dibujan** al entrar en pantalla | Cada etiqueta | La línea botánica es de la etiqueta de Jamaica; dibujarla la vuelve gesto |
-| **Tira que corre** | Bajo la portada | Los tres textos fijos de sus etiquetas, como marquesina de época |
 | **Revelado en cascada** | Todo el sitio | Quita lo estático sin agregar adorno |
 | **Calcomanía** (gira y se tiñe al pasar el mouse) | Tarjetas de sabor | Trata cada tarjeta como lo que es: una etiqueta pegada |
+
+La **tira ya no corre** desde el 2026-09-06 (ver "Retro de etiqueta, no de hamburguesería").
+Sigue ahí, pero quieta. "Agítese antes de beber" se quitó el 2026-09-05 por la misma razón
+que de las etiquetas; en su lugar va el reparto en la zona.
 
 Reglas del movimiento:
 
@@ -218,6 +308,7 @@ src/
     Etiqueta.jsx          ← dibuja la etiqueta según la receta del sabor
     Motivos.jsx           ← los 14 dibujos de línea, uno por fruta
     Arco.jsx              ← texto curvado, se achica según su largo
+    Estante.jsx           ← una fila de sabores que se desliza de lado (flechas solo si desborda)
     Encabezado.jsx  Portada.jsx  Tira.jsx  Sabores.jsx
     Proceso.jsx     Negocios.jsx Eventos.jsx  Pedido.jsx
     Pie.jsx         Flotante.jsx Iconos.jsx
@@ -370,6 +461,8 @@ Regla del usuario: se trabaja en local y se despliega cuando él lo aprueba.
 - Confirmar si los otros dos teléfonos del menú siguen vivos.
 - Definir con cuánta anticipación se aparta una fecha de evento.
 - Desplegar en Cloudflare Pages.
+- **Revisar en teléfono la pila de la portada y los estantes** (2026-09-05): son nuevos y
+  nunca se han visto en pantalla chica.
 
 ## Quién prueba
 

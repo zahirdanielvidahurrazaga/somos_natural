@@ -1,4 +1,4 @@
-import { negocio, sabores } from '../datos/negocio'
+import { negocio, sabores, tamanos } from '../datos/negocio'
 import { enlaceWhatsapp } from '../lib/whatsapp'
 
 export default function Pie() {
@@ -49,7 +49,7 @@ export default function Pie() {
 
         <div className="pie-fondo caps">
           <span>© {anio} {negocio.nombre}</span>
-          <span>{sabores.length} sabores · 500 ml · Sin conservadores</span>
+          <span>{sabores.length} sabores · {tamanos.length} tamaños · Sin conservadores</span>
         </div>
       </div>
     </footer>

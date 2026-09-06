@@ -71,7 +71,9 @@ a { color: inherit; text-decoration: none; }
 }
 
 .seccion { padding: var(--hueco4) 0; }
-.seccion + .seccion { border-top: 1px solid var(--marco); }
+/* Filete doble entre secciones, como el borde de una etiqueta impresa. Con el
+   color suave (.15) las dos rayas se pierden; con el firme se leen como una. */
+.seccion + .seccion { border-top: 3px double var(--marco-firme); }
 
 /* Versalitas espaciadas: la voz de la etiqueta */
 .caps {
@@ -92,12 +94,41 @@ a { color: inherit; text-decoration: none; }
   font-size: var(--t1);
   color: var(--suave);
   max-width: 52ch;
-  font-weight: 300;
+  font-weight: 400;
 }
 
 .cabeza { max-width: 56ch; margin-bottom: var(--hueco3); }
 .cabeza h2 { font-size: var(--d2); }
 .cabeza .entrada { margin-top: 1.15rem; }
+
+/* Cabeza editorial: el título a la izquierda y la entrada a la derecha, las
+   dos apoyadas en la misma línea de piso. Antes las cinco secciones abrían
+   igual —rótulo, título, párrafo, todo en la columna izquierda— y la mitad
+   derecha quedaba vacía; se leía como plantilla. La de Pedido sigue centrada
+   a propósito: es el cierre y le toca ser distinta. */
+@media (min-width: 860px) {
+  .cabeza:not(.cabeza-centro) {
+    max-width: none;
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    grid-template-rows: auto auto;
+    column-gap: clamp(2.5rem, 6vw, 6rem);
+    align-items: end;
+  }
+  .cabeza:not(.cabeza-centro) .rotulo  { grid-column: 1; grid-row: 1; }
+  .cabeza:not(.cabeza-centro) h2       { grid-column: 1; grid-row: 2; }
+  .cabeza:not(.cabeza-centro) .entrada {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    align-self: end;
+    margin-top: 0;
+    max-width: none;
+    /* compensa el descenso de la línea de 1.06 del título para que las dos
+       últimas líneas se apoyen en el mismo piso */
+    padding-bottom: .25em;
+  }
+}
+
 .cabeza-centro { margin-left: auto; margin-right: auto; text-align: center; }
 .cabeza-centro .entrada { margin-left: auto; margin-right: auto; }
 
@@ -178,6 +209,9 @@ a { color: inherit; text-decoration: none; }
 .portada-caja { display: grid; gap: var(--hueco3); align-items: center; }
 @media (min-width: 940px) {
   .portada-caja { grid-template-columns: 1.1fr 0.9fr; gap: clamp(2.5rem, 6vw, 5rem); }
+  /* La pila es más ancha que su celda a propósito: se derrama hacia el hueco
+     y hacia fuera del marco. Lo que integra una pieza es la escala, no la caja. */
+  .portada-muestra .pila { width: 112%; }
 }
 
 .portada h1 { font-size: var(--d1); }
@@ -205,7 +239,33 @@ a { color: inherit; text-decoration: none; }
 }
 
 .portada-muestra { display: grid; place-items: center; }
-.portada-muestra .etiqueta { max-width: 420px; }
+
+/* La pila: tres etiquetas en abanico, como recién despegadas del pliego.
+   Se llegó aquí después de probar una sola etiqueta (flotaba en el aire como
+   calcomanía) y una hoja de color detrás (se fundía con los papeles oscuros).
+   Tres papeles distintos a la vez meten color sin depender de ningún fondo. */
+.pila {
+  position: relative;
+  width: 100%;
+  max-width: 470px;
+  aspect-ratio: 1183 / 594;
+  margin: 6% 0;
+}
+.pila-hoja {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  z-index: 0;
+  rotate: 5deg;
+  translate: 6% 7%;
+  transition:
+    rotate .8s cubic-bezier(.2,.8,.3,1),
+    translate .8s cubic-bezier(.2,.8,.3,1),
+    opacity .55s ease;
+}
+.pila-hoja[data-pos='0'] { z-index: 3; opacity: 1; rotate: -1.5deg; translate: 0 0; }
+.pila-hoja[data-pos='1'] { z-index: 2; opacity: 1; rotate: -7deg;   translate: -5% -9%; }
+.pila-hoja[data-pos='2'] { z-index: 1; opacity: 1; }
 
 /* ── La etiqueta ─────────────────────────────────────────────────────────── */
 /* No es una foto del arte: es el arte rehecho con las piezas del sitio. Cada
@@ -395,15 +455,19 @@ a { color: inherit; text-decoration: none; }
 
 /* ── Tira de textos fijos ────────────────────────────────────────────────── */
 
+/* La línea fija: quieta, centrada, como el pie de una etiqueta. */
 .tira {
   background: var(--vino);
   color: var(--crema);
-  padding: 1.05rem 0;
+  padding: 1.05rem clamp(1.15rem, 4vw, 2.25rem);
 }
 .tira-fila {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
-  gap: clamp(1.25rem, 4vw, 3rem);
+  gap: 0.6rem clamp(1.25rem, 4vw, 3rem);
+  text-align: center;
 }
 .tira-fila i {
   width: 4px; height: 4px;
@@ -416,11 +480,47 @@ a { color: inherit; text-decoration: none; }
 
 /* ── Sabores ─────────────────────────────────────────────────────────────── */
 
-.rejilla-sabores {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-  gap: clamp(1.1rem, 2.4vw, 2rem);
+/* El estante: una fila por grupo que se desliza de lado y sale por el borde
+   derecho de la pantalla. Se saca del marco con el mismo truco que la franja
+   (margen negativo de 50% - 50vw) y se le devuelve el margen como padding, así
+   la primera tarjeta queda alineada con el resto de la página y la última
+   puede llegar hasta esa misma línea. */
+.estante {
+  --pad: clamp(1.15rem, 4vw, 2.25rem);
+  --borde: max(var(--pad), calc((100vw - var(--ancho)) / 2 + var(--pad)));
+  display: flex;
+  column-gap: clamp(1.1rem, 2.4vw, 1.75rem);
+  width: 100vw;
+  margin: 0 calc(50% - 50vw);
+  padding: 0.5rem var(--borde) 1rem;
+  overflow: auto hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: var(--borde);
+  scrollbar-width: none;
 }
+.estante::-webkit-scrollbar { display: none; }
+/* Mínimo 290 px: más angosta, el texto de las esquinas de la etiqueta se corta. */
+.estante .sabor {
+  flex: 0 0 clamp(290px, 78vw, 340px);
+  scroll-snap-align: start;
+}
+
+.flechas { display: none; margin-left: auto; gap: 0.45rem; }
+@media (min-width: 860px) { .flechas { display: flex; } }
+.flechas button {
+  width: 2.35rem;
+  height: 2.35rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--marco-firme);
+  background: none;
+  color: var(--tinta);
+  cursor: pointer;
+  transition: background .18s ease, color .18s ease;
+}
+.flechas button:hover { background: var(--tinta); color: var(--crema); }
+.flechas button:focus-visible { outline: 2px solid var(--vino); outline-offset: 2px; }
 
 .sabor .etiqueta { transition: transform .3s cubic-bezier(.2,.8,.3,1); }
 .sabor:hover .etiqueta { transform: translateY(-4px); }
@@ -430,7 +530,7 @@ a { color: inherit; text-decoration: none; }
 .sabor-tipo { display: inline-block; color: var(--c); margin-top: 0.4rem; }
 .sabor-ingredientes {
   font-size: var(--t3);
-  font-weight: 300;
+  font-weight: 400;
   color: var(--suave);
   margin-top: 0.5rem;
 }
@@ -452,7 +552,7 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: 0.9rem;
 }
 .paso h3 { font-size: 1.12rem; margin-bottom: 0.45rem; }
-.paso p  { font-size: var(--t2); font-weight: 300; color: var(--suave); }
+.paso p  { font-size: var(--t2); font-weight: 400; color: var(--suave); }
 
 /* ── Franjas ─────────────────────────────────────────────────────────────── */
 
@@ -476,7 +576,7 @@ a { color: inherit; text-decoration: none; }
 .punto { padding: 1.35rem 0; border-top: 1px solid var(--marco); }
 .franja-honda .punto { border-top-color: rgba(250,237,233,.22); }
 .punto h3 { font-size: 1.1rem; margin-bottom: 0.4rem; }
-.punto p  { font-size: var(--t2); font-weight: 300; color: var(--suave); }
+.punto p  { font-size: var(--t2); font-weight: 400; color: var(--suave); }
 .franja-honda .punto p { color: rgba(250,237,233,.68); }
 
 
@@ -555,7 +655,6 @@ figure img, figure video {
 }
 .retrato h2 { font-size: var(--d2); }
 .retrato .entrada { margin-top: 1.15rem; }
-.retrato .portada-fija { margin-top: var(--hueco2); }
 
 @media (min-width: 860px) {
   .retrato {
@@ -576,7 +675,7 @@ figure img, figure video {
 
 /* ── Grupos de sabores ───────────────────────────────────────────────────── */
 
-.grupo + .grupo { margin-top: var(--hueco4); }
+.grupo + .grupo { margin-top: var(--hueco3); }
 
 .grupo-cabeza {
   display: flex;
@@ -592,7 +691,7 @@ figure img, figure video {
   font-weight: 500;
   color: var(--vino);
 }
-.grupo-cabeza span { font-size: var(--t3); font-weight: 300; color: var(--suave); }
+.grupo-cabeza span { font-size: var(--t3); font-weight: 400; color: var(--suave); }
 
 /* ── Tamaños y dulzura ───────────────────────────────────────────────────── */
 
@@ -614,7 +713,7 @@ figure img, figure video {
 .opciones ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.55rem; }
 .opciones li { font-size: var(--t2); padding-bottom: 0.55rem; border-bottom: 1px solid var(--marco); }
 .opciones li span { color: var(--suave); }
-.opciones-pie { font-size: var(--t3); font-weight: 300; color: var(--suave); margin-top: 0.9rem; }
+.opciones-pie { font-size: var(--t3); font-weight: 400; color: var(--suave); margin-top: 0.9rem; }
 
 /* ── Fichas de elección ──────────────────────────────────────────────────── */
 
@@ -751,14 +850,14 @@ figure img, figure video {
 
 .pedido-envio { margin-top: var(--hueco2); }
 .pedido-envio .boton { width: 100%; }
-.pedido-pie { font-size: var(--t3); font-weight: 300; color: var(--suave); text-align: center; margin-top: 0.8rem; }
+.pedido-pie { font-size: var(--t3); font-weight: 400; color: var(--suave); text-align: center; margin-top: 0.8rem; }
 
 .aviso {
   border: 1px solid var(--marco-firme);
   padding: 0.9rem 1rem;
   color: var(--suave);
   font-size: var(--t3);
-  font-weight: 300;
+  font-weight: 400;
 }
 .aviso b { display: block; color: var(--tinta); margin-bottom: 0.25rem; }
 
@@ -769,7 +868,7 @@ figure img, figure video {
   color: rgba(250,237,233,.6);
   padding: var(--hueco4) 0 var(--hueco2);
   font-size: var(--t2);
-  font-weight: 300;
+  font-weight: 400;
 }
 .pie-caja { display: grid; gap: var(--hueco2); align-items: start; }
 @media (min-width: 780px) { .pie-caja { grid-template-columns: 1.5fr 1fr 1fr; gap: var(--hueco3); } }
@@ -851,7 +950,7 @@ figure img, figure video {
   position: absolute;
   right: -7%;
   bottom: -32%;
-  z-index: 3;
+  z-index: 4;
   width: clamp(142px, 32%, 196px);
   aspect-ratio: 1;
   display: grid;
@@ -883,17 +982,9 @@ figure img, figure video {
 
 @keyframes girar { to { transform: rotate(360deg); } }
 
-/* ── La etiqueta que cambia de sabor ─────────────────────────────────────── */
+/* ── La pila de la portada ───────────────────────────────────────────────── */
 
 .portada-muestra { position: relative; }
-
-/* El color del sabor cruza en lugar de saltar. */
-.portada-muestra .etiqueta { animation: aparecer .55s ease both; }
-
-@keyframes aparecer {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
 
 /* ── La fruta se dibuja sola ─────────────────────────────────────────────── */
 /* pathLength="1" normaliza cada curva, así todas se trazan al mismo ritmo sin
@@ -904,7 +995,7 @@ figure img, figure video {
   stroke-dashoffset: 1;
 }
 [data-visible='si'] .etq-motivo > *,
-.portada-muestra .etq-motivo > * {
+.pila-hoja[data-pos='0'] .etq-motivo > * {
   animation: dibujar 9s cubic-bezier(.4,.5,.2,1) infinite;
 }
 .etq-motivo > *:nth-child(2) { animation-delay: .12s; }
@@ -920,21 +1011,6 @@ figure img, figure video {
   92%  { stroke-dashoffset: -1; }
   100% { stroke-dashoffset: -1; }
 }
-
-/* ── La tira corre ───────────────────────────────────────────────────────── */
-
-.tira { overflow: hidden; display: flex; }
-.tira-fila {
-  flex-shrink: 0;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
-  white-space: nowrap;
-  animation: correr 54s linear infinite;
-  padding-right: clamp(1.25rem, 4vw, 3rem);
-}
-.tira-fila i { display: block; }
-
-@keyframes correr { to { transform: translateX(-100%); } }
 
 /* ── Las tarjetas de sabor son calcomanías ───────────────────────────────── */
 
@@ -1041,7 +1117,6 @@ figure img, figure video {
 
   [data-revelar] { opacity: 1; transform: none; transition: none; }
 
-  .tira-fila { animation: none; }
   .etq-motivo > * { animation: none; stroke-dashoffset: 0; }
 
   .sabor:hover .etiqueta { transform: none; }

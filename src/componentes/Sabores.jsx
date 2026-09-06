@@ -1,8 +1,6 @@
-import { sabores, grupos, tamanos, dulzura, mostrarIngredientes } from '../datos/negocio'
-import Etiqueta from './Etiqueta'
+import { sabores, grupos, tamanos, dulzura } from '../datos/negocio'
+import Estante from './Estante'
 import Franja from './Franja'
-
-const TIPO = { agua: 'De agua', leche: 'Con leche' }
 
 export default function Sabores() {
   return (
@@ -20,30 +18,7 @@ export default function Sabores() {
         {grupos.map((g) => {
           const suyos = sabores.filter((s) => s.grupo === g.llave)
           if (suyos.length === 0) return null
-
-          return (
-            <div className="grupo" key={g.llave}>
-              <div className="grupo-cabeza" data-revelar>
-                <h3 className="caps">{g.titulo}</h3>
-                <span>{g.pie}</span>
-              </div>
-
-              <div className="rejilla-sabores">
-                {suyos.map((s) => (
-                  <article className="sabor" key={s.nombre} style={{ '--c': s.color }} data-revelar>
-                    <Etiqueta sabor={s} />
-                    <div className="sabor-pie">
-                      <h3>{s.nombre}</h3>
-                      {s.tipo && <span className="sabor-tipo caps">{TIPO[s.tipo]}</span>}
-                      {mostrarIngredientes && s.ingredientes.length > 0 && (
-                        <p className="sabor-ingredientes">{s.ingredientes.join(' · ')}</p>
-                      )}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-          )
+          return <Estante grupo={g} sabores={suyos} key={g.llave} />
         })}
 
         <Franja />

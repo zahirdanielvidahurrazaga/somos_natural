@@ -1,4 +1,4 @@
-import { fotos, sabores } from '../datos/negocio'
+import { fotos } from '../datos/negocio'
 
 // La foto sale por el borde izquierdo de la pantalla en vez de flotar dentro
 // de una caja con márgenes. Por eso esta sección NO va dentro de .marco.
@@ -24,10 +24,6 @@ export default function Formacion() {
             Ninguna lleva más de un día hecha. Lo que ves aquí se preparó la tarde
             anterior y esa misma mañana se repartió, botella por botella.
           </p>
-          <div className="portada-fija caps">
-            <span>{sabores.length} sabores</span>
-            <span>Sin conservadores</span>
-          </div>
         </div>
       </div>
     </section>
