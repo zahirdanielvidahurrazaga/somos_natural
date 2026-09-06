@@ -343,6 +343,28 @@ en `mapaGoogle` (negocio.js). Si ese campo se vacía, el sitio vuelve solo al ma
 - **Google resuelve de paso lo de las colonias**: su mapa ya las rotula. El campo `colonia` de
   `puntosDeVenta` solo hace falta si algún día se quieren también en la lista de texto.
 
+**Cómo quedó personalizado el My Maps** (2026-09-06, hecho desde el navegador):
+
+| Qué | Cómo |
+|---|---|
+| Título | "Somos Natural · Dónde comprar", con descripción y el WhatsApp |
+| Capa | "Puntos de venta" (venía con el nombre del CSV) |
+| Etiquetas | El **nombre de cada tienda** se ve sobre su pin, sin tener que tocarlo |
+| Icono | **El sello de la marca**, apuntando a `somos-natural.pages.dev/img/logo.png` |
+| Vista | Guardada centrada en los doce puntos |
+| Mapa base | El **normal**. Se probó el claro y pierde las calles, que son la referencia |
+
+> 🔴 **El icono depende de que el logo siga publicado en esa dirección.** Si se renombra o se
+> borra `public/img/logo.png`, los pines se quedan sin icono.
+>
+> ⚠️ **En el menú de la capa, "Eliminar esta capa" está pegado a "Abrir tabla de datos" y el
+> orden cambia.** Un clic a ciegas ahí borra los doce puntos. Si hay que rehacerlos, el CSV
+> para reimportar se genera desde `puntosDeVenta` (está en el Escritorio como
+> `somos-natural-puntos-de-venta.csv`).
+>
+> Queda sin hacer: la ficha que sale al tocar un pin muestra **Latitud y Longitud**, que al
+> cliente no le sirven. Se limpian borrando esas columnas en "Abrir tabla de datos".
+
 ### El mapa dibujado (respaldo)
 
 `Mapa.jsx` dibuja **las calles de verdad reducidas a líneas**, con los puntos encima. El
