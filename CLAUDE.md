@@ -354,6 +354,7 @@ en `mapaGoogle` (negocio.js). Si ese campo se vacía, el sitio vuelve solo al ma
 | Vista | Guardada centrada en los doce puntos |
 | Mapa base | El **normal**. Se probó el claro y pierde las calles, que son la referencia |
 | Barra negra | **Recortada** en el sitio (no en My Maps): a Zahir no le pegaba con el diseño |
+| Ficha del pin | Solo el nombre y el botón de direcciones, porque los puntos vienen de un KML |
 
 > 🔴 **El icono depende de que el logo siga publicado en esa dirección.** Si se renombra o se
 > borra `public/img/logo.png`, los pines se quedan sin icono.
@@ -363,21 +364,29 @@ en `mapaGoogle` (negocio.js). Si ese campo se vacía, el sitio vuelve solo al ma
 > para reimportar se genera desde `puntosDeVenta` (está en el Escritorio como
 > `somos-natural-puntos-de-venta.csv`).
 >
-> **La ficha del pin y por qué se ve a tabla vieja.** Al tocar un pin, My Maps abre una ficha
-> con **una línea por cada columna de datos** —Nombre, Latitud, Longitud, Colonia,
-> Descripcion— más un botón de direcciones. La ficha **no se puede desactivar**: es cómo
-> funciona el producto. Lo que sí se puede es dejarla con **solo el nombre y el botón**.
+> **La ficha del pin: por qué se veía a tabla vieja y cómo se arregló** (2026-09-06). Al tocar
+> un pin, My Maps abre una ficha con **una línea por cada columna de datos**. Con el CSV eran
+> cinco —Nombre, Latitud, Longitud, Colonia, Descripcion— y parecía una hoja de cálculo. La
+> ficha **no se puede desactivar**: es cómo funciona el producto. Lo que sí se puede es
+> dejarla con **solo el nombre y el botón de direcciones**, y así quedó.
 >
-> Dos caminos, y el segundo es el bueno:
+> **La solución fue reimportar los puntos como KML.** Un KML con solo `<name>` y `<Point>`,
+> **sin `ExtendedData`**, no trae columnas, así que no hay nada que listar. El archivo se
+> genera desde `puntosDeVenta` y está en el Escritorio como
+> `somos-natural-puntos-de-venta.kml`.
 >
-> 1. Borrar las columnas en "Abrir tabla de datos" (menú de la capa). **No se puede hacer
->    desde la extensión de Chrome**: esa tabla se abre en una ventana aparte que no entra en
->    el grupo de pestañas, y no hay URL directa (`/maps/d/u/1/datatable?mid=…` da 404).
-> 2. 🟢 **Reimportar los puntos como KML.** Un KML con solo `<name>` y `<Point>`, **sin
->    `ExtendedData`**, no trae columnas, así que la ficha sale con el puro nombre. El archivo
->    se genera desde `puntosDeVenta` y está en el Escritorio como
->    `somos-natural-puntos-de-venta.kml`. Se importa en una capa nueva, se le repone el estilo
->    (etiquetas por Nombre + el icono del logo) y se borra la capa vieja.
+> El procedimiento, por si hay que repetirlo: capa nueva → Importar el KML → cambiar
+> "Estilos individuales" a **Estilo uniforme** → **Establecer etiquetas: nombre** → aplicar el
+> icono del logo (queda guardado en "Otros iconos") → comprobar la ficha ocultando la capa
+> vieja → borrar la vieja.
+>
+> El otro camino, borrar las columnas en "Abrir tabla de datos", **no se puede desde la
+> extensión de Chrome**: esa tabla se abre en una ventana aparte que no entra en el grupo de
+> pestañas, y no hay URL directa (`/maps/d/u/1/datatable?mid=…` da 404).
+>
+> ⚠️ **El visor público tarda en reflejar el borrado de una capa.** Justo después de eliminar
+> la vieja, `/maps/d/viewer` seguía enseñando las dos; el editor ya tenía una sola. Es caché:
+> no hay que volver a borrar nada.
 
 ### La barra negra del embed va recortada
 
