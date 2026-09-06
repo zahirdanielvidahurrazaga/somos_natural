@@ -594,6 +594,17 @@ a { color: inherit; text-decoration: none; }
 .punto p  { font-size: var(--t2); font-weight: 400; color: var(--suave); }
 .franja-honda .punto p { color: rgba(250,237,233,.68); }
 
+/* La prueba social de Tu negocio: una sola línea, centrada, sobre la franja
+   honda. Va entre las ventajas y el botón, que es donde se decide. */
+.prueba {
+  margin-top: var(--hueco3);
+  font-size: var(--t1);
+  color: var(--crema);
+  max-width: 62ch;
+}
+.prueba a { border-bottom: 1px solid #E9B9C6; color: #E9B9C6; transition: color .2s ease; }
+.prueba a:hover { color: var(--crema); border-color: var(--crema); }
+
 
 
 /* ── Fotos ───────────────────────────────────────────────────────────────── */

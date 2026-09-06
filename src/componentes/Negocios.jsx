@@ -1,4 +1,4 @@
-import { negocio, ventajas } from '../datos/negocio'
+import { negocio, ventajas, puntosDeVenta } from '../datos/negocio'
 import { enlaceWhatsapp } from '../lib/whatsapp'
 
 export default function Negocios() {
@@ -28,6 +28,16 @@ export default function Negocios() {
             </div>
           ))}
         </div>
+
+        {/* La prueba social sale de un dato que ya existe: las tiendas que hoy las
+            venden. Para el siguiente dueño, "estos ya nos venden" pesa más que
+            cualquier promesa. Si un día no hubiera lista, la frase no aparece. */}
+        {puntosDeVenta.length > 0 && (
+          <p className="prueba" data-revelar>
+            Hoy nos venden <a href="#puntos">{puntosDeVenta.length} negocios de la zona</a>.
+            Tiendas, misceláneas, torterías y hasta un puesto de hot dogs.
+          </p>
+        )}
 
         {enlace && (
           <div className="cierre" data-revelar>

@@ -539,6 +539,11 @@ Portada → Tira → Sabores → Proceso → Formación → Tu negocio → Event
 - **Dónde comprar** se movió detrás de ellos y **justo antes del armador**, porque es la
   salida para quien no llega al mínimo: el aviso de "faltan N" enlaza ahí mismo.
 
+**Prueba social en Tu negocio** (2026-09-06): una línea antes del botón dice cuántos negocios
+las venden hoy y enlaza a la lista. Sale de `puntosDeVenta.length`, así que **se actualiza
+sola** al dar de alta o de baja una tienda, y si un día no hubiera lista, la frase no aparece.
+Para el siguiente dueño, "estos ya nos venden" pesa más que cualquier promesa.
+
 **"Dónde comprar" entró al menú** el 2026-09-06 (pedido de Zahir). Con eso son seis enlaces
 y ya no caben desde 900 px: la marca y el botón llevan `flex-shrink: 0`, así que el menú los
 empujaba fuera y "Somos Natural" se partía en dos renglones. Se recuperó espacio con hueco
@@ -718,7 +723,13 @@ Regla del usuario: se trabaja en local y se despliega cuando él lo aprueba.
   (su Instagram dice que hay uno, pero no dice cuánto).
 - **Confirmar la duración "5 a 7 días refrigeradas"** con la familia y ponerla en Proceso.
 - **Decidir si se usan los testimonios reales** de la destacada Familia Natural, pidiendo
-  permiso a cada persona.
+  permiso a cada persona. Es lo que más convertiría y no cuesta nada.
+- **Los precios siguen apagados.** Es la fricción más grande para el cliente fuerte: un dueño
+  de tienda no decide sin saber su margen. Decisión del negocio, pero conviene replantearla.
+- **Mapa propio con MapLibre + OpenFreeMap**, en vez del My Maps de Google. Zahir lo pidió el
+  2026-09-06 y quedó **para después**; lo quiere también porque la pieza serviría en sus otros
+  proyectos. Sin llave, sin tarjeta y sin límite de uso; Google exige facturación activa
+  aunque no se pasen de las 10 mil cargas gratis.
 - **Preguntar el nombre del punto de venta 6** (el que el PDF rotula solo como "super") y si
   Super Sanm y Miscelánea Tity son el mismo local.
 - **Revisar en teléfono la pila de la portada y los estantes** (2026-09-05): son nuevos y
