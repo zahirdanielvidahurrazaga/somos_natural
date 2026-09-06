@@ -4,18 +4,19 @@
 // cualquier otro sitio; en un sitio donde las quince etiquetas van dibujadas a
 // mano, desentonaba. Esto son las calles de verdad, reducidas a líneas.
 //
-// Trazo de calles de OpenStreetMap (ODbL), bajado con la API de Overpass el
-// 2026-09-06 y simplificado: los tramos sueltos de cada calle se unieron por
-// sus extremos, se pasaron por Douglas-Peucker y se guardaron como recorridos
-// relativos en enteros. De 46 KB a 8 KB.
+// Trazo de calles de OpenStreetMap (ODbL), bajado con la API de Overpass y
+// simplificado: los tramos sueltos de cada calle se unieron por sus extremos,
+// se pasaron por Douglas-Peucker y se guardaron como recorridos relativos en
+// enteros. De 46 KB a 8 KB.
 //
 // Para regenerarlo hay que volver a consultar Overpass con el mismo recuadro
 // (18.968, -98.252, 19.068, -98.166) y reproyectar; el procedimiento está en
-// CLAUDE.md. La posición de cada punto sale de las coordenadas de su enlace
-// de Google Maps, así que si cambia un enlace hay que rehacer su marca.
+// CLAUDE.md. **El encuadre se calcula a partir de los puntos que quedan**, así
+// que al dar de baja uno hay que rehacerlo: el 2026-09-06 se fueron cinco y el
+// mapa se quedó con un hueco arriba hasta que se recalculó.
 
 export const mapa = {
-  viewBox: '156 155 688 955',
+  viewBox: '238 384 523 726',
   // Ejes y avenidas, más marcadas.
   grandes: [
     'M709 41l4 -16l-9 -12l-7 -21',
@@ -350,14 +351,8 @@ export const marcas = {
   "Cocina Mateo": [310, 1015],
   "Tortas Máximo": [623, 628],
   "Vinos y Licores Caribe": [564, 754],
-  "Super Sanm": [597, 772],
   "Miscelánea Tity": [597, 772],
   "Super Pablito": [637, 532],
-  "Miscelánea Never": [612, 696],
-  "Colegio Miguel Hidalgo": [439, 400],
-  "Miscelánea Nachito": [466, 250],
-  "Miscelánea de la 10": [436, 821],
   "Súper Milenio": [665, 485],
   "El Perro Mago Hot Dogs": [671, 479],
-  "Minisuper Ricky's": [682, 820],
 }

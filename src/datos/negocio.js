@@ -183,6 +183,11 @@ export const eventos = [
 // FALTA UNO de los 19 del PDF: el de la página 6 viene rotulado solo como
 // "super" y su enlace apunta a un punto del mapa sin ficha de negocio. Se deja
 // fuera hasta saber su nombre.
+//
+// BAJAS del 2026-09-06, dichas por Zahir: Colegio Miguel Hidalgo, Miscelánea
+// Nachito, Miscelánea de la 10, Minisuper Ricky's y Miscelánea Never ya no las
+// venden. Y "Super Sanm" era el mismo local que Miscelánea Tity —compartían
+// coordenadas exactas—, así que se quedó solo Tity.
 export const puntosDeVenta = [
   { nombre: 'Super La Hacienda',          mapa: 'https://maps.app.goo.gl/tiQj7iBJUtnRdpGk8' },
   { nombre: 'Mini Super San Manuel',      mapa: 'https://maps.app.goo.gl/Ubiak52zsApYK6neA' },
@@ -192,16 +197,10 @@ export const puntosDeVenta = [
   { nombre: 'Cocina Mateo',               mapa: 'https://maps.app.goo.gl/HVBPuYGYHtqmPfme7' },
   { nombre: 'Tortas Máximo',              mapa: 'https://maps.app.goo.gl/GZ3gyYKrdEpCY59D9' },
   { nombre: 'Vinos y Licores Caribe',     mapa: 'https://maps.app.goo.gl/5pwLrjzxMvd1opzJ9' },
-  { nombre: 'Super Sanm',                 mapa: 'https://maps.app.goo.gl/9N7RdTHsXZe77wrG7' },
   { nombre: 'Miscelánea Tity',            mapa: 'https://maps.app.goo.gl/EvEzCgpk27QegR6z5' },
   { nombre: 'Super Pablito',              mapa: 'https://maps.app.goo.gl/YYZh1gJU1h84TToc8' },
-  { nombre: 'Miscelánea Never',           mapa: 'https://maps.app.goo.gl/QJLMkGGZn3LkaVZa9' },
-  { nombre: 'Colegio Miguel Hidalgo',     mapa: 'https://maps.app.goo.gl/cE1RvrQPwsSUaXCP9' },
-  { nombre: 'Miscelánea Nachito',         mapa: 'https://maps.app.goo.gl/X9YpdTpEmXnsuua77' },
-  { nombre: 'Miscelánea de la 10',        mapa: 'https://maps.app.goo.gl/JLxn1FRaCbmD1o38A' },
   { nombre: 'Súper Milenio',              mapa: 'https://maps.app.goo.gl/vEsacbhXf9FGrCgM9' },
   { nombre: 'El Perro Mago Hot Dogs',     mapa: 'https://maps.app.goo.gl/Y6SkHP6cSpZWuzLj6' },
-  { nombre: "Minisuper Ricky's",          mapa: 'https://maps.app.goo.gl/dS4nCUetWopa1bUt9' },
 ]
 
 // ── Fotos ────────────────────────────────────────────────────────────────────

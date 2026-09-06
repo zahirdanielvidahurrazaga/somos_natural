@@ -311,10 +311,15 @@ destacada de Instagram **📍Donde comprar** (el botón CLICK del segundo cuadro
 Instagram con sesión iniciada, se copia el enlace de Drive y se baja el PDF; `pdftotext` da los
 nombres y `pypdf` saca de cada página la anotación `/URI` con su enlace de Google Maps.
 
-- Son **19 en el PDF y 18 en el sitio**: el de la página 6 viene rotulado solo como "super" y
-  su enlace apunta a un punto del mapa sin ficha de negocio. **Falta preguntarle su nombre.**
-- **Super Sanm y Miscelánea Tity comparten coordenadas exactas.** O son el mismo local o uno
-  de los dos enlaces está mal. Falta confirmarlo.
+- Son **19 en el PDF y 12 en el sitio.** El de la página 6 viene rotulado solo como "super" y
+  su enlace apunta a un punto del mapa sin ficha de negocio: **falta preguntarle su nombre.**
+  Y el 2026-09-06 Zahir dio de baja cinco que ya no las venden —Colegio Miguel Hidalgo,
+  Miscelánea Nachito, Miscelánea de la 10, Minisuper Ricky's y Miscelánea Never— y confirmó
+  que **Super Sanm y Miscelánea Tity eran el mismo local** (compartían coordenadas exactas):
+  se quedó Tity.
+- 🔴 **Al dar de baja un punto hay que rehacer el encuadre del mapa**, porque se calcula a
+  partir de los que quedan. Nachito era el más al norte; sin recalcular, el mapa se quedaba
+  con un hueco arriba.
 - **No hay colonias.** Google solo devuelve dirección completa en tres de los diecinueve, y
   poner la colonia de unos sí y de otros no se lee como error, igual que pasó con "de agua"
   en las tarjetas de sabor. Ni Nominatim ni el HTML de Maps sirven: Puebla no tiene las
@@ -345,7 +350,6 @@ relativos en enteros. **De 46 KB a 8 KB**, 314 recorridos. Todo vive ya resuelto
 - **Señalar un renglón enciende su punto y al revés.** El apagado va en la lista entera y en
   el grupo de pines, **no en cada renglón**: al saltar de uno a otro el `mouseleave` del
   anterior no siempre llega y se quedaban dos encendidos.
-- **Super Sanm y Miscelánea Tity caen en el mismo pixel**, porque comparten coordenadas.
 
 Para rehacerlo hay que volver a consultar Overpass con ese recuadro y reproyectar. Si cambia
 un enlace de Google Maps, hay que rehacer su marca.
