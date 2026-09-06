@@ -1048,35 +1048,6 @@ figure img, figure video {
 
 
 
-/* Caminante: cruza la línea que separa dos secciones. */
-.caminante {
-  position: relative;
-  height: 66px;
-  border-top: 1px solid var(--marco);
-  overflow: hidden;
-}
-.caminante-paso {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  animation: pasear 30s linear infinite;
-}
-.caminante-paso img {
-  display: block;
-  width: 54px;
-  height: auto;
-  animation: brinco .52s ease-in-out infinite alternate;
-}
-
-@keyframes pasear {
-  from { transform: translateX(-90px); }
-  to   { transform: translateX(calc(100vw + 90px)); }
-}
-@keyframes brinco {
-  from { transform: translateY(0)    rotate(-3deg); }
-  to   { transform: translateY(-7px) rotate(3deg); }
-}
-
 /* Asomada por encima del panel del pedido. */
 .resumen { position: relative; }
 .gotita-asomada {
@@ -1121,6 +1092,4 @@ figure img, figure video {
 
   .sabor:hover .etiqueta { transform: none; }
   .gotita-aro { animation: none; }
-  .caminante-paso, .caminante-paso img { animation: none; }
-  .caminante-paso { left: 6%; }
 }

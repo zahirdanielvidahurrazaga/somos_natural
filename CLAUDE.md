@@ -78,9 +78,10 @@ Del lado de la moda (se quitó o se vigila):
   textos fijos, pero quieta y centrada, como el pie de una etiqueta. Era la firma más clara
   del retro de hamburguesería.
 - **La gotita** es del negocio y se queda, pero es rubber-hose de los años 30, que es
-  exactamente lo que usan las hamburgueserías retro. Hoy aparece cuatro veces. **Propuesta
-  pendiente de Zahir:** quitar el caminante (la que cruza brincando entre Sabores y Proceso),
-  que es la aparición más caricaturesca, y dejarla en portada, pedido y pie.
+  exactamente lo que usan las hamburgueserías retro. Aparecía cuatro veces; **el caminante
+  (la que cruzaba brincando entre Sabores y Proceso) se quitó el 2026-09-06 con el visto
+  bueno de Zahir** por ser la aparición más caricaturesca. Quedan portada, pedido y pie.
+  No reintroducirlo.
 - La pila de la portada tiene aire de calcomanías, pero a −7°/−1.5°/+5° se lee como
   etiquetas sobre la mesa y no como *sticker bomb*. No aumentar los ángulos.
 - `Bagel Fat One` (letra burbuja) solo vive en la firma `redonda` de maracuyá, mango, piña y
@@ -391,12 +392,11 @@ en Downloads. Es rubber-hose de los años 30, que cae justo en el registro retro
 > el blanco: los guantes y los ojos también son blancos y se habrían perdido.
 > Después se cuantizó a 128 colores: **234 KB → 35 KB**, sin pérdida visible (es dibujo plano).
 
-Un solo dibujo, cuatro apariciones:
+Un solo dibujo, tres apariciones:
 
 | Dónde | Cómo |
 |---|---|
 | **Portada** | **Dentro de su aro de texto giratorio**, en la esquina de abajo a la derecha |
-| **Entre Sabores y Proceso** | Cruza la página caminando por la línea divisoria |
 | **Panel del pedido** | Asomada por arriba, volteada |
 | **Pie** | Silueta con `mask`, al 13% — atmósfera, no calcomanía |
 
@@ -414,8 +414,10 @@ Un solo dibujo, cuatro apariciones:
 > **La gotita NO flota.** Se le quitó el balanceo a pedido del negocio (2026-09-04): el único
 > movimiento de la pieza es el aro girando. No reintroducir el `respirar`.
 
-El caminante lleva **dos animaciones en dos elementos**: una avanza y otra brinca. En el
-mismo elemento se pisarían, porque las dos usan `transform`.
+> **Hubo una cuarta, el caminante** (cruzaba brincando la línea entre Sabores y Proceso), y se
+> quitó el 2026-09-06: era la aparición más caricaturesca y jalaba al retro de hamburguesería.
+> Si algo vuelve a animar al personaje con dos movimientos a la vez, van en dos elementos:
+> en el mismo se pisarían porque los dos usan `transform`.
 
 > ⚠️ En Downloads hay otras dos `Gemini_Generated_Image_*`: una es una **foto de producto
 > generada por IA** —NO usarla, el sitio no lleva nada inventado— y la otra es una foto

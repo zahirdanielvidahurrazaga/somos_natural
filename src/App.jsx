@@ -10,7 +10,6 @@ import Eventos from './componentes/Eventos'
 import Pedido from './componentes/Pedido'
 import Pie from './componentes/Pie'
 import Flotante from './componentes/Flotante'
-import Caminante from './componentes/Caminante'
 
 export default function App() {
   useRevelar()
@@ -22,7 +21,6 @@ export default function App() {
         <Portada />
         <Tira />
         <Sabores />
-        <Caminante />
         <Proceso />
         <Formacion />
         <Negocios />
