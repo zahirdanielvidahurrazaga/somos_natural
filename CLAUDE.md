@@ -319,9 +319,39 @@ nombres y `pypdf` saca de cada página la anotación `/URI` con su enlace de Goo
   poner la colonia de unos sí y de otros no se lee como error, igual que pasó con "de agua"
   en las tarjetas de sabor. Ni Nominatim ni el HTML de Maps sirven: Puebla no tiene las
   colonias mapeadas en OpenStreetMap y Google bloquea la lectura directa.
-- **Sin mapa incrustado**, a propósito: pesa, pide llave de API y se ve genérico.
-- La lista va en **dos columnas**, no tres: a tres, "Vinos y Licores San Manuel" no cabía en
-  un renglón junto a su enlace y dejaba un escalón en toda esa fila.
+### El mapa va dibujado
+
+**No hay Google Maps incrustado.** Pide llave de API, pesa y se ve igual que el de cualquier
+otro sitio; en un sitio donde las quince etiquetas van dibujadas a mano, desentonaba. En su
+lugar, `Mapa.jsx` dibuja **las calles de verdad reducidas a líneas**, con los dieciocho puntos
+encima. El nombre no se rotula sobre el dibujo: vive en la lista de al lado.
+
+**De dónde salen las calles.** De OpenStreetMap, con la API de Overpass, el recuadro
+`(18.968, -98.252, 19.068, -98.166)` y las vías `motorway|trunk|primary|secondary`. Vienen
+1893 tramos sueltos; el guion los **une por sus extremos** (OSM parte cada calle en decenas de
+pedazos), los pasa por **Douglas-Peucker** con épsilon 2.2 y los guarda como recorridos
+relativos en enteros. **De 46 KB a 8 KB**, 314 recorridos. Todo vive ya resuelto en
+`src/datos/mapa.js`; no hay dependencia de mapas ni llamadas en vivo.
+
+- La posición de cada punto sale de **las coordenadas de su enlace de Google Maps**. La llave
+  de `marcas` es el mismo `nombre` de `puntosDeVenta`: si no coincide, ese punto no se dibuja
+  y el sitio lo aguanta.
+- **La atribución a OpenStreetMap es obligatoria** (ODbL) y va en el pie del mapa.
+- 🔴 **Nunca `overflow: visible` en el SVG del mapa.** El archivo trae calles fuera del
+  encuadre; con overflow visible se salían del marco por la izquierda y se dibujaban encima
+  del título. El encuadre ya deja 95 unidades de aire alrededor de los puntos.
+- El mapa es **pegajoso** de 900 px para arriba: la lista es casi el doble de alta y sin eso
+  quedaba un hueco enorme a su lado.
+- **Señalar un renglón enciende su punto y al revés.** El apagado va en la lista entera y en
+  el grupo de pines, **no en cada renglón**: al saltar de uno a otro el `mouseleave` del
+  anterior no siempre llega y se quedaban dos encendidos.
+- **Super Sanm y Miscelánea Tity caen en el mismo pixel**, porque comparten coordenadas.
+
+Para rehacerlo hay que volver a consultar Overpass con ese recuadro y reproyectar. Si cambia
+un enlace de Google Maps, hay que rehacer su marca.
+- La lista va en **una columna** cuando el mapa está al lado, y en **dos** cuando el mapa se
+  va arriba. Nunca en tres: "Vinos y Licores San Manuel" no cabía en un renglón junto a su
+  enlace y dejaba un escalón en toda esa fila.
 - El PDF es de **marzo de 2026**. Conviene confirmar la lista antes de cada temporada.
 
 ## Lo que dice su Instagram
@@ -370,6 +400,7 @@ Tu negocio, con otras palabras.
 ```
 src/
   datos/negocio.js        ← TODO lo editable
+  datos/mapa.js           ← las calles dibujadas y dónde cae cada punto de venta
   lib/whatsapp.js         ← arma los enlaces wa.me; devuelve null si no hay número
   componentes/
     Etiqueta.jsx          ← dibuja la etiqueta según la receta del sabor
@@ -377,6 +408,7 @@ src/
     Arco.jsx              ← texto curvado, se achica según su largo
     Estante.jsx           ← una fila de sabores que se desliza de lado (flechas solo si desborda)
     Puntos.jsx            ← dónde comprar una sola botella
+    Mapa.jsx              ← el mapa dibujado (datos en datos/mapa.js)
     Encabezado.jsx  Portada.jsx  Tira.jsx  Sabores.jsx
     Proceso.jsx     Negocios.jsx Eventos.jsx  Pedido.jsx
     Pie.jsx         Flotante.jsx Iconos.jsx
