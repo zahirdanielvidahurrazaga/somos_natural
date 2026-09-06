@@ -363,10 +363,21 @@ en `mapaGoogle` (negocio.js). Si ese campo se vacía, el sitio vuelve solo al ma
 > para reimportar se genera desde `puntosDeVenta` (está en el Escritorio como
 > `somos-natural-puntos-de-venta.csv`).
 >
-> Queda sin hacer: la ficha que sale al tocar un pin muestra **Latitud y Longitud**, que al
-> cliente no le sirven. Se limpian borrando esas columnas en "Abrir tabla de datos" del menú
-> de la capa. **No se puede hacer desde la extensión de Chrome**: esa tabla se abre en una
-> ventana emergente aparte que no entra en el grupo de pestañas.
+> **La ficha del pin y por qué se ve a tabla vieja.** Al tocar un pin, My Maps abre una ficha
+> con **una línea por cada columna de datos** —Nombre, Latitud, Longitud, Colonia,
+> Descripcion— más un botón de direcciones. La ficha **no se puede desactivar**: es cómo
+> funciona el producto. Lo que sí se puede es dejarla con **solo el nombre y el botón**.
+>
+> Dos caminos, y el segundo es el bueno:
+>
+> 1. Borrar las columnas en "Abrir tabla de datos" (menú de la capa). **No se puede hacer
+>    desde la extensión de Chrome**: esa tabla se abre en una ventana aparte que no entra en
+>    el grupo de pestañas, y no hay URL directa (`/maps/d/u/1/datatable?mid=…` da 404).
+> 2. 🟢 **Reimportar los puntos como KML.** Un KML con solo `<name>` y `<Point>`, **sin
+>    `ExtendedData`**, no trae columnas, así que la ficha sale con el puro nombre. El archivo
+>    se genera desde `puntosDeVenta` y está en el Escritorio como
+>    `somos-natural-puntos-de-venta.kml`. Se importa en una capa nueva, se le repone el estilo
+>    (etiquetas por Nombre + el icono del logo) y se borra la capa vieja.
 
 ### La barra negra del embed va recortada
 
