@@ -298,6 +298,17 @@ más oscuro, botón "Ver los 14 sabores" en la galería y carril de 24vw. **El
 giro constante de la botella se queda** (Zahir lo quiere, aunque ChatGPT sugirió
 dejarla de frente en reposo).
 
+**Galería estilo "Fruity"** (2026-10-18, referencia de Pinterest de Zahir):
+fuera el círculo con el dibujo de línea ("horrible"); nombre del sabor gigante
+de orilla a orilla detrás de la botella (`data-letras`), barrido de color al
+cambiar de sabor, botella ENORME y en diagonal en compu (`data-inclina="0.5"`,
+base hacia la derecha para no tapar los datos), y **frutas flotando**:
+`public/frutas/<etq>-1.webp` y `-2.webp`, 28 imágenes **generadas con ChatGPT**
+(codex exec en carpeta aislada, con permiso de Zahir; son ilustraciones de
+ingredientes, no fotos del producto). Prompt de estilo: foto de producto
+realista, fondo transparente, luz suave arriba-izquierda, pieza girada en el
+aire. Si falta una, no se ve (onError).
+
 Medido en compu: 60 fps estables. **Falta probar en el iPhone** (diseño de
 celular sin revisar: el Chrome de la extensión no se deja achicar).
 

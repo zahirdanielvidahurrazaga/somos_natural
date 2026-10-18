@@ -8,6 +8,15 @@ import { ORDEN, ladoDelCambio, ponerSaborActual, useSaborActual } from '../botel
 // frase partida a sus lados. Con flechas, puntitos, teclado o deslizando se
 // recorren los catorce; el sabor que quede es el que acompaña el resto de la
 // página. Cada sabor tiene su dirección (/#jamaica).
+// Las frutas que flotan alrededor de la botella (referencia "Fruity"): dos
+// imágenes por sabor (public/frutas/<etq>-1.webp y -2.webp, generadas con
+// ChatGPT en un mismo estilo), repetidas en cinco lugares con tamaño, giro y
+// profundidad distintos. Si una imagen falta, simplemente no se ve.
+const FRUTAS = [
+  { n: 1, lugar: 'a' }, { n: 2, lugar: 'b' }, { n: 1, lugar: 'c' },
+  { n: 2, lugar: 'd' }, { n: 1, lugar: 'e' },
+]
+
 const slug = (s) => s.nombre.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 const TIPO = { leche: 'Con leche', agua: 'De agua' }
 const hex = (n) => `#${n.toString(16).padStart(6, '0')}`
@@ -108,12 +117,27 @@ export default function Galeria() {
 
       <div className="galeria-barrido" data-dir={dir} key={`f-${s.nombre}`} aria-hidden="true" />
 
+      <div className="galeria-frutas" aria-hidden="true" key={`fr-${s.nombre}`}>
+        {FRUTAS.map((f) => (
+          <img
+            key={f.lugar}
+            className="galeria-fruta"
+            data-lugar={f.lugar}
+            src={`/frutas/${s.botella.etq}-${f.n}.webp`}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            onError={(e) => { e.currentTarget.style.display = 'none' }}
+          />
+        ))}
+      </div>
+
       {/* El nombre gigante, de orilla a orilla, detrás de la botella */}
       <p className="galeria-gigante" data-letras={letras} aria-hidden="true" key={`g-${s.nombre}`}>
         {renglones.map((w) => <span key={w}>{w}</span>)}
       </p>
 
-      <div className="galeria-hueco" data-botella="" data-inclina="0" data-agarrable="" aria-hidden="true">
+      <div className="galeria-hueco" data-botella="" data-inclina="0.5" data-agarrable="" aria-hidden="true">
         <div className="galeria-plana"><EtiquetaReal sabor={s} /></div>
       </div>
 
