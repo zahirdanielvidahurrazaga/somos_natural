@@ -289,6 +289,15 @@ Los nombres de la galería: dos palabras van en dos renglones ("Frutos / rojos")
 y la letra baja un escalón según la palabra más larga (`data-largo`), porque
 "Frutos rojos" se cortaba en la orilla.
 
+**Revisión de diseño con ChatGPT** (2026-10-18; capturas pasadas con
+`codex exec -s read-only "prompt" -i img…`, el texto ANTES de las imágenes o
+el `-i` se lo traga): se aplicó línea de "a quién y dónde" arriba del título
+(`.hero-quien`), título 15% más chico, datos para el dueño de tienda (sabores,
+tamaños, sin conservadores, WhatsApp), versalitas un poco más grandes y gris
+más oscuro, botón "Ver los 14 sabores" en la galería y carril de 24vw. **El
+giro constante de la botella se queda** (Zahir lo quiere, aunque ChatGPT sugirió
+dejarla de frente en reposo).
+
 Medido en compu: 60 fps estables. **Falta probar en el iPhone** (diseño de
 celular sin revisar: el Chrome de la extensión no se deja achicar).
 

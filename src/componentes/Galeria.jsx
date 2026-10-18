@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { grupos } from '../datos/negocio'
 import Motivo from './Motivos'
 import EtiquetaReal from './EtiquetaReal'
@@ -29,6 +29,9 @@ export default function Galeria() {
   const i = ORDEN.indexOf(s)
   const ref = useRef(null)
   const toque = useRef(null)
+  // "Ver los 14 sabores": la lista con nombres para saltar directo a uno, sin
+  // dar trece clics en las flechas (sugerencia de la revisión con ChatGPT)
+  const [lista, setLista] = useState(false)
 
   const ir = (k, dir) => {
     const x = ORDEN[(k + ORDEN.length) % ORDEN.length]
@@ -56,6 +59,7 @@ export default function Galeria() {
       const r = ref.current?.getBoundingClientRect()
       if (!r || r.top > innerHeight * 0.5 || r.bottom < innerHeight * 0.5) return
       if (e.target.closest?.('input, textarea, select')) return
+      if (e.key === 'Escape') setLista(false)
       if (e.key === 'ArrowRight') pasar(1)
       if (e.key === 'ArrowLeft') pasar(-1)
     }
@@ -137,11 +141,40 @@ export default function Galeria() {
               />
             ))}
           </div>
+          <button type="button" className="galeria-ver caps" aria-expanded={lista} onClick={() => setLista((v) => !v)}>
+            {lista ? 'Cerrar' : `Ver los ${ORDEN.length} sabores`}
+          </button>
           <button type="button" className="galeria-flecha" onClick={() => pasar(1)} aria-label={`Siguiente: ${ORDEN[(i + 1) % ORDEN.length].nombre}`}>
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
           </button>
         </div>
       </div>
+
+      {lista && (
+        <div className="galeria-lista" role="dialog" aria-label="Los sabores">
+          {grupos.map((g) => (
+            <div className="galeria-lista-grupo" key={g.llave}>
+              <span className="caps">{g.titulo}</span>
+              <div>
+                {ORDEN.filter((x) => x.grupo === g.llave).map((x) => {
+                  const k = ORDEN.indexOf(x)
+                  return (
+                    <button
+                      type="button"
+                      key={x.nombre}
+                      aria-pressed={k === i}
+                      style={{ '--c': hex(x.botella.agua) }}
+                      onClick={() => { if (k !== i) ir(k, k > i ? 1 : -1); setLista(false) }}
+                    >
+                      {x.nombre}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <svg className="galeria-onda galeria-onda-abajo" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
         <path d="M0 60h1440V38c-120-26-240-26-360 0s-240 26-360 0-240-26-360 0-240 26-360 0v22z" />

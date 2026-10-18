@@ -13,7 +13,7 @@
   --vino:        #9B2247;
   --vino-hondo:  #6E1732;
   --tinta:       #2B181D;
-  --suave:       #7C6268;
+  --suave:       #6A5057;
   --marco:       rgba(43, 24, 29, 0.15);
   --marco-firme: rgba(43, 24, 29, 0.42);
 
@@ -26,7 +26,7 @@
   --t1: 1.0625rem;
   --t2: 0.9375rem;
   --t3: 0.8125rem;
-  --t4: 0.6875rem;
+  --t4: 0.75rem;
 
   --hueco:  1rem;
   --hueco2: 1.75rem;
@@ -1082,7 +1082,9 @@ figure img, figure video {
   padding-bottom: clamp(2rem, 4vw, 3rem);
 }
 @media (min-width: 900px) { .hero-caja { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); } }
-.hero h1 { font-size: clamp(3rem, 7.4vw, 6.4rem); line-height: 1.02; }
+.hero h1 { font-size: clamp(2.6rem, 6.2vw, 5.4rem); line-height: 1.02; }
+/* qué venden, a quién y dónde: legible, no en versalitas diminutas */
+.hero-quien { font-size: clamp(1rem, 1.3vw, 1.15rem); font-weight: 500; color: var(--vino); margin-bottom: 1rem; max-width: 34ch; }
 .hero-linea { display: block; }
 .hero-palabra { display: inline-block; white-space: nowrap; margin-right: .22em; }
 .hero-acento { color: var(--vino); }
@@ -1257,7 +1259,7 @@ html:not([data-botella]) .galeria-plana { display: block; }
     display: block;
     position: absolute;
     top: 0; bottom: 0;
-    width: 28vw;
+    width: 24vw;
   }
   html[data-botella='si'] .acompana-izq { left: 0; }
   html[data-botella='si'] .acompana-der { right: 0; }
@@ -1267,8 +1269,8 @@ html:not([data-botella]) .galeria-plana { display: block; }
     height: min(60vh, 560px);
   }
   /* el contenido se hace a un lado para dejarle su carril */
-  html[data-botella='si'] .con-botella-izq > .marco { margin-left: 28vw; margin-right: auto; max-width: min(var(--ancho), 68vw); }
-  html[data-botella='si'] .con-botella-der > .marco { margin-right: 28vw; margin-left: auto; max-width: min(var(--ancho), 68vw); }
+  html[data-botella='si'] .con-botella-izq > .marco { margin-left: 24vw; margin-right: auto; max-width: min(var(--ancho), 72vw); }
+  html[data-botella='si'] .con-botella-der > .marco { margin-right: 24vw; margin-left: auto; max-width: min(var(--ancho), 72vw); }
   html[data-botella='si'] .con-botella .pasos { grid-template-columns: repeat(2, 1fr); }
 }
 /* en teléfono el carril va arriba de la sección, en el flujo */
@@ -1285,4 +1287,58 @@ html:not([data-botella]) .galeria-plana { display: block; }
    los bordes: el marco está corrido y se salía de la pantalla por la derecha */
 @media (min-width: 860px) {
   html[data-botella='si'] .con-botella .banda { width: auto; margin-left: 0; margin-right: 0; }
+}
+
+/* "Ver los 14 sabores": la lista para saltar directo a uno */
+.galeria-ver {
+  border: 1.5px solid color-mix(in srgb, var(--fg) 60%, transparent);
+  background: transparent;
+  color: var(--fg);
+  padding: .8rem 1.1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  order: 3;
+  transition: background .2s, color .2s;
+}
+.galeria-ver:hover, .galeria-ver[aria-expanded='true'] { background: var(--fg); color: var(--tono); }
+.galeria-lista {
+  position: absolute;
+  /* centrada con márgenes, no con translate: la animación de entrada usa
+     translate y lo pisaba */
+  left: 0; right: 0;
+  margin: 0 auto;
+  bottom: clamp(7rem, 12vw, 9rem);
+  z-index: 47;
+  width: min(760px, calc(100% - 2 * var(--pad)));
+  max-height: 60svh;
+  overflow-y: auto;
+  padding: 1.4rem;
+  background: var(--crema);
+  color: var(--tinta);
+  box-shadow: 0 20px 60px rgba(43, 24, 29, .25);
+  display: grid;
+  gap: 1.1rem;
+  animation: dato-entra .3s ease both;
+}
+.galeria-lista-grupo > .caps { display: block; color: var(--vino); margin-bottom: .55rem; }
+.galeria-lista-grupo > div { display: flex; flex-wrap: wrap; gap: .4rem; }
+.galeria-lista button {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  font: inherit;
+  font-size: var(--t2);
+  padding: .5rem .9rem .5rem .6rem;
+  border: 1px solid var(--marco-firme);
+  background: transparent;
+  color: var(--tinta);
+  cursor: pointer;
+}
+.galeria-lista button::before { content: ''; width: .8rem; height: .8rem; border-radius: 50%; background: var(--c); }
+.galeria-lista button:hover { border-color: var(--vino); }
+.galeria-lista button[aria-pressed='true'] { background: var(--vino); border-color: var(--vino); color: var(--hueso); }
+.galeria-ver:focus-visible, .galeria-lista button:focus-visible { outline: 2px solid var(--vino); outline-offset: 2px; }
+@media (max-width: 859px) {
+  .galeria-avance { flex-wrap: wrap; justify-content: center; }
+  .galeria-ver { order: 4; flex-basis: 100%; }
 }

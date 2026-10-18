@@ -1,21 +1,23 @@
-import { negocio } from '../datos/negocio'
+import { sabores, tamanos } from '../datos/negocio'
 
 // La portada, a la manera del video de la lata de mango que eligió Zahir: el
 // título aparece letra por letra y la botella cae girando a la derecha,
 // inclinada. La botella no vive aquí: este div vacío (`data-botella`) solo
 // le dice dónde ponerse (ver botella/escenario.js).
 //
-// Lo que antes decía la tira (sin conservadores, reparto, dulzura) va abajo
-// del texto, como datos sueltos.
+// Revisión de diseño con ChatGPT (2026-10-18): la portada prometía rapidez pero
+// no decía qué venden, a quién ni dónde. Por eso la línea de arriba nombra al
+// cliente fuerte y la zona, y abajo van los datos que un dueño de tienda busca.
+// (Se pidió "botellas de 500 ml" y se dejó "tamaños": manejan cuatro.)
 const LINEAS = [['Se', 'hacen', 'hoy.'], ['Te', 'llegan', 'mañana.']]
-const HECHOS = ['Sin conservadores', `Reparto en ${negocio.zona}`, 'Personaliza la dulzura']
+const HECHOS = [`${sabores.length} sabores`, `${tamanos.length} tamaños`, 'Sin conservadores', 'Pedidos por WhatsApp']
 
 export default function Hero() {
   return (
     <section className="hero" id="arriba">
       <div className="marco hero-caja">
         <div className="hero-texto">
-          <span className="rotulo caps hero-entra">Aguas de sabor · Hechas por una familia</span>
+          <p className="hero-quien hero-entra">Aguas naturales para tiendas, torterías y restaurantes · Zona sur de Puebla</p>
           {/* Cada letra en su caja para que suba sola; el lector de pantalla
               lee el título entero desde aria-label. */}
           <h1 aria-label="Se hacen hoy. Te llegan mañana.">
