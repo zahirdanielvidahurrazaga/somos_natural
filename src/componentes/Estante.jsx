@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { mostrarIngredientes } from '../datos/negocio'
-import Etiqueta from './Etiqueta'
+import EtiquetaReal from './EtiquetaReal'
+import { pedirSabor } from '../botella/canal'
 
 // Solo se rotula lo que es distinto: "con leche". Lo de agua es lo normal, y
 // como no todos los sabores traen `tipo`, rotular también "de agua" dejaba la
@@ -64,8 +65,23 @@ export default function Estante({ grupo, sabores }) {
 
       <div className="estante" ref={ref}>
         {sabores.map((s) => (
-          <article className="sabor" key={s.nombre} style={{ '--c': s.color }} data-revelar>
-            <Etiqueta sabor={s} />
+          <article
+            className="sabor"
+            key={s.nombre}
+            style={{ '--c': s.color }}
+            data-revelar
+            onPointerEnter={() => pedirSabor(s.nombre)}
+          >
+            {/* Un botón de verdad sobre toda la tarjeta, para que también se
+                pueda elegir con teclado (Tab + Enter). Solo se enseña si hay
+                botella 3D; sin ella no tendría nada que hacer. */}
+            <button
+              type="button"
+              className="sabor-ver"
+              aria-label={`Ver ${(s.enEtiqueta || `agua de ${s.nombre}`).toLowerCase()} en la botella`}
+              onClick={() => pedirSabor(s.nombre)}
+            />
+            <EtiquetaReal sabor={s} />
             <div className="sabor-pie">
               <h3>{s.nombre}</h3>
               {TIPO[s.tipo] && <span className="sabor-tipo caps">{TIPO[s.tipo]}</span>}

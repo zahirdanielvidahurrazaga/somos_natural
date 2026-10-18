@@ -192,6 +192,78 @@ apoyadas en el mismo piso** (`align-items: end` + `padding-bottom: .25em` en la 
 compensar el descenso del título). La de **Pedido sigue centrada** a propósito (es el cierre)
 y la de **Formación** no es `.cabeza`: va junto a la foto.
 
+## La botella 3D (2026-10-17/18)
+
+Pedido de Zahir después de rechazar un rediseño completo ("del jardín poblano",
+guardado en `git stash`): de sus referencias le gustó **la botella real como
+protagonista y que gire al bajar**. **Se quedan Yeseva + Jost y vino/crema.**
+
+Se armó primero en una prueba aparte (`public/prueba/botella.html`, con selector
+de sabores) ajustando cada detalle con él, y luego se pasó al sitio:
+
+| Archivo | Qué hace |
+|---|---|
+| `src/botella/motor.js` | La botella en three.js. No sabe nada de la página: en cada cuadro le dicen dónde ponerla (pixeles) y qué sabor enseñar |
+| `src/botella/Botella3D.jsx` | El lienzo fijo a toda la pantalla y la coreografía: sigue el hueco de la portada, viaja girando al de Sabores |
+| `src/botella/canal.js` | Eventos `pedir` (una tarjeta quiere un sabor) y `mostrando` (la botella ya lo enseña) |
+| `src/botella/orden.js` | El orden intercalado por papel, compartido con la pila |
+| `public/etiquetas/*.webp` | El arte REAL de las 14 etiquetas (de los PNG de Canva en Downloads) |
+
+La receta de cada sabor vive en `negocio.js` → `botella: { etq, agua, lechosa |
+opacidad, brillo, tapa, pulpa }`.
+
+**Lo que ya decidió Zahir (no reabrir):**
+- Silueta **Boston round de 500 ml**, `R = 0.32`, hombro en domo largo, cuello
+  corto recto con anillo. Se ajustó varias veces contra sus fotos.
+- Etiqueta **justo debajo del hombro**, 196° de la vuelta (12 cm sobre ~22 cm).
+- **PET, no vidrio**: velo del plástico en 0.08 (más alto = halo blanco sobre
+  jamaica), brillos anchos. **Sin gotas de frío**: se veía sucia.
+- Agua **casi hasta el cuello** (nivel 1.83), con física: superficie nivelada en
+  el mundo, ladeo por inercia (resorte de 0.5 s, ζ 0.24, respuesta 0.4) y ola
+  apenas visible. Lo quiso **discreto**: más fuerte "se sentía exagerado".
+- Tapa de 28 mm con estrías y anillo de seguridad; **amarilla en maracuyá**
+  (`#EBC300`, sacado de su video).
+- **Pulpa dentro del shader del agua** (DDA 3D por el rayo, absorción, se asienta
+  al fondo). Las partículas sueltas se veían "como confeti" y se salían de la
+  botella. Chía (limón) y semilla (maracuyá) redondas; frutos rojos, piña, mango,
+  melón y guanábana con **trozos grandes, pocos, irregulares y suaves**.
+- 🔴 **Orden fijo de capas transparentes: agua → plástico → etiqueta.** Con el
+  orden automático, en ciertos ángulos el plástico se pintaba encima de la
+  etiqueta y deslavaba la botella entera.
+- La etiqueta lleva un **reverso blanco** para que se vea a través de las aguas
+  transparentes cuando queda atrás.
+
+**En la página:** reemplaza la pila de la portada (que sigue de respaldo sin
+WebGL, vía `html[data-botella='si']`), cambia sola de sabor cada 4.2 s con una
+vuelta (el cambio ocurre de espaldas), viaja a la vitrina de Sabores y ahí la
+cambian las tarjetas. **En teléfono no viaja** (pasaba encima del texto): salta
+de un hueco al otro cuando la portada sale de la pantalla. three.js va en un
+archivo aparte que se carga después (~123 KB gzip).
+
+**Las tarjetas de Sabores (y la pila de respaldo) usan el ARTE REAL desde el
+2026-10-18** (`EtiquetaReal.jsx`), no la etiqueta dibujada: junto a la botella
+convivían dos versiones de cada etiqueta y chocaban; Zahir eligió el arte real.
+Esto revierte la decisión de septiembre ("le gusta el dibujo"). El arte real sí
+trae teléfono, "500 ML" y "agítese": es la etiqueta tal cual. `Etiqueta.jsx`
+(la dibujada) queda solo como caída si un sabor no trae arte.
+
+**La vitrina de Sabores va pegada (sticky)** de 980 px para arriba: cabeza y
+estantes a la izquierda, botella a la derecha mientras se recorren los sabores.
+Los estantes ahí ya no salen a sangre; se deslizan dentro de su columna.
+
+**Recorrido de los clásicos** (`Recorrido.jsx`, 2026-10-18), entre la tira y
+Sabores, sacado de una referencia de Zahir (grabación de un pin de Pinterest):
+una escena pegada dentro de una sección de 5 pantallas; cada pantalla es un
+clásico con fondo de su tono, mancha con el dibujo de línea de su fruta
+(`Motivos.jsx`) y el nombre gigante (primera palabra) que la botella atraviesa.
+La botella va inclinada y se endereza en cada cambio. **Solo los 5 clásicos**
+(decisión de Zahir: con 14 eran 14 pantallas). Los textos son genéricos y
+ciertos para todos — **no inventar descripciones por sabor**; si el negocio da
+una frase real de cada uno, va en negocio.js. La botella ahora sigue TRES
+huecos: portada → recorrido → Sabores.
+
+**SANDÍA está fuera del sitio** (no tiene etiqueta real).
+
 ## Movimiento
 
 Se agregó el 2026-09-04 porque el sitio quieto se sentía genérico. **Todo el movimiento
@@ -275,7 +347,7 @@ los 7 siguientes los mandó Zahir el 2026-09-04 desde Canva.
 | Melón | salmón | negro | **fina** | arco |
 | Guanábana | verde salvia | verde hondo | redonda | **sello** |
 
-**FALTA UNA SOLA: SANDÍA** (`real: false`). Lleva el trazo `casa` hasta que llegue su arte.
+**SANDÍA está FUERA del sitio desde el 2026-10-17** (pedido de Zahir): nunca tuvo etiqueta real y él no la tiene. Su receta quedó comentada al final de `sabores` en `negocio.js`; se devuelve cuando la diseñen. El sitio queda en 14 sabores.
 
 **Pulido del 2026-09-04**, después de comparar contra el arte real:
 la jamaica pasó de arco a nombre recto con **ramas finas en las cuatro esquinas** y el centro

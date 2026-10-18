@@ -1,33 +1,12 @@
 import { useEffect, useState } from 'react'
 import { sabores, tamanos } from '../datos/negocio'
-import Etiqueta from './Etiqueta'
+import EtiquetaReal from './EtiquetaReal'
 import GotitaSello from './GotitaSello'
+import { ordenDePila } from '../botella/orden'
 
 const CADA = 3200
 
-// Luminosidad del papel de una etiqueta (0 = negro, 1 = blanco).
-function luz(hex) {
-  const n = parseInt(hex.slice(1), 16)
-  const [r, g, b] = [n >> 16, (n >> 8) & 255, n & 255].map((v) => v / 255)
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b
-}
-
-// En el orden del menú se juntan tres papeles claros seguidos (tamarindo,
-// limón, café) y la pila se queda sin color. Aquí se intercalan: el más
-// oscuro, el más claro, el siguiente más oscuro… así siempre asoman papeles
-// distintos detrás del de adelante. Sale de los datos: si llega la etiqueta
-// de sandía o cambia un papel, el orden se acomoda solo.
-function intercalarPorPapel(lista) {
-  const porLuz = [...lista].sort((a, b) => luz(a.etiqueta.fondo) - luz(b.etiqueta.fondo))
-  const orden = []
-  while (porLuz.length) {
-    orden.push(porLuz.shift())
-    if (porLuz.length) orden.push(porLuz.pop())
-  }
-  return orden
-}
-
-const PILA = intercalarPorPapel(sabores)
+const PILA = ordenDePila(sabores)
 
 export default function Portada() {
   const [i, setI] = useState(() => Math.max(0, PILA.findIndex((s) => s.nombre === 'Jamaica')))
@@ -82,10 +61,14 @@ export default function Portada() {
                 key={s.nombre}
                 style={{ '--c': s.color }}
               >
-                <Etiqueta sabor={s} />
+                <EtiquetaReal sabor={s} />
               </div>
             ))}
           </div>
+          {/* El hueco de la botella 3D: vacío a propósito. La botella vive en un
+              lienzo fijo y se coloca encima de este div; sin WebGL no se
+              enseña y queda la pila de etiquetas. */}
+          <div className="botella-hueco botella-hueco-portada" data-botella="portada" />
           <GotitaSello />
         </div>
       </div>

@@ -44,8 +44,17 @@ export const mostrarIngredientes = false
 //   ondas / goteo / sembrado / rincones — adornos de fondo de esa etiqueta
 //   selloRect — el sello va de estampilla rectangular, no redondo
 //
-// FALTA UNA SOLA: la de SANDÍA. Lleva la plantilla de la casa hasta que llegue.
+// SANDÍA está fuera del sitio hasta que tenga etiqueta real (ver al final de la lista).
 // GUANÁBANA se dio de alta como sabor de temporada el 2026-09-04.
+//
+// `botella` es la receta de la botella 3D (rediseño 2026-10-18):
+//   etq      — el arte REAL de su etiqueta, en public/etiquetas/<etq>.webp
+//   agua     — color del líquido · lechosa: no deja pasar la luz
+//   opacidad — las que dejan pasar la luz · brillo: tono de su brillo
+//   tapa     — color de la tapa si no es blanca (maracuyá: amarilla)
+//   pulpa    — chía, semilla o trozos dentro del agua: densidad, frecuencia
+//              (más baja = trozos más grandes), tamaño, absorción, cuánto se
+//              asienta al fondo, colores y forma (1 = trozo irregular)
 //
 // El `color` es el acento del sabor en el resto del sitio (el punto de la lista
 // de pedido, el nombre al pasar el mouse). Suele ser la tinta de su etiqueta.
@@ -61,26 +70,31 @@ export const sabores = [
     nombre: 'Jamaica', grupo: 'clasicos', color: '#9B2247', tipo: 'agua',
     ingredientes: ['Agua', 'Azúcar', 'Flor de jamaica'],
     etiqueta: { real: true, trazo: 'centro', fondo: '#FAEDE9', tinta: '#9B2247', letra: 'groovy', motivo: 'jamaica', rincones: 'jamaica-rama' },
+    botella: { etq: 'jamaica',      agua: 0x2e030e, brillo: 0x9b2247 },
   },
   {
     nombre: 'Horchata', grupo: 'clasicos', color: '#2C4A6E', tipo: 'agua',
     ingredientes: ['Agua', 'Azúcar', 'Arroz'],
     etiqueta: { real: true, trazo: 'centro', fondo: '#EFEFE8', tinta: '#2C4A6E', letra: 'serif', motivo: 'horchata' },
+    botella: { etq: 'horchata',     agua: 0xe6dccb, lechosa: true },
   },
   {
     nombre: 'Maracuyá', grupo: 'clasicos', color: '#4A4436', tipo: 'agua',
     ingredientes: ['Agua', 'Azúcar', 'Concentrado de maracuyá'],
     etiqueta: { real: true, trazo: 'arco', fondo: '#4A4436', tinta: '#F2EADA', letra: 'redonda', motivo: 'maracuya' },
+    botella: { etq: 'maracuya',     agua: 0xe9950f, brillo: 0xffc548, tapa: 0xebc300, pulpa: { dens: 0.09, frec: 70, tam: 0.24, absor: 45, fondo: 0.5, color: 0x1d140c, color2: 0x4a3418 } },
   },
   {
     nombre: 'Tamarindo', grupo: 'clasicos', color: '#7A5A2E', tipo: 'agua',
     ingredientes: ['Agua', 'Azúcar', 'Concentrado de tamarindo'],
     etiqueta: { real: true, trazo: 'centro', fondo: '#FAF3D8', tinta: '#7A5A2E', letra: 'serif', motivo: 'tamarindo' },
+    botella: { etq: 'tamarindo',    agua: 0x8f5524, brillo: 0xc98a45, opacidad: 0.9 },
   },
   {
     nombre: 'Limón, pepino y chía', enEtiqueta: 'Agua de limón con pepino y chía',
     grupo: 'clasicos', color: '#4F7A3A', tipo: 'agua', ingredientes: [],
     etiqueta: { real: true, trazo: 'arco', fondo: '#FAF6E8', tinta: '#4F7A3A', letra: 'serif', motivo: 'limon' },
+    botella: { etq: 'limon', agua: 0xc2cf8c, opacidad: 0.86, pulpa: { dens: 0.02, frec: 55, tam: 0.3, absor: 5, fondo: 0.25, color: 0x23201c, color2: 0x6d6b5c } },
   },
 
   // ── ESPECIALES ───────────────────────────────────────────────────────────
@@ -88,49 +102,58 @@ export const sabores = [
     nombre: 'Café', grupo: 'especiales', color: '#B5651D', tipo: 'leche',
     ingredientes: ['Agua', 'Leche entera', 'Café'],
     etiqueta: { real: true, trazo: 'esquinas', fondo: '#F3EFE7', tinta: '#B5651D', letra: 'bold', motivo: 'cafe' },
+    botella: { etq: 'cafe',         agua: 0x8c6448, lechosa: true },
   },
   {
     nombre: 'Chocolate', grupo: 'especiales', color: '#6E3B2A', tipo: 'leche',
     ingredientes: ['Agua', 'Leche entera', 'Chocolate'],
     etiqueta: { real: true, trazo: 'arco', fondo: '#2E1D16', tinta: '#F5DFC0', onda: '#6B4230', letra: 'bold', motivo: 'chocolate', goteo: true },
+    botella: { etq: 'chocolate',    agua: 0x96705a, lechosa: true },
   },
   {
     nombre: 'Frutos rojos', grupo: 'especiales', color: '#5E2323', tipo: null, ingredientes: [],
     etiqueta: { real: true, trazo: 'arco', fondo: '#4E1D1D', tinta: '#E8E2DE', letra: 'groovy', motivo: 'frutos-rojos' },
+    botella: { etq: 'frutos-rojos', agua: 0x6e1027, brillo: 0xb0264a, opacidad: 0.9, pulpa: { dens: 0.13, frec: 9, forma: 1, tam: 0.3, absor: 6, fondo: 0.9, color: 0xb21a3c, color2: 0x4a0d16 } },
   },
   {
     nombre: 'Vainilla', grupo: 'especiales', color: '#B8952F', tipo: 'leche',
     ingredientes: ['Agua', 'Azúcar', 'Vainilla', 'Leche entera', 'Leche condensada', 'Leche evaporada'],
     etiqueta: { real: true, trazo: 'sello', selloRect: true, fondo: '#1C1A17', tinta: '#C9A227', papel: '#F7F1EE', onda: '#7E8B5A', letra: 'serif', motivo: 'vainilla' },
+    botella: { etq: 'vainilla',     agua: 0xf0e4c4, lechosa: true },
   },
 
   // ── POR TEMPORADA ────────────────────────────────────────────────────────
   {
     nombre: 'Naranja', grupo: 'temporada', color: '#EF8A3C', tipo: null, ingredientes: [],
     etiqueta: { real: true, trazo: 'arco', fondo: '#FDF8EE', tinta: '#E07B2A', letra: 'serif', motivo: 'naranja' },
+    botella: { etq: 'naranja',      agua: 0xf27d1e, brillo: 0xffb45a, opacidad: 0.9 },
   },
   {
     nombre: 'Mango', grupo: 'temporada', color: '#E8873C', tipo: 'agua',
     ingredientes: ['Agua', 'Azúcar', 'Concentrado de mango'],
     etiqueta: { real: true, trazo: 'arco', fondo: '#E8873C', tinta: '#FBF0DC', onda: '#F0B23F', letra: 'redonda', motivo: 'mango', ondas: true, sembrado: true },
+    botella: { etq: 'mango',        agua: 0xf2a227, lechosa: true, pulpa: { dens: 0.26, frec: 9, forma: 1, tam: 0.36, absor: 32, fondo: 0.6, color: 0xffd57e, color2: 0xd9800f } },
   },
   {
     nombre: 'Piña', grupo: 'temporada', color: '#7FA394', tipo: null, ingredientes: [],
     etiqueta: { real: true, trazo: 'arco', fondo: '#C6D6D1', tinta: '#F7EBC6', acento: '#C98A12', onda: '#E4AE33', letra: 'redonda', motivo: 'pina', sembrado: true },
+    botella: { etq: 'pina',         agua: 0xf1cf62, brillo: 0xffe08a, opacidad: 0.88, pulpa: { dens: 0.13, frec: 9, forma: 1, tam: 0.3, absor: 7, fondo: 0.8, color: 0xfde7a6, color2: 0xe2ad3c } },
   },
   {
     nombre: 'Melón', grupo: 'temporada', color: '#C97A4A', tipo: null, ingredientes: [],
     etiqueta: { real: true, trazo: 'arco', fondo: '#DFA075', tinta: '#16130F', letra: 'fina', motivo: 'melon' },
+    botella: { etq: 'melon',        agua: 0xf3b98e, lechosa: true, pulpa: { dens: 0.26, frec: 9, forma: 1, tam: 0.36, absor: 32, fondo: 0.6, color: 0xfcd7b6, color2: 0xe0905e } },
   },
   {
     nombre: 'Guanábana', grupo: 'temporada', color: '#2C5340', tipo: null, ingredientes: [],
     etiqueta: { real: true, trazo: 'sello', fondo: '#9FC4B4', tinta: '#2C5340', papel: '#FFFFFF', acento: '#A9713C', letra: 'redonda', motivo: 'guanabana' },
+    botella: { etq: 'guanabana',    agua: 0xece8d8, lechosa: true, pulpa: { dens: 0.26, frec: 9, forma: 1, tam: 0.36, absor: 32, fondo: 0.6, color: 0xf1ecdc, color2: 0xd8d0b6 } },
   },
-  {
-    // ÚNICO sin diseño real todavía: lleva la plantilla de la casa.
-    nombre: 'Sandía', grupo: 'temporada', color: '#C33B52', tipo: null, ingredientes: [],
-    etiqueta: { real: false, trazo: 'casa', fondo: '#FCEEF0', tinta: '#C33B52', letra: 'serif', motivo: 'sandia' },
-  },
+  // SANDÍA se quitó del sitio el 2026-10-17 a pedido de Zahir: nunca ha tenido
+  // etiqueta real. Cuando la diseñen, se devuelve con esta receta (y su arte
+  // va a la botella 3D):
+  //   { nombre: 'Sandía', grupo: 'temporada', color: '#C33B52', tipo: null, ingredientes: [],
+  //     etiqueta: { real: false, trazo: 'casa', fondo: '#FCEEF0', tinta: '#C33B52', letra: 'serif', motivo: 'sandia' } },
 ]
 
 // ── Tamaños y dulzura ────────────────────────────────────────────────────────
