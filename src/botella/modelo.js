@@ -403,7 +403,7 @@ export function armarBotella({ texturaDe, ligera = false }) {
     uSuperficie.value.setHex(b.agua).lerp(new THREE.Color(0xffffff), b.lechosa ? 0.12 : 0.22)
     // El brillo lo pone el plástico: el agua va satinada, no espejo
     agua.roughness = b.lechosa ? 0.3 : 0.14
-    agua.clearcoat = b.lechosa ? 0.15 : 0.3
+    agua.clearcoat = ligera ? 0 : b.lechosa ? 0.15 : 0.3
     agua.clearcoatRoughness = 0.25
     // Las que dejan pasar la luz: apenas se alcanza a ver a través de ellas.
     // Antes se multiplicaba por 0.8 y quedaban al ~58%: se veían como vidrio
@@ -438,6 +438,16 @@ export function armarBotella({ texturaDe, ligera = false }) {
     moverAgua()
     uCamLocal.value.copy(botella.worldToLocal(camLocal.copy(camera.position)))
     uDeriva.value.set(fis.ladeo.x * 0.04, Math.sin(t * 0.35) * 0.008, fis.ladeo.y * 0.04)
+  }
+
+  // En la versión ligera (celular) fuera el barniz (clearcoat) y el brillo de
+  // tela (sheen): son lo más caro del material y en pantalla chica casi no se
+  // notan. Con ellos un iPhone se sentía trabado.
+  if (ligera) {
+    botella.traverse((o) => {
+      const m = o.material
+      if (m?.isMeshPhysicalMaterial) { m.clearcoat = 0; m.sheen = 0 }
+    })
   }
 
   return {

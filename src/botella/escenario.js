@@ -17,8 +17,12 @@ import { ALTO_BOTELLA, armarBotella, crearTexturas, estudioDe } from './modelo'
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function crearEscenario(canvas, { movil = false, quieto = false } = {}) {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !movil, alpha: true, powerPreference: 'high-performance' })
-  renderer.setPixelRatio(Math.min(devicePixelRatio, movil ? 1.5 : 1.75))
+  // Suavizado siempre y resolución 2× en celular: sin suavizado y a 1.5× la
+  // botella se veía pixeleada en un iPhone (pantalla 3×). Si el aparato no
+  // alcanza, la resolución baja sola (ver `ajustarCalidad`).
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' })
+  let dpr = Math.min(devicePixelRatio, movil ? 2 : 1.75)
+  renderer.setPixelRatio(dpr)
   renderer.toneMapping = THREE.ACESFilmicToneMapping
   renderer.toneMappingExposure = 0.92
   renderer.outputColorSpace = THREE.SRGBColorSpace
@@ -43,15 +47,39 @@ export function crearEscenario(canvas, { movil = false, quieto = false } = {}) {
   scene.add(lugar)
 
   // ── Pantalla ───────────────────────────────────────────────────────────
-  let vw = 1, vh = 1, altoMundo = 1
+  // El lienzo mide lo alto MÁXIMO de la pantalla (100lvh en el CSS) y solo se
+  // reconstruye si cambia el ancho o ese alto (girar el teléfono). En iPhone la
+  // barra de Safari aparece y desaparece al hacer scroll y cada vez disparaba
+  // un "resize": reconstruir el lienzo ahí daba tirones.
+  let vw = 0, vh = 0, altoMundo = 1
   function medir() {
-    vw = innerWidth; vh = innerHeight
-    renderer.setSize(vw, vh, false)
-    camera.aspect = vw / vh
-    camera.updateProjectionMatrix()
-    altoMundo = 2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2))
+    const w = canvas.clientWidth || innerWidth
+    const h = canvas.clientHeight || innerHeight
+    if (w !== vw || h !== vh) {
+      vw = w; vh = h
+      renderer.setSize(vw, vh, false)
+      camera.aspect = vw / vh
+      camera.updateProjectionMatrix()
+      altoMundo = 2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2))
+    }
     huecos = [...document.querySelectorAll('[data-botella]')]
     despertar()
+  }
+
+  // Calidad automática: si el promedio de los últimos cuadros pasa de ~22 ms
+  // (menos de 45 por segundo), la resolución baja un escalón. Nunca sube de
+  // regreso, para que no oscile.
+  const tiempos = []
+  function ajustarCalidad(dt) {
+    tiempos.push(dt)
+    if (tiempos.length < 45) return
+    const prom = tiempos.reduce((a, b) => a + b, 0) / tiempos.length
+    tiempos.length = 0
+    if (prom > 0.022 && dpr > 1.25) {
+      dpr = Math.max(1.25, dpr - 0.25)
+      renderer.setPixelRatio(dpr)
+      renderer.setSize(vw, vh, false)
+    }
   }
   let huecos = []
   addEventListener('resize', medir)
@@ -204,11 +232,17 @@ export function crearEscenario(canvas, { movil = false, quieto = false } = {}) {
     modelo.cuadro(t, camera)
     renderer.render(scene, camera)
     pintada = true
+    if (t - antesDormir > 0.5) ajustarCalidad(dt)
     requestAnimationFrame(cuadro)
   }
+  // después de dormir, el primer cuadro trae un dt enorme: no cuenta para
+  // la calidad automática
+  let antesDormir = 0
   function dormir() {
     if (pintada) { renderer.clear(); pintada = false }
     dormido = true
+    tiempos.length = 0
+    antesDormir = reloj.getElapsedTime()
   }
   const alRodar = () => despertar()
   const alVer = () => despertar()

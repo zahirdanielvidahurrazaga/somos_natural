@@ -1062,9 +1062,13 @@ figure img, figure video {
    lugar y la galería enseña la etiqueta plana. */
 .botella-lienzo {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
   width: 100vw;
+  /* lo alto máximo de la pantalla: no cambia cuando la barra de Safari
+     aparece o desaparece (ver escenario.js, medir) */
   height: 100vh;
+  height: 100lvh;
   z-index: 40;
   pointer-events: none;
 }
