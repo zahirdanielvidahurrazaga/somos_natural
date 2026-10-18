@@ -264,6 +264,76 @@ huecos: portada → recorrido → Sabores.
 
 **SANDÍA está fuera del sitio** (no tiene etiqueta real).
 
+## La portada es el refri (rama `refri`, 2026-10-18)
+
+Zahir no quería tarjetas ni "solo scrollear": quiere **experiencia**. Se armaron
+dos prototipos (`configurador.html` y `refri.html`, código en
+`src/prototipos/`, NO se publican) y **eligió el refri**. Plan en 3 partes:
+**(1) refri como portada + pantalla del sabor — HECHA**, (2) ~~hielera~~ (se
+descartó: la presentación es solo para ver y el pedido sigue en el armador),
+(3) limpieza — HECHA: quitar recorrido,
+estantes y el armador viejo; dejar Cómo trabajamos, Tu negocio, Eventos y Dónde
+comprar abajo.
+
+| Archivo | Qué hace |
+|---|---|
+| `src/botella/modelo.js` | La botella como pieza (geometría, agua, pulpa); la usan el motor viejo, el refri y los prototipos |
+| `src/refri/escena.js` | El refri 3D con sus 14 botellas y la botella elegida. **Dos lienzos** (ver abajo) |
+| `src/componentes/RefriPortada.jsx` | Portada (texto + refri), pantalla del sabor, rutas `/#sabor`, teclado, hielera |
+
+**Ajustes del 2026-10-18 (noche), pedidos por Zahir:**
+- Botellas a **0.8** en el refri (a 0.6 "se veían muy pequeñas") y **refri
+  pulido**: cuerpo vino con esquinas redondeadas y barniz, letrero iluminado,
+  puerta de vidrio con brillo en diagonal y jaladera cromada, tiras con el
+  nombre del grupo en cada repisa, LED, rejilla y patitas (todo en `escena.js`,
+  texturas pintadas en canvas, sin imágenes).
+- **La pantalla del sabor es SOLO para ver** (nada de tamaño, dulzura ni
+  hielera ahí; el pedido vive en su sección). Se quitaron la hielera y el
+  garrafón del sitio (siguen en los prototipos).
+- **Presentación, no otra pantalla**: el fondo del sabor es translúcido con
+  `backdrop-filter: blur`, así el refri se queda detrás desenfocado. La botella
+  **gira sola** (0.55 rad/s), flota apenas y se puede agarrar. Se avanza con
+  flechas, puntitos, teclado o deslizando; se cierra con la X, tocando afuera o
+  Esc.
+
+**2ª ronda (2026-10-18, más noche):** se quitó el letrero "Somos Natural"
+del refri (la cabeza va lisa), botellas a **0.92**, y **la presentación dejó de
+ser una capa encima**: ahora es la sección `#sabor`, justo abajo del refri, en
+el flujo de la página. Tocar una botella desliza la página hasta ahí (scroll
+propio de 1.2 s, `deslizarA`) y la botella sale de su repisa y baja con el
+scroll dando una vuelta (`bajada` en `escena.js`). Subir la regresa. Siempre
+hay un sabor "actual" (al principio, jamaica).
+
+**Limpieza (parte 3, 2026-10-18):** se borraron la portada vieja (pila),
+el recorrido de los clásicos, las tarjetas de sabores con su vitrina, la
+sección Sabores entera (estantes, franja, tamaños/dulzura), la botella del
+sitio viejo (`motor.js`, `Botella3D.jsx`, `canal.js`, `orden.js`), la gotita
+con aro y los prototipos (`configurador.html`, `refri.html`,
+`src/prototipos/`). La barra de arriba ya **solo lleva el sello**, sin el
+nombre escrito. Orden de la página hoy:
+
+```
+Refri (portada) → Sabor (#sabor) → Tira → Cómo trabajamos → Formación →
+Tu negocio → Eventos → Dónde comprar → Pedido (armador) → Pie
+```
+
+**Las capas (no cambiarlas a la ligera):** el nombre gigante y la mancha van
+DETRÁS de la botella y los textos ENCIMA, y la botella viaja desde el refri.
+Por eso: `.lienzo-refri` (z 3) → fondo/mancha/nombre de la sección (flujo) →
+`.lienzo-botella` (z 65, solo la del sabor) → textos y controles (z 70) →
+encabezado (z 80). Al
+elegir, la botella pasa de una escena a la otra conservando su lugar en el
+mundo (misma cámara). Los lienzos no reciben clics: se escucha en los huecos.
+
+Detalles: mientras carga el 3D se enseña un refri dibujado con CSS; sin WebGL,
+ese refri lleva las etiquetas como botones. Los 14 sabores existen como botones
+reales (`.refri-lista`, visibles al llegar con teclado). Esc cierra, flechas
+cambian de sabor, atrás del navegador cierra. En teléfono la pantalla del sabor
+se desliza y el nombre gigante sube con ella (`--desliza`).
+
+🔴 **La Mac no distingue mayúsculas**: `hielera.js` y `Hielera.jsx` (o
+`configurador.jsx` y `Configurador.jsx`) son el MISMO archivo. Ya pasó dos veces.
+
 ## Movimiento
 
 Se agregó el 2026-09-04 porque el sitio quieto se sentía genérico. **Todo el movimiento

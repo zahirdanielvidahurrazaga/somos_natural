@@ -23,9 +23,10 @@ export const negocio = {
 }
 
 // ── Ingredientes ─────────────────────────────────────────────────────────────
-// Apagados a pedido de Zahir. Los datos se quedan aquí por si se retoman: salen
-// de las recetas del ERP (abril 2026) y no están confirmados por la familia.
-export const mostrarIngredientes = false
+// No se enseñan en ningún lado (a pedido de Zahir). Los datos se quedan en cada
+// sabor por si se retoman: salen de las recetas del ERP (abril 2026) y NO están
+// confirmados por la familia. El interruptor `mostrarIngredientes` se borró
+// junto con las tarjetas que lo leían: un toggle que nadie lee no es toggle.
 
 // ── Sabores ──────────────────────────────────────────────────────────────────
 // Del MENÚ-3.pdf que manda el negocio por Instagram. Tres grupos.
@@ -262,10 +263,5 @@ export const fotos = {
     src: '/img/fotos/formacion.jpg',
     alt: 'Un agua de jamaica y una de horchata, frías y recién puestas, junto a una maceta de talavera',
     ancho: 1200, alto: 1500,
-  },
-  franja: {
-    src: '/img/fotos/formacion-ancha.jpg',
-    alt: 'Nueve aguas de distintos sabores formadas frente a una pared roja',
-    ancho: 2200, alto: 1000,
   },
 }

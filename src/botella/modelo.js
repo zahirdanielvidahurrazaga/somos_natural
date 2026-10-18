@@ -1,56 +1,68 @@
 import * as THREE from 'three'
 
 // ─────────────────────────────────────────────────────────────────────────────
-// La botella 3D de Somos Natural (2026-10-18). Se armó en una prueba aparte
-// (public/prueba/botella.html) con Zahir mirando cada detalle: Boston round de
-// 500 ml, la etiqueta con su arte REAL, agua que se queda nivelada y chapotea
-// con la inercia, pulpa dentro del líquido y tapa de 28 mm. Aquí es la misma
-// pieza hecha módulo: no sabe nada de la página; quien la usa le dice en cada
-// cuadro dónde ponerla (en pixeles de la pantalla) y qué sabor enseñar.
+// La botella como pieza: geometría, materiales, agua con física y pulpa. No
+// tiene cámara ni lienzo; la usan el motor del sitio (una botella que sigue
+// sus huecos) y los prototipos (el configurador, el refri con 14 botellas).
+// Todo lo que se decidió con Zahir sobre la botella vive aquí (ver CLAUDE.md,
+// "La botella 3D").
 // ─────────────────────────────────────────────────────────────────────────────
 
-export function hayWebGL() {
-  try {
-    const c = document.createElement('canvas')
-    return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl')))
-  } catch {
-    return false
+export const ALTO_BOTELLA = 2.16   // de la base a la tapa, en unidades
+
+export function estudioDe(renderer) {
+  const pmrem = new THREE.PMREMGenerator(renderer)
+// ── Luz de estudio ───────────────────────────────────────────────────────
+// Un cuarto oscuro con dos cajas de luz altas a los lados y una arriba: son
+// las franjas verticales de brillo que hacen que una botella se lea como foto
+// de producto y no como dibujo.
+function estudio() {
+  const cuarto = new THREE.Scene()
+  cuarto.add(new THREE.Mesh(
+    new THREE.SphereGeometry(20, 32, 16),
+    new THREE.MeshBasicMaterial({ color: new THREE.Color(0.32, 0.29, 0.28), side: THREE.BackSide }),
+  ))
+  const caja = (w, h, brillo, x, y, z, ry) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(brillo, brillo, brillo * 0.96), side: THREE.DoubleSide }))
+    m.position.set(x, y, z); m.lookAt(0, y, 0)
+    cuarto.add(m)
+  }
+  caja(1.6, 12, 6, -6, 1, 3)
+  caja(0.8, 12, 3, 6, 1, 2)
+  caja(6, 3, 3, 0, 9, 0)
+  caja(3, 8, 1.6, 0, 1, -7)
+  return pmrem.fromScene(cuarto, 0.02).texture
+}
+
+  const env = estudio()
+  pmrem.dispose()
+  return env
+}
+
+// Las etiquetas se cargan una vez y las comparten todas las botellas.
+export function crearTexturas(renderer) {
+  const cargador = new THREE.TextureLoader()
+  const texturas = {}
+  return function texturaDe(etq) {
+    if (!texturas[etq]) {
+      texturas[etq] = cargador.loadAsync(`/etiquetas/${etq}.webp`).then((t) => {
+        t.colorSpace = THREE.SRGBColorSpace
+        t.anisotropy = renderer.capabilities.getMaxAnisotropy()
+        // Recorta el filo negro que traen varios artes
+        t.offset.set(0.012, 0.02)
+        t.repeat.set(0.976, 0.96)
+        return t
+      })
+    }
+    return texturas[etq]
   }
 }
 
-export function crearBotella(canvas, { quieto = false } = {}) {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true })
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75))
-  renderer.toneMapping = THREE.ACESFilmicToneMapping
-  renderer.toneMappingExposure = 0.92
-  renderer.outputColorSpace = THREE.SRGBColorSpace
+const aSRGB = (hex, v) => v.set(((hex >> 16) & 255) / 255, ((hex >> 8) & 255) / 255, (hex & 255) / 255)
+const blancoTapa = 0xf3f1ed
 
-  const scene = new THREE.Scene()
-  const pmrem = new THREE.PMREMGenerator(renderer)
-
-  // ── Luz de estudio ───────────────────────────────────────────────────────
-  // Un cuarto oscuro con dos cajas de luz altas a los lados y una arriba: son
-  // las franjas verticales de brillo que hacen que una botella se lea como foto
-  // de producto y no como dibujo.
-  function estudio() {
-    const cuarto = new THREE.Scene()
-    cuarto.add(new THREE.Mesh(
-      new THREE.SphereGeometry(20, 32, 16),
-      new THREE.MeshBasicMaterial({ color: new THREE.Color(0.32, 0.29, 0.28), side: THREE.BackSide }),
-    ))
-    const caja = (w, h, brillo, x, y, z, ry) => {
-      const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(brillo, brillo, brillo * 0.96), side: THREE.DoubleSide }))
-      m.position.set(x, y, z); m.lookAt(0, y, 0)
-      cuarto.add(m)
-    }
-    caja(1.6, 12, 6, -6, 1, 3)
-    caja(0.8, 12, 3, 6, 1, 2)
-    caja(6, 3, 3, 0, 9, 0)
-    caja(3, 8, 1.6, 0, 1, -7)
-    return pmrem.fromScene(cuarto, 0.02).texture
-  }
-  scene.environment = estudio()
-
+// `botella` queda con la base en y = 0. Para colocarla, mételo a otro grupo.
+export function armarBotella({ texturaDe }) {
   // ── La botella ───────────────────────────────────────────────────────────
   // Boston round de 500 ml: cuerpo recto y liso, hombro en domo, cuello corto
   // con su anillo y tapa de 28 mm. Medidas de catálogo (proporciones sacadas de sus
@@ -373,74 +385,12 @@ export function crearBotella(canvas, { quieto = false } = {}) {
   etiqueta.material.transparent = true
   etiqueta.renderOrder = 3
 
-  // pivote: los giros · lugar: posición y tamaño en pantalla (con la sombra)
-  botella.position.y = -1.08
-  const pivote = new THREE.Group()
-  pivote.add(botella)
-  const lugar = new THREE.Group()
-  lugar.add(pivote)
-  scene.add(lugar)
-
-  const sombraTex = (() => {
-    const c = document.createElement('canvas'); c.width = c.height = 128
-    const g = c.getContext('2d')
-    const r = g.createRadialGradient(64, 64, 0, 64, 64, 64)
-    r.addColorStop(0, 'rgba(43,24,29,.35)'); r.addColorStop(1, 'rgba(43,24,29,0)')
-    g.fillStyle = r; g.fillRect(0, 0, 128, 128)
-    return new THREE.CanvasTexture(c)
-  })()
-  const sombra = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.5), new THREE.MeshBasicMaterial({ map: sombraTex, transparent: true, depthWrite: false }))
-  sombra.rotation.x = -Math.PI / 2
-  sombra.position.y = -1.085
-  lugar.add(sombra)
-
-  // ── Cámara y pantalla ──────────────────────────────────────────────────
-  // Cámara fija mirando de frente: así un punto de la pantalla se traduce
-  // directo a un punto del plano z = 0, que es donde vive la botella.
-  const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 50)
-  camera.position.set(0, 0, 7)
-  const luz = new THREE.DirectionalLight(0xfff4ec, 0.9)
-  luz.position.set(-3, 5, 4)
-  scene.add(luz)
-  const ALTO_BOTELLA = 2.16  // de la base a la tapa, en unidades
-  let ancho = 1, alto = 1, altoMundo = 1
-  function medir() {
-    ancho = innerWidth; alto = innerHeight
-    renderer.setSize(ancho, alto, false)
-    camera.aspect = ancho / alto
-    camera.updateProjectionMatrix()
-    altoMundo = 2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2))
-  }
-  addEventListener('resize', medir)
-  medir()
-
-  // ── Sabores ────────────────────────────────────────────────────────────
-  const cargador = new THREE.TextureLoader()
-  const texturas = {}
-  function texturaDe(etq) {
-    if (!texturas[etq]) {
-      texturas[etq] = cargador.loadAsync(`/etiquetas/${etq}.webp`).then((t) => {
-        t.colorSpace = THREE.SRGBColorSpace
-        t.anisotropy = renderer.capabilities.getMaxAnisotropy()
-        // Recorta el filo negro que traen varios artes
-        t.offset.set(0.012, 0.02)
-        t.repeat.set(0.976, 0.96)
-        return t
-      })
-    }
-    return texturas[etq]
-  }
-
-  const aSRGB = (hex, v) => v.set(((hex >> 16) & 255) / 255, ((hex >> 8) & 255) / 255, (hex & 255) / 255)
-  const blancoTapa = 0xf3f1ed
-  // Cada pedido de sabor lleva su turno. Si mientras se descarga una etiqueta
-  // llega otro pedido, el viejo ya no toca nada: con mala señal, una descarga
-  // lenta terminaba después y dejaba la botella con el sabor equivocado.
-  let turno = 0
-  async function aplicar(b, mio) {
+  // Pone un sabor. `vigente()` permite a quien llama cancelar un pedido viejo
+  // si mientras bajaba la etiqueta llegó otro (devuelve false si no se puso).
+  async function aplicar(b, vigente = () => true) {
     let mapa
     try { mapa = await texturaDe(b.etq) } catch { return false }
-    if (mio !== turno) return false
+    if (!vigente()) return false
     etiqueta.material.map = mapa
     etiqueta.material.needsUpdate = true
     agua.color.setHex(b.agua)
@@ -458,96 +408,43 @@ export function crearBotella(canvas, { quieto = false } = {}) {
     agua.opacity = b.opacidad ?? 1
     agua.depthWrite = !b.opacidad
     agua.needsUpdate = true
-    const p = b.pulpa
-    if (p) {
+    receta = b
+    ponerPulpa()
+    return true
+  }
+  let receta = null
+  let conPulpa = true
+  function ponerPulpa() {
+    const p = receta?.pulpa
+    if (p && conPulpa) {
       uPulpa.value.set(p.dens, p.frec, p.tam, p.absor)
       aSRGB(p.color, uPulpaColor.value)
       aSRGB(p.color2, uPulpaColor2.value)
-      aSRGB(b.agua, uAguaSRGB.value)
+      aSRGB(receta.agua, uAguaSRGB.value)
       uFondo.value = p.fondo
       uForma.value = p.forma ?? 0
     } else {
       uPulpa.value.x = 0
     }
-    return true
   }
 
-  // Cambiar de sabor con una vuelta completa: el cambio ocurre a media vuelta,
-  // cuando la etiqueta queda de espaldas, así nunca se ve el brinco.
-  const VUELTA = 0.95
-  let cambio = null          // { receta, mio, inicio, promesa, alListo }
-  let giroCambio = 0
-  // `alListo` solo se llama si ESE sabor quedó puesto (no lo ganó otro pedido)
-  function ponerSabor(receta, alListo) {
-    const mio = ++turno
-    texturaDe(receta.etq)
-    if (quieto) { aplicar(receta, mio).then((ok) => ok && alListo?.()); return }
-    cambio = { receta, mio, inicio: performance.now(), promesa: null, alListo }
-  }
-  function aplicarYa(receta) { return aplicar(receta, ++turno) }
-  function precargar(recetas) { recetas.forEach((r) => texturaDe(r.etq)) }
-
-  // ── Cada cuadro ────────────────────────────────────────────────────────
-  // `dondeVa()` lo da quien usa la botella: { x, y, altoPx, rz, giro, visible }
-  let dondeVa = () => ({ visible: false })
-  let corriendo = true
-  let pintada = true
-  const reloj = new THREE.Clock()
+  // Cada cuadro: el agua (física) y la pulpa (cámara en coordenadas de la
+  // botella y una deriva lenta).
   const camLocal = new THREE.Vector3()
-  const suaveCambio = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2)
-
-  function cuadro() {
-    if (!corriendo) return
-    requestAnimationFrame(cuadro)
-    const d = dondeVa()
-    if (!d.visible) {
-      if (pintada) { renderer.clear(); pintada = false }
-      return
-    }
-    pintada = true
-    const t = reloj.getElapsedTime()
-
-    if (cambio) {
-      const k = Math.min(1, (performance.now() - cambio.inicio) / (VUELTA * 1000))
-      giroCambio = suaveCambio(k) * Math.PI * 2
-      if (!cambio.promesa && k >= 0.5) cambio.promesa = aplicar(cambio.receta, cambio.mio)
-      if (k >= 1) {
-        giroCambio = 0
-        const { promesa, alListo } = cambio
-        cambio = null
-        promesa?.then((ok) => ok && alListo?.())
-      }
-    }
-
-    const escala = (d.altoPx / alto) * altoMundo / ALTO_BOTELLA
-    lugar.position.set(
-      ((d.x - ancho / 2) / alto) * altoMundo,
-      (-(d.y - alto / 2) / alto) * altoMundo + (quieto ? 0 : Math.sin(t * 1.2) * 0.02 * escala),
-      0,
-    )
-    lugar.scale.setScalar(escala)
-    pivote.rotation.z = d.rz
-    // Un vaivén chiquito encima del giro para que nunca esté muerta
-    pivote.rotation.y = d.giro + giroCambio + (quieto ? 0 : Math.sin(t * 0.8) * 0.12)
-
+  function cuadro(t, camera) {
     moverAgua()
-    // la pulpa: la cámara en coordenadas de la botella, y una deriva lenta
     uCamLocal.value.copy(botella.worldToLocal(camLocal.copy(camera.position)))
     uDeriva.value.set(fis.ladeo.x * 0.04, Math.sin(t * 0.35) * 0.008, fis.ladeo.y * 0.04)
-    renderer.render(scene, camera)
   }
 
   return {
-    ponerSabor,
-    precargar,
-    aplicarYa,
-    seguir(fn) { dondeVa = fn },
-    empezar() { requestAnimationFrame(cuadro) },
-    destruir() {
-      corriendo = false
-      removeEventListener('resize', medir)
-      renderer.dispose()
-      pmrem.dispose()
-    },
+    botella,
+    aplicar,
+    cuadro,
+    // La pulpa es lo más caro de dibujar: en el refri solo la lleva la
+    // botella que sale al frente.
+    pulpa(si) { conPulpa = si; ponerPulpa() },
+    // Tocar una botella le da un empujón al agua (para sacudirla)
+    empujar(x, z = 0) { fis.vel.x += x; fis.vel.y += z },
   }
 }

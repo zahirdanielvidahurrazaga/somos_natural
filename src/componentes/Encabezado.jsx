@@ -17,16 +17,14 @@ export default function Encabezado() {
   return (
     <header className={pegado ? 'techo techo-pegado' : 'techo'}>
       <div className="marco techo-fila">
-        <a className="marca" href="#arriba">
-          <img src="/img/logo.png" alt="" width="38" height="38" />
-          <span>
-            <span className="marca-nombre">{negocio.nombre}</span>
-            <span className="marca-lema caps">{negocio.lema}</span>
-          </span>
+        {/* Solo el sello con la gotita, sin el nombre escrito (pedido de
+            Zahir): el nombre lo lleva el sello y lo dice el lector de pantalla */}
+        <a className="marca" href="#arriba" aria-label={`${negocio.nombre}, ir arriba`}>
+          <img src="/img/logo.png" alt="" width="48" height="48" />
         </a>
 
         <nav className="menu caps">
-          <a href="#sabores">Sabores</a>
+          <a href="#sabor">Sabores</a>
           <a href="#proceso">Cómo trabajamos</a>
           <a href="#negocios">Tu negocio</a>
           <a href="#eventos">Eventos</a>

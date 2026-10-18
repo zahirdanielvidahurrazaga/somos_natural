@@ -1,9 +1,7 @@
 import { useRevelar } from './lib/useRevelar'
 import Encabezado from './componentes/Encabezado'
-import Portada from './componentes/Portada'
+import RefriPortada from './componentes/RefriPortada'
 import Tira from './componentes/Tira'
-import Sabores from './componentes/Sabores'
-import Recorrido from './componentes/Recorrido'
 import Proceso from './componentes/Proceso'
 import Formacion from './componentes/Formacion'
 import Puntos from './componentes/Puntos'
@@ -12,7 +10,6 @@ import Eventos from './componentes/Eventos'
 import Pedido from './componentes/Pedido'
 import Pie from './componentes/Pie'
 import Flotante from './componentes/Flotante'
-import Botella3D from './botella/Botella3D'
 
 export default function App() {
   useRevelar()
@@ -21,10 +18,8 @@ export default function App() {
     <>
       <Encabezado />
       <main>
-        <Portada />
+        <RefriPortada />
         <Tira />
-        <Recorrido />
-        <Sabores />
         <Proceso />
         <Formacion />
         {/* Primero los dos caminos por los que el negocio vende —tiendas y
@@ -37,7 +32,6 @@ export default function App() {
       </main>
       <Pie />
       <Flotante />
-      <Botella3D />
     </>
   )
 }

@@ -28,7 +28,7 @@ export default function Pie() {
           <div>
             <h3>El sitio</h3>
             <ul>
-              <li><a href="#sabores">Sabores</a></li>
+              <li><a href="#sabor">Sabores</a></li>
               <li><a href="#proceso">Cómo trabajamos</a></li>
               <li><a href="#puntos">Dónde comprar</a></li>
               <li><a href="#negocios">Tu negocio</a></li>

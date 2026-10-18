@@ -34,11 +34,9 @@
   --hueco4: clamp(4rem, 10vw, 8rem);
   --ancho:  1080px;
 
-  /* Del contenido del marco al borde de la pantalla: el padding del marco más
-     lo que sobra a cada lado cuando la pantalla es más ancha que --ancho. Lo
-     usan el estante (para sangrar) y la gotita de la portada (para no salirse). */
+  /* El padding del marco: lo usan también las piezas sueltas de la sección
+     del sabor para alinearse con el resto de la página. */
   --pad:   clamp(1.15rem, 4vw, 2.25rem);
-  --borde: max(var(--pad), calc((100vw - var(--ancho)) / 2 + var(--pad)));
 }
 
 * { box-sizing: border-box; }
@@ -194,7 +192,7 @@ a { color: inherit; text-decoration: none; }
 /* La marca no se encoge ni se parte: con seis enlaces en el menú, el flex la
    comprimía y "Somos Natural" caía en dos renglones. */
 .marca { display: flex; align-items: center; gap: 0.65rem; flex-shrink: 0; white-space: nowrap; }
-.marca img { width: 38px; height: 38px; flex-shrink: 0; }
+.marca img { width: 48px; height: 48px; flex-shrink: 0; }
 .marca-nombre {
   font-family: 'Yeseva One', Georgia, serif;
   font-size: 1.02rem;
@@ -216,73 +214,8 @@ a { color: inherit; text-decoration: none; }
 
 .techo .boton { padding: 0.68rem 1.1rem; flex-shrink: 0; }
 
-/* ── Portada ─────────────────────────────────────────────────────────────── */
-
-.portada { padding: clamp(2.5rem, 6vw, 4.5rem) 0 var(--hueco4); }
-
-.portada-caja { display: grid; gap: var(--hueco3); align-items: center; }
-@media (min-width: 940px) {
-  .portada-caja { grid-template-columns: 1.1fr 0.9fr; gap: clamp(2.5rem, 6vw, 5rem); }
-  /* La pila es más ancha que su celda a propósito: se derrama hacia el hueco
-     y hacia fuera del marco. Lo que integra una pieza es la escala, no la caja. */
-  .portada-muestra .pila { width: 112%; }
-}
-
-.portada h1 { font-size: var(--d1); }
-.portada h1 em { font-style: normal; color: var(--vino); }
-.portada .entrada { margin-top: 1.5rem; max-width: 44ch; }
-
+/* Los tres caminos de la portada (negocio, fiesta, para mí) */
 .portada-botones { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: var(--hueco2); }
-
-.portada-fija {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem 1.75rem;
-  margin-top: var(--hueco3);
-  padding-top: 1.35rem;
-  border-top: 1px solid var(--marco);
-  color: var(--suave);
-}
-.portada-fija span { display: flex; align-items: center; gap: 0.55rem; }
-.portada-fija span::before {
-  content: '';
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: var(--vino);
-  flex-shrink: 0;
-}
-
-.portada-muestra { display: grid; place-items: center; }
-
-/* La pila: tres etiquetas en abanico, como recién despegadas del pliego.
-   Se llegó aquí después de probar una sola etiqueta (flotaba en el aire como
-   calcomanía) y una hoja de color detrás (se fundía con los papeles oscuros).
-   Tres papeles distintos a la vez meten color sin depender de ningún fondo. */
-.pila {
-  position: relative;
-  /* 88% y no 100%: las hojas de atrás se corren un 6% a cada lado, así que la
-     pila ocupa más que su caja. A ancho completo se salía 17 px por la derecha
-     en pantalla de teléfono. */
-  width: 88%;
-  max-width: 470px;
-  aspect-ratio: 1183 / 594;
-  margin: 6% auto;
-}
-.pila-hoja {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  z-index: 0;
-  rotate: 5deg;
-  translate: 6% 7%;
-  transition:
-    rotate .8s cubic-bezier(.2,.8,.3,1),
-    translate .8s cubic-bezier(.2,.8,.3,1),
-    opacity .55s ease;
-}
-.pila-hoja[data-pos='0'] { z-index: 3; opacity: 1; rotate: -1.5deg; translate: 0 0; }
-.pila-hoja[data-pos='1'] { z-index: 2; opacity: 1; rotate: -7deg;   translate: -5% -9%; }
-.pila-hoja[data-pos='2'] { z-index: 1; opacity: 1; }
 
 /* ── La etiqueta ─────────────────────────────────────────────────────────── */
 /* No es una foto del arte: es el arte rehecho con las piezas del sitio. Cada
@@ -495,61 +428,6 @@ a { color: inherit; text-decoration: none; }
 }
 @media (max-width: 620px) { .tira-fila i { display: none; } }
 
-/* ── Sabores ─────────────────────────────────────────────────────────────── */
-
-/* El estante: una fila por grupo que se desliza de lado y sale por el borde
-   derecho de la pantalla. Se saca del marco con el mismo truco que la franja
-   (margen negativo de 50% - 50vw) y se le devuelve el margen como padding, así
-   la primera tarjeta queda alineada con el resto de la página y la última
-   puede llegar hasta esa misma línea. */
-.estante {
-  display: flex;
-  column-gap: clamp(1.1rem, 2.4vw, 1.75rem);
-  width: 100vw;
-  margin: 0 calc(50% - 50vw);
-  padding: 0.5rem var(--borde) 1rem;
-  overflow: auto hidden;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x mandatory;
-  scroll-padding-left: var(--borde);
-  scrollbar-width: none;
-}
-.estante::-webkit-scrollbar { display: none; }
-/* Mínimo 290 px: más angosta, el texto de las esquinas de la etiqueta se corta. */
-.estante .sabor {
-  flex: 0 0 clamp(290px, 78vw, 340px);
-  scroll-snap-align: start;
-}
-
-.flechas { display: none; margin-left: auto; gap: 0.45rem; }
-@media (min-width: 860px) { .flechas { display: flex; } }
-.flechas button {
-  width: 2.35rem;
-  height: 2.35rem;
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--marco-firme);
-  background: none;
-  color: var(--tinta);
-  cursor: pointer;
-  transition: background .18s ease, color .18s ease;
-}
-.flechas button:hover { background: var(--tinta); color: var(--crema); }
-.flechas button:focus-visible { outline: 2px solid var(--vino); outline-offset: 2px; }
-
-.sabor .etiqueta { transition: transform .3s cubic-bezier(.2,.8,.3,1); }
-.sabor:hover .etiqueta { transform: translateY(-4px); }
-
-.sabor-pie { margin-top: 0.9rem; }
-.sabor-pie h3 { font-size: var(--d3); color: var(--tinta); }
-.sabor-tipo { display: inline-block; color: var(--c); margin-top: 0.4rem; }
-.sabor-ingredientes {
-  font-size: var(--t3);
-  font-weight: 400;
-  color: var(--suave);
-  margin-top: 0.5rem;
-}
-
 /* ── Pasos ───────────────────────────────────────────────────────────────── */
 
 .pasos { display: grid; gap: var(--hueco2); counter-reset: paso; }
@@ -636,13 +514,6 @@ figure img, figure video {
 }
 
 /* Franja: UNA foto ancha, de borde a borde y en silencio. */
-.franja {
-  width: 100vw;
-  margin: var(--hueco4) calc(50% - 50vw) 0;
-  overflow: hidden;
-}
-.franja img { aspect-ratio: 22 / 10; }
-
 /* Banda: de borde a borde, con la frase encima. */
 .banda {
   position: relative;
@@ -698,26 +569,6 @@ figure img, figure video {
   .banda img, .banda video { aspect-ratio: 4 / 3; }
   .franja img { aspect-ratio: 16 / 10; }
 }
-
-/* ── Grupos de sabores ───────────────────────────────────────────────────── */
-
-.grupo + .grupo { margin-top: var(--hueco3); }
-
-.grupo-cabeza {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.4rem 1rem;
-  padding-bottom: 0.9rem;
-  margin-bottom: var(--hueco2);
-  border-bottom: 1px solid var(--marco);
-}
-.grupo-cabeza h3 {
-  font-family: 'Jost', sans-serif;
-  font-weight: 500;
-  color: var(--vino);
-}
-.grupo-cabeza span { font-size: var(--t3); font-weight: 400; color: var(--suave); }
 
 /* ── Puntos de venta ─────────────────────────────────────────────────────── */
 /* Una lista de nombres con su enlace, no un mapa incrustado: el mapa pesa, pide
@@ -872,28 +723,6 @@ figure img, figure video {
 .puntos-lista a:hover .punto-mapa,
 .puntos-lista li[data-activo='si'] .punto-mapa { color: var(--vino); }
 .puntos-lista a:focus-visible { outline: 2px solid var(--vino); outline-offset: 3px; }
-
-/* ── Tamaños y dulzura ───────────────────────────────────────────────────── */
-
-.opciones {
-  display: grid;
-  gap: var(--hueco2);
-  margin-top: var(--hueco4);
-  padding-top: var(--hueco2);
-  border-top: 1px solid var(--marco);
-}
-@media (min-width: 700px) { .opciones { grid-template-columns: 1fr 1fr; gap: var(--hueco3); } }
-
-.opciones h3 {
-  font-family: 'Jost', sans-serif;
-  font-weight: 500;
-  color: var(--vino);
-  margin-bottom: 1rem;
-}
-.opciones ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.55rem; }
-.opciones li { font-size: var(--t2); padding-bottom: 0.55rem; border-bottom: 1px solid var(--marco); }
-.opciones li span { color: var(--suave); }
-.opciones-pie { font-size: var(--t3); font-weight: 400; color: var(--suave); margin-top: 0.9rem; }
 
 /* ── Fichas de elección ──────────────────────────────────────────────────── */
 
@@ -1128,53 +957,6 @@ figure img, figure video {
 [data-revelar]:nth-child(5) { transition-delay: 280ms; }
 [data-revelar]:nth-child(n+6) { transition-delay: 350ms; }
 
-/* ── La gotita con su aro ──────────────────────────────────────────────── */
-/* Un solo elemento donde antes había dos. El aro gira despacio y la gotita se
-   queda quieta —el flotado se quitó a pedido del negocio—. La figura mide 82%
-   del aro: con sus adornos salía más ancha que el círculo y le tapaba el texto. */
-
-.gotita-sello {
-  position: absolute;
-  /* En la esquina de abajo a la derecha de la pila (pedido de Zahir, 2026-09-06),
-     con tope: nunca más allá de 1rem del borde de la pantalla. */
-  right: max(-26%, calc(1rem - var(--borde)));
-  bottom: -32%;
-  z-index: 4;
-  width: clamp(142px, 32%, 196px);
-  aspect-ratio: 1;
-  display: grid;
-  place-items: center;
-}
-
-.gotita-aro {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  fill: var(--vino);
-  animation: girar 34s linear infinite;
-}
-.gotita-aro text {
-  font-family: 'Jost', sans-serif;
-  font-weight: 500;
-  font-size: 12.5px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.gotita-figura {
-  position: relative;
-  width: auto;
-  height: 82%;
-  filter: drop-shadow(0 12px 16px rgba(43, 24, 29, .16));
-}
-
-@keyframes girar { to { transform: rotate(360deg); } }
-
-/* ── La pila de la portada ───────────────────────────────────────────────── */
-
-.portada-muestra { position: relative; }
-
 /* ── La fruta se dibuja sola ─────────────────────────────────────────────── */
 /* pathLength="1" normaliza cada curva, así todas se trazan al mismo ritmo sin
    tener que medirlas. */
@@ -1183,8 +965,7 @@ figure img, figure video {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
 }
-[data-visible='si'] .etq-motivo > *,
-.pila-hoja[data-pos='0'] .etq-motivo > * {
+[data-visible='si'] .etq-motivo > * {
   animation: dibujar 9s cubic-bezier(.4,.5,.2,1) infinite;
 }
 .etq-motivo > *:nth-child(2) { animation-delay: .12s; }
@@ -1200,17 +981,6 @@ figure img, figure video {
   92%  { stroke-dashoffset: -1; }
   100% { stroke-dashoffset: -1; }
 }
-
-/* ── Las tarjetas de sabor son calcomanías ───────────────────────────────── */
-
-.sabor .etiqueta {
-  transition: transform .35s cubic-bezier(.22,.7,.3,1),
-              background .35s ease,
-              border-color .35s ease;
-}
-.sabor:hover .etiqueta { transform: translateY(-6px) rotate(-1.1deg); }
-.sabor .sabor-pie h3 { transition: color .3s ease; }
-.sabor:hover .sabor-pie h3 { color: var(--c); }
 
 /* ── Subrayado del menú ──────────────────────────────────────────────────── */
 
@@ -1279,76 +1049,7 @@ figure img, figure video {
 
   .etq-motivo > * { animation: none; stroke-dashoffset: 0; }
 
-  .sabor:hover .etiqueta { transform: none; }
-  .gotita-aro { animation: none; }
 }
-
-/* ── La botella 3D ─────────────────────────────────────────────────────── */
-/* Un solo lienzo fijo a toda la pantalla, sin recibir clics: la botella se
-   coloca en cada cuadro sobre su hueco (portada, luego Sabores) y en medio
-   viaja. Los huecos son divs vacíos; aquí se decide su tamaño. Todo esto
-   solo aplica con html[data-botella='si'], que lo pone Botella3D cuando el
-   aparato tiene WebGL; sin eso, la portada enseña la pila de etiquetas. */
-.botella-lienzo {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 3;
-  pointer-events: none;
-}
-.botella-hueco, .vitrina { display: none; }
-
-html[data-botella='si'] .pila { display: none; }
-html[data-botella='si'] .botella-hueco-portada {
-  display: block;
-  width: 100%;
-  height: clamp(380px, 64vh, 600px);
-}
-
-html[data-botella='si'] .vitrina {
-  display: grid;
-  justify-items: center;
-  gap: 0.75rem;
-  margin-bottom: var(--hueco3);
-}
-.botella-hueco-sabores { width: 100%; height: clamp(300px, 46vh, 460px); }
-html[data-botella='si'] .botella-hueco-sabores { display: block; }
-
-.vitrina-rotulo { text-align: center; }
-.vitrina-nombre {
-  display: block;
-  font-family: 'Yeseva One', Georgia, serif;
-  font-size: var(--d3);
-  color: var(--vino);
-  line-height: 1.15;
-}
-.vitrina-rotulo .caps { display: block; color: var(--suave); margin-top: 0.4rem; }
-
-/* De 980 px para arriba: cabeza y estantes a la izquierda, vitrina a la
-   derecha y pegada (sticky) mientras se recorren los sabores. La cabeza deja
-   su acomodo editorial de dos columnas porque la segunda ya es la botella, y
-   los estantes dejan de salir a sangre: se deslizan dentro de su columna. */
-@media (min-width: 980px) {
-  html[data-botella='si'] .sabores-cuerpo {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
-    grid-template-rows: auto 1fr;
-    column-gap: clamp(2rem, 4vw, 4rem);
-  }
-  html[data-botella='si'] .sabores-cuerpo > .cabeza { grid-column: 1; grid-row: 1; display: block; max-width: 56ch; }
-  html[data-botella='si'] .sabores-cuerpo > .cabeza .entrada { margin-top: 1.15rem; padding-bottom: 0; }
-  html[data-botella='si'] .sabores-estantes { grid-column: 1; grid-row: 2; min-width: 0; }
-  html[data-botella='si'] .vitrina { grid-column: 2; grid-row: 1 / 3; margin-bottom: 0; align-items: start; }
-  html[data-botella='si'] .vitrina-pegada { position: sticky; top: calc(68px + 1.5rem); }
-  html[data-botella='si'] .sabores-estantes .estante {
-    width: auto;
-    margin: 0;
-    padding: 0.5rem 0 1rem;
-    scroll-padding-left: 0;
-  }
-}
-.vitrina-pegada { display: grid; justify-items: center; gap: 0.75rem; width: 100%; }
 
 /* ── Etiqueta con el arte real ─────────────────────────────────────────── */
 /* La imagen se agranda un 3% para comerse el filo negro que traen varios
@@ -1363,144 +1064,297 @@ html[data-botella='si'] .botella-hueco-sabores { display: block; }
   transform: scale(1.03);
 }
 
-/* ── El recorrido de los clásicos ──────────────────────────────────────── */
-/* Una escena pegada (sticky) dentro de una sección de --n pantallas de alto:
-   cada pantalla de scroll es un sabor. El fondo toma un tono del sabor, la
-   mancha lleva el dibujo de su fruta y el nombre va gigante; la botella 3D se
-   coloca sobre .botella-hueco-recorrido. Lo que cambia con el sabor lleva
-   `key` en el JSX, así que se vuelve a montar y su animación de entrada corre. */
-.recorrido { position: relative; height: calc(var(--n, 5) * 100vh); }
-
-.recorrido-escena {
-  --x: 60%;
-  position: sticky;
-  top: 68px;
-  height: calc(100vh - 68px);
-  overflow: hidden;
-  background: color-mix(in srgb, var(--c) 13%, var(--crema));
-  transition: background-color .7s ease;
-}
-
-.recorrido-mancha {
-  position: absolute;
-  left: var(--x);
-  top: 54%;
-  translate: -50% -50%;
-  width: min(44vw, 64vh, 560px);
-  aspect-ratio: 1;
-  animation: mancha-entra .8s cubic-bezier(.2,.8,.3,1) both;
-}
-.recorrido-mancha svg { width: 100%; height: 100%; display: block; }
-.recorrido-mancha path { fill: color-mix(in srgb, var(--c) 34%, var(--crema)); }
-.recorrido-motivo {
-  position: absolute;
-  inset: 12%;
-  width: 76%;
-  height: 76%;
-  color: var(--c);
-  opacity: .55;
-}
-.recorrido-motivo path, .recorrido-motivo circle, .recorrido-motivo ellipse {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: trazo-entra 1.4s .15s cubic-bezier(.4,.5,.2,1) forwards;
-}
+/* Entradas de la sección del sabor (mancha, trazo de la fruta, nombre, datos) */
 @keyframes trazo-entra { to { stroke-dashoffset: 0; } }
 @keyframes mancha-entra {
   from { opacity: 0; scale: .82; rotate: -8deg; }
   to   { opacity: 1; scale: 1;   rotate: 0deg; }
 }
-
-.recorrido-nombre {
-  position: absolute;
-  left: var(--x);
-  top: 26%;
-  translate: -50% -50%;
-  font-family: 'Yeseva One', Georgia, serif;
-  font-size: clamp(3.4rem, 10.5vw, 10rem);
-  line-height: .9;
-  white-space: nowrap;
-  color: var(--tinta);
-  pointer-events: none;
-  animation: nombre-entra .75s cubic-bezier(.2,.8,.3,1) both;
-}
 @keyframes nombre-entra {
   from { opacity: 0; translate: -46% -50%; }
   to   { opacity: 1; translate: -50% -50%; }
 }
-
-.botella-hueco-recorrido {
-  position: absolute;
-  left: var(--x);
-  top: 54%;
-  translate: -50% -50%;
-  width: 22vw;
-  height: min(72vh, 620px);
-}
-html[data-botella='si'] .botella-hueco-recorrido { display: block; }
-
-.recorrido-texto {
-  position: relative;
-  z-index: 2;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: var(--hueco3);
-}
-.recorrido-dato { max-width: 22rem; animation: dato-entra .6s .1s cubic-bezier(.2,.8,.3,1) both; }
-.recorrido-dato h2 { font-size: var(--d2); }
-.recorrido-dato .entrada { margin-top: 1rem; }
 @keyframes dato-entra {
   from { opacity: 0; translate: 0 14px; }
   to   { opacity: 1; translate: 0 0; }
 }
-.recorrido-hechos {
-  list-style: none;
-  padding: 0;
-  margin: 1.4rem 0 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: .45rem;
-}
-.recorrido-hechos li {
-  padding: .45rem .8rem;
-  border: 1px solid var(--marco-firme);
-  color: var(--tinta);
-}
-.recorrido-cuenta { display: flex; align-items: center; gap: .8rem; color: var(--suave); }
-.recorrido-cuenta i { width: 3rem; height: 1px; background: var(--marco-firme); }
 
-/* En teléfono: botella y mancha arriba, al centro; el texto abajo. */
-@media (max-width: 859px) {
-  .recorrido-escena { --x: 50%; }
-  .recorrido-mancha { top: 36%; width: min(78vw, 46vh); }
-  .botella-hueco-recorrido { top: 36%; width: 40vw; height: 44vh; }
-  .recorrido-nombre { top: 12%; font-size: clamp(2.8rem, 15vw, 5rem); }
-  .recorrido-texto { justify-content: flex-end; padding-bottom: 2rem; gap: 1rem; }
-  .recorrido-dato h2 { font-size: var(--d3); }
-  .recorrido-dato .entrada { display: none; }
+/* ══ La portada es el refri (2026-10-18) ═════════════════════════════════
+   Capas fijas, de abajo arriba:
+     .lienzo-refri   (z 3)  el refri 3D, se acomoda sobre .refri-hueco
+     sección del sabor   fondo, mancha y nombre (en el flujo)
+     .lienzo-botella (z 65) solo la botella del sabor
+     textos y controles de la sección (z 70), encabezado (z 80)
+   Los lienzos no reciben clics: el mouse se escucha en los huecos. */
+
+.refri-portada { position: relative; }
+.refri-portada-caja {
+  display: grid;
+  align-items: center;
+  gap: var(--hueco2);
+  min-height: calc(100svh - 68px);
+  padding-top: clamp(1rem, 3vw, 2rem);
+  padding-bottom: clamp(1rem, 3vw, 2rem);
+}
+@media (min-width: 940px) {
+  .refri-portada-caja { grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr); gap: clamp(1.5rem, 3vw, 3rem); }
+}
+.refri-texto h1 { font-size: clamp(2.6rem, 5.6vw, 4.6rem); }
+.refri-texto h1 em { font-style: normal; color: var(--vino); }
+.refri-texto .entrada { margin-top: 1.2rem; max-width: 40ch; }
+.refri-texto .portada-botones { margin-top: var(--hueco2); }
+.refri-pista { margin-top: var(--hueco3); display: grid; gap: .3rem; }
+.refri-pista-nombre { font-family: 'Yeseva One', Georgia, serif; font-size: var(--d3); color: var(--vino); }
+.refri-pista .caps { color: var(--suave); }
+@media (max-width: 939px) {
+  .refri-texto { text-align: center; }
+  .refri-texto .entrada { margin-left: auto; margin-right: auto; }
+  .refri-texto .portada-botones { justify-content: center; }
+  .refri-pista { margin-top: 1.2rem; justify-items: center; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .recorrido-mancha, .recorrido-nombre, .recorrido-dato { animation: none; }
-  .recorrido-motivo path, .recorrido-motivo circle, .recorrido-motivo ellipse { animation: none; stroke-dashoffset: 0; }
+.refri-hueco {
+  position: relative;
+  height: clamp(460px, 86svh, 840px);
+  touch-action: manipulation;
 }
+@media (max-width: 939px) { .refri-hueco { height: 74svh; } }
 
-/* El botón que cubre cada tarjeta de sabor (ver Estante.jsx): invisible,
-   pero enfocable con teclado y con su anillo de foco. */
-.sabor { position: relative; }
-.sabor-ver {
-  display: none;
+/* El refri dibujado con CSS: mientras carga el 3D, y sin 3D (con etiquetas) */
+.refri-plano {
   position: absolute;
   inset: 0;
-  z-index: 2;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
+  margin: auto;
+  aspect-ratio: 6.9 / 7.4;
+  max-height: 100%;
+  max-width: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr 1fr 1fr;
+  gap: 4%;
+  padding: 0 4% 4%;
+  border: 14px solid var(--vino);
+  border-top-width: 0;
+  background: linear-gradient(#f6e6e1, #ecd3cb);
 }
-html[data-botella='si'] .sabor-ver { display: block; }
-.sabor-ver:focus-visible { outline: 2px solid var(--vino); outline-offset: 4px; }
+.refri-plano-repisa {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-end;
+  border-bottom: 3px solid #d8b9b0;
+  padding: 0 2%;
+  gap: 2%;
+}
+.refri-plano-repisa i {
+  width: 7%;
+  height: 72%;
+  border-radius: 30% 30% 6% 6% / 12% 12% 4% 4%;
+  background: var(--c);
+  opacity: .35;
+  animation: latido 1.4s ease-in-out infinite alternate;
+}
+@keyframes latido { to { opacity: .6; } }
+.refri-hueco[data-estado='plano'] .refri-plano { aspect-ratio: auto; height: auto; }
+.refri-hueco[data-estado='plano'] .refri-plano-repisa { flex-wrap: wrap; padding: 4% 2%; }
+.refri-plano-repisa button { width: 30%; padding: 0; border: 0; background: none; cursor: pointer; }
+.refri-plano-repisa button:focus-visible { outline: 2px solid var(--vino); outline-offset: 3px; }
+
+/* Los 14 como botones de verdad: escondidos hasta que llega el teclado */
+.refri-lista {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.refri-lista:focus-within {
+  position: static;
+  width: auto; height: auto;
+  clip-path: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  justify-content: center;
+  padding: 1rem var(--pad) 2rem;
+}
+.refri-lista button { font: inherit; font-size: var(--t3); padding: .45rem .8rem; border: 1px solid var(--marco-firme); background: var(--hueso); cursor: pointer; }
+.refri-lista button:focus-visible { outline: 2px solid var(--vino); outline-offset: 2px; }
+
+.lienzo-refri, .lienzo-botella {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+.lienzo-refri { z-index: 3; }
+.lienzo-botella { z-index: 65; }
+
+/* ── La sección del sabor ───────────────────────────────────────────────── */
+/* Va justo abajo del refri, en el flujo de la página. Al tocar una botella la
+   página baja hasta aquí y la botella baja con el scroll (escena.js). El
+   fondo, la mancha y el nombre quedan por debajo del lienzo de la botella; los
+   textos y controles, por encima (z-index 70). */
+.sabor-escena {
+  position: relative;
+  height: calc(100svh - 68px);
+  min-height: 560px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--c) 16%, var(--crema));
+  transition: background-color .6s ease;
+}
+.sabor-info, .sabor-avance, .sabor-siguiente, .sabor-subir, .sabor-hueco { z-index: 70; }
+.sabor-subir {
+  position: absolute;
+  top: 1.4rem;
+  left: var(--pad);
+  border: 0;
+  background: none;
+  color: var(--suave);
+  cursor: pointer;
+  padding: .4rem 0;
+}
+.sabor-subir:hover { color: var(--vino); }
+/* el encabezado va encima del lienzo de la botella */
+.techo { z-index: 80; }
+
+.sabor-mancha {
+  position: absolute;
+  left: 50%;
+  top: 54%;
+  translate: -50% -50%;
+  width: min(42vw, 62vh, 560px);
+  aspect-ratio: 1;
+  animation: mancha-entra .8s cubic-bezier(.2,.8,.3,1) both;
+}
+.sabor-mancha svg { width: 100%; height: 100%; display: block; }
+.sabor-mancha path { fill: color-mix(in srgb, var(--c) 34%, var(--crema)); }
+.sabor-motivo { position: absolute; inset: 12%; width: 76%; height: 76%; color: var(--c); opacity: .55; }
+.sabor-motivo path, .sabor-motivo circle, .sabor-motivo ellipse {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: trazo-entra 1.4s .15s cubic-bezier(.4,.5,.2,1) forwards;
+}
+.sabor-gigante {
+  position: absolute;
+  left: 50%;
+  top: 24%;
+  translate: -50% -50%;
+  font-family: 'Yeseva One', Georgia, serif;
+  font-size: clamp(3.4rem, 11vw, 11rem);
+  line-height: .9;
+  white-space: nowrap;
+  color: var(--tinta);
+  animation: nombre-entra .75s cubic-bezier(.2,.8,.3,1) both;
+}
+
+.sabor-etiqueta-plana { position: absolute; inset: 30% -40% auto; }
+
+
+.sabor-info {
+  position: absolute;
+  left: var(--pad);
+  top: 50%;
+  translate: 0 -50%;
+  width: min(22rem, 28vw);
+  animation: dato-entra .55s .1s cubic-bezier(.2,.8,.3,1) both;
+}
+.sabor-info h2 { font-size: var(--d2); }
+.sabor-info .entrada { margin-top: 1rem; }
+.sabor-hechos { list-style: none; padding: 0; margin: 1.3rem 0 0; display: flex; flex-wrap: wrap; gap: .45rem; }
+.sabor-hechos li { padding: .45rem .8rem; border: 1px solid var(--marco-firme); }
+.sabor-mano { margin-top: 1.4rem; color: var(--suave); }
+
+
+
+@media (prefers-reduced-motion: reduce) {
+  .sabor-mancha, .sabor-gigante, .sabor-info { animation: none; }
+  .refri-plano-repisa i { animation: none; }
+}
+
+
+
+
+
+
+/* ── La presentación del sabor (solo para ver) ─────────────────────────── */
+.sabor-hueco {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  width: min(26vw, 320px);
+  height: min(66vh, 660px);
+  touch-action: pan-y;
+  cursor: grab;
+}
+.sabor-hueco.agarrando { cursor: grabbing; }
+
+
+.sabor-avance {
+  position: absolute;
+  left: 50%;
+  bottom: 2.4rem;
+  translate: -50% 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.sabor-flecha {
+  width: 2.8rem;
+  height: 2.8rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--marco-firme);
+  background: color-mix(in srgb, var(--hueso) 60%, transparent);
+  color: var(--tinta);
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+}
+.sabor-flecha:hover { background: var(--hueso); border-color: var(--vino); }
+.sabor-puntos { display: flex; align-items: center; gap: .45rem; }
+.sabor-puntos button {
+  width: .55rem;
+  height: .55rem;
+  padding: 0;
+  border-radius: 999px;
+  border: 0;
+  background: color-mix(in srgb, var(--tinta) 25%, transparent);
+  cursor: pointer;
+  transition: width .35s cubic-bezier(.2,.8,.3,1), background .3s;
+}
+.sabor-puntos button[aria-selected='true'] { width: 1.9rem; background: var(--c); }
+.sabor-siguiente {
+  position: absolute;
+  left: 0; right: 0;
+  bottom: .9rem;
+  text-align: center;
+  color: var(--suave);
+  animation: dato-entra .5s .2s ease both;
+}
+.sabor-subir:focus-visible, .sabor-flecha:focus-visible, .sabor-puntos button:focus-visible { outline: 2px solid var(--vino); outline-offset: 3px; }
+
+/* En teléfono: nombre arriba, botella al centro, datos y avance abajo */
+@media (max-width: 939px) {
+  .sabor-gigante { top: 13%; font-size: clamp(2.8rem, 15vw, 5rem); }
+  .sabor-mancha { top: 40%; width: min(78vw, 42svh); }
+  .sabor-hueco { top: 40%; width: 46vw; height: 46svh; }
+  .sabor-info {
+    left: var(--pad); right: var(--pad);
+    top: auto; bottom: 6.2rem;
+    translate: none;
+    width: auto;
+    text-align: center;
+  }
+  .sabor-info .rotulo, .sabor-info .entrada { display: none; }
+  .sabor-info h2 { font-size: var(--d3); }
+  .sabor-hechos { justify-content: center; margin-top: .7rem; }
+  .sabor-hechos li { padding: .35rem .6rem; }
+  .sabor-avance { bottom: 2.2rem; gap: .6rem; }
+  .sabor-puntos { gap: .3rem; }
+  .sabor-puntos button { width: .42rem; height: .42rem; }
+  .sabor-puntos button[aria-selected='true'] { width: 1.2rem; }
+}
+@media (min-width: 940px) and (max-height: 760px) {
+  .sabor-gigante { top: 20%; font-size: clamp(3rem, 9vw, 8rem); }
+  .sabor-avance { bottom: 1.8rem; }
+}
