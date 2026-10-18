@@ -163,31 +163,58 @@ export function crearEscenario(canvas, { movil = false, quieto = false } = {}) {
     const rs = visibles.map((el) => el.getBoundingClientRect())
     const ultimo = rs[rs.length - 1]
     const primero = rs[0]
-    // fuera de todos los huecos (muy abajo en la página): se duerme
-    if (ultimo.bottom < -60 || primero.top > vh + 60) { dormir(); return }
-
-    // en qué tramo va: el primero que todavía no termina
-    let k = 0
-    let e = rs.length > 1 ? tramo(rs[0], rs[1]) : 0
-    while (e >= 1 && k < rs.length - 2) { k++; e = tramo(rs[k], rs[k + 1]) }
     const movil = innerWidth < 860
-    // en teléfono no viaja encima del texto: salta cuando el hueco anterior
-    // sale de la pantalla
-    if (movil) e = rs.length > 1 && rs[k].bottom < 0 ? 1 : 0
-    const a = rs[k], b = rs[Math.min(k + 1, rs.length - 1)]
-    const ea = visibles[k], eb = visibles[Math.min(k + 1, visibles.length - 1)]
-    const s = movil ? e : suave(e)
-    const cx = a.left + a.width / 2 + (b.left + b.width / 2 - (a.left + a.width / 2)) * s
-    const cy = a.top + a.height / 2 + (b.top + b.height / 2 - (a.top + a.height / 2)) * s
-    const alto = a.height + (b.height - a.height) * s
-    const inclA = Number(ea.dataset.inclina || 0), inclB = Number(eb.dataset.inclina || 0)
-    // si la botella queda fuera de la pantalla (en teléfono salta de hueco en
-    // hueco, así que entre secciones sin botella no se ve), no se dibuja; el
-    // scroll la despierta
-    if (cy + alto / 2 < -40 || cy - alto / 2 > vh + 40) { dormir(); return }
+    // fuera de todos los huecos (muy abajo en la página): se duerme. En
+    // teléfono se le da más margen: ahí la botella se va de la esquina
+    // deslizándose después del último hueco.
+    if (ultimo.bottom < (movil ? -vh : -60) || primero.top > vh + 60) { dormir(); return }
 
-    // agarrable: el hueco donde está parada (no viajando)
-    const aqui = s < 0.02 ? ea : s > 0.98 ? eb : null
+    let cx, cy, alto, incl, rodar, aqui
+    if (!movil) {
+      // en qué tramo va: el primero que todavía no termina
+      let k = 0
+      let e = rs.length > 1 ? tramo(rs[0], rs[1]) : 0
+      while (e >= 1 && k < rs.length - 2) { k++; e = tramo(rs[k], rs[k + 1]) }
+      const a = rs[k], b = rs[Math.min(k + 1, rs.length - 1)]
+      const ea = visibles[k], eb = visibles[Math.min(k + 1, visibles.length - 1)]
+      const s = suave(e)
+      cx = a.left + a.width / 2 + (b.left + b.width / 2 - (a.left + a.width / 2)) * s
+      cy = a.top + a.height / 2 + (b.top + b.height / 2 - (a.top + a.height / 2)) * s
+      alto = a.height + (b.height - a.height) * s
+      incl = Number(ea.dataset.inclina || 0) + (Number(eb.dataset.inclina || 0) - Number(ea.dataset.inclina || 0)) * s
+      // de un hueco al otro da una vuelta completa
+      rodar = (k + s) * Math.PI * 2
+      aqui = s < 0.02 ? ea : s > 0.98 ? eb : null
+      if (cy + alto / 2 < -40 || cy - alto / 2 > vh + 40) { dormir(); return }
+    } else {
+      // En teléfono no hay espacio a los lados: mientras se lee, la botella
+      // se queda chiquita en la esquina de abajo a la izquierda (lejos del
+      // botón de WhatsApp) y RUEDA con el scroll. Cuando un hueco se acerca
+      // al centro de la pantalla (portada, galería, inicio de una sección),
+      // sale de la esquina, crece y se acomoda en él.
+      let mejor = 0, pres = 0
+      rs.forEach((r, i) => {
+        const c = r.top + r.height / 2
+        const p = Math.max(0, 1 - Math.abs(c - vh / 2) / (vh * 0.5))
+        if (p > pres) { pres = p; mejor = i }
+      })
+      const p = suave(Math.min(1, pres * 1.6))
+      const r = rs[mejor]
+      const altoEsquina = vh * 0.2
+      // pasado el último hueco (Dónde comprar, el pedido), se va de la
+      // esquina hacia la izquierda para no estorbar en el formulario
+      const salida = Math.min(1, Math.max(0, -ultimo.bottom / (vh * 0.6)))
+      if (salida >= 1) { dormir(); return }
+      const esqX = 14 + altoEsquina * 0.2 - salida * (altoEsquina + 60)
+      const esqY = vh - altoEsquina / 2 - 20
+      cx = esqX + (r.left + r.width / 2 - esqX) * p
+      cy = esqY + (r.top + r.height / 2 - esqY) * p
+      alto = altoEsquina + (r.height - altoEsquina) * p
+      incl = -0.35 + (Number(visibles[mejor].dataset.inclina || 0) + 0.35) * p
+      rodar = quieto ? 0 : scrollY * 0.006
+      aqui = p > 0.98 ? visibles[mejor] : null
+    }
+
     escuchar(aqui && aqui.dataset.agarrable !== undefined ? aqui : null)
 
     // cambio de sabor con una vuelta
@@ -225,9 +252,9 @@ export function crearEscenario(canvas, { movil = false, quieto = false } = {}) {
       0,
     )
     lugar.scale.setScalar(escala)
-    lugar.rotation.z = inclA + (inclB - inclA) * s
+    lugar.rotation.z = incl
     // de un hueco al otro da una vuelta completa
-    giro.rotation.y = mano.giro + giroCambio + vueltaEntrada + (quieto ? 0 : (k + s) * Math.PI * 2)
+    giro.rotation.y = mano.giro + giroCambio + vueltaEntrada + (quieto ? 0 : rodar)
 
     modelo.cuadro(t, camera)
     renderer.render(scene, camera)
