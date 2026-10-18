@@ -264,7 +264,35 @@ huecos: portada → recorrido → Sabores.
 
 **SANDÍA está fuera del sitio** (no tiene etiqueta real).
 
-## La portada es el refri (rama `refri`, 2026-10-18)
+## AHORA: la botella acompaña la página (rama `galeria`, 2026-10-18)
+
+🔴 **El refri se DESCARTÓ**: en el iPhone 16 Pro de Zahir se trababa (14
+botellas, dos lienzos, pulpa por pixel). OJO: **lo publicado en
+somos-natural.pages.dev todavía es el refri** hasta que se publique `galeria`.
+
+Referencia directa: **el video de la lata de mango** (la lata cae girando en la
+portada, cruza de lado junto a la información, llega a una sección a todo color
+"FRESH | JUICE"). Regla de rendimiento: **UNA botella, UN lienzo**, versión
+`ligera` en celular (menos caras, sin pulpa, DPR 1.5), solo se dibuja cuando se
+ve.
+
+| Archivo | Qué hace |
+|---|---|
+| `src/botella/escenario.js` | La botella que sigue los huecos `data-botella` en orden (`data-inclina`, `data-agarrable`); viaja entre huecos con una vuelta; entrada cayendo girando |
+| `src/botella/Botella.jsx` | El lienzo fijo; carga el 3D aparte; sin WebGL no pasa nada |
+| `src/botella/saborActual.js` | El sabor que te acompaña (lo elige la galería) |
+| `src/componentes/Hero.jsx` | Portada: título letra por letra, botella a la derecha inclinada |
+| `src/componentes/Galeria.jsx` | "Agua de \| Jamaica" a todo color, los 14 con flechas/puntos/teclado/deslizar, `/#sabor` |
+| Proceso, Negocios, Eventos | Carril pegado (sticky) a un lado con la botella, alternando lados |
+
+Los nombres de la galería: dos palabras van en dos renglones ("Frutos / rojos")
+y la letra baja un escalón según la palabra más larga (`data-largo`), porque
+"Frutos rojos" se cortaba en la orilla.
+
+Medido en compu: 60 fps estables. **Falta probar en el iPhone** (diseño de
+celular sin revisar: el Chrome de la extensión no se deja achicar).
+
+## (Descartado) La portada era el refri (rama `refri`, 2026-10-18)
 
 Zahir no quería tarjetas ni "solo scrollear": quiere **experiencia**. Se armaron
 dos prototipos (`configurador.html` y `refri.html`, código en

@@ -9,7 +9,12 @@ export default function Negocios() {
   )
 
   return (
-    <section className="seccion franja-honda" id="negocios">
+    <section className="seccion franja-honda con-botella con-botella-der" id="negocios">
+      {/* El carril de la botella: la acompaña pegada a un lado mientras se lee
+          esta sección (ver botella/escenario.js) */}
+      <div className="acompana-carril acompana-der" aria-hidden="true">
+        <div className="acompana" data-botella="" data-inclina="-0.3" />
+      </div>
       <div className="marco">
         <div className="cabeza" data-revelar>
           <span className="rotulo caps">Tiendas, torterías y restaurantes</span>

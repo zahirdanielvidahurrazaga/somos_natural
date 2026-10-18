@@ -2,7 +2,12 @@ import { proceso } from '../datos/negocio'
 
 export default function Proceso() {
   return (
-    <section className="seccion franja-suave" id="proceso">
+    <section className="seccion franja-suave con-botella con-botella-izq" id="proceso">
+      {/* El carril de la botella: la acompaña pegada a un lado mientras se lee
+          esta sección (ver botella/escenario.js) */}
+      <div className="acompana-carril acompana-izq" aria-hidden="true">
+        <div className="acompana" data-botella="" data-inclina="0.3" />
+      </div>
       <div className="marco">
         <div className="cabeza" data-revelar>
           <span className="rotulo caps">Cómo trabajamos</span>

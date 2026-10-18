@@ -62,7 +62,10 @@ const aSRGB = (hex, v) => v.set(((hex >> 16) & 255) / 255, ((hex >> 8) & 255) / 
 const blancoTapa = 0xf3f1ed
 
 // `botella` queda con la base en y = 0. Para colocarla, mételo a otro grupo.
-export function armarBotella({ texturaDe }) {
+// `ligera`: menos caras en la geometría, para celulares (en el refri, con 14
+// botellas, un iPhone 16 Pro se trababa; ahora es una sola, pero se cuida).
+export function armarBotella({ texturaDe, ligera = false }) {
+  const VUELTAS = ligera ? 56 : 128
   // ── La botella ───────────────────────────────────────────────────────────
   // Boston round de 500 ml: cuerpo recto y liso, hombro en domo, cuello corto
   // con su anillo y tapa de 28 mm. Medidas de catálogo (proporciones sacadas de sus
@@ -117,7 +120,7 @@ export function armarBotella({ texturaDe }) {
         gl_FragColor.a = mix(gl_FragColor.a, 0.34, vacio);
         gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.93, 0.94, 0.95), vacio * 0.55);`)
   }
-  botella.add(new THREE.Mesh(new THREE.LatheGeometry(perfil, 128), plastico))
+  botella.add(new THREE.Mesh(new THREE.LatheGeometry(perfil, VUELTAS), plastico))
 
   // ── El agua que se mueve ─────────────────────────────────────────────────
   // La malla llena la botella entera por dentro y el shader descarta todo lo que
@@ -239,7 +242,7 @@ export function armarBotella({ texturaDe }) {
         }
         if (!gl_FrontFacing) gl_FragColor.rgb = uSuperficie;`)
   }
-  botella.add(new THREE.Mesh(new THREE.LatheGeometry(perfilAgua, 128), agua))
+  botella.add(new THREE.Mesh(new THREE.LatheGeometry(perfilAgua, VUELTAS), agua))
 
   // La física del chapoteo. Escala: la botella mide ~2.1 unidades = ~20 cm, así
   // que la gravedad en unidades es ~103 u/s². El agua se ladea contra la
@@ -298,7 +301,7 @@ export function armarBotella({ texturaDe }) {
   // cada estría sea redonda; y se apagan en los dos extremos para fundirse con
   // el filo y con la ranura.
   const N = 96
-  const estriasGeo = new THREE.CylinderGeometry(RT, RT, CIMA - ESTRIAS, N * 8, 6, true)
+  const estriasGeo = new THREE.CylinderGeometry(RT, RT, CIMA - ESTRIAS, N * (ligera ? 4 : 8), 6, true)
   const pe = estriasGeo.attributes.position
   const altoE = CIMA - ESTRIAS
   for (let k = 0; k < pe.count; k++) {
@@ -325,7 +328,7 @@ export function armarBotella({ texturaDe }) {
     new THREE.Vector2(0.112, CIMA + 0.011), new THREE.Vector2(0.108, CIMA + 0.013),
     new THREE.Vector2(0, CIMA + 0.013),
   )
-  tapa.add(new THREE.Mesh(new THREE.LatheGeometry(cara, 128), blanco))
+  tapa.add(new THREE.Mesh(new THREE.LatheGeometry(cara, VUELTAS), blanco))
 
   // El anillo de seguridad y la ranura.
   const anillo = [
@@ -333,7 +336,7 @@ export function armarBotella({ texturaDe }) {
     new THREE.Vector2(0.15, BASE + 0.004), new THREE.Vector2(0.15, CORTE - 0.002),
     new THREE.Vector2(0.148, CORTE),
   ]
-  tapa.add(new THREE.Mesh(new THREE.LatheGeometry(anillo, 128), blanco))
+  tapa.add(new THREE.Mesh(new THREE.LatheGeometry(anillo, VUELTAS), blanco))
   const ranura = new THREE.Mesh(new THREE.CylinderGeometry(0.144, 0.144, ESTRIAS - CORTE, 96, 1, true), sombraTapa)
   ranura.position.y = (CORTE + ESTRIAS) / 2
   tapa.add(ranura)
@@ -354,7 +357,7 @@ export function armarBotella({ texturaDe }) {
   const arcoEtq = (196 * Math.PI) / 180
   const altoEtq = (R * arcoEtq) / 2.0
   const etiqueta = new THREE.Mesh(
-    new THREE.CylinderGeometry(R + 0.003, R + 0.003, altoEtq, 160, 1, true, -arcoEtq / 2, arcoEtq),
+    new THREE.CylinderGeometry(R + 0.003, R + 0.003, altoEtq, ligera ? 72 : 160, 1, true, -arcoEtq / 2, arcoEtq),
     new THREE.MeshPhysicalMaterial({
       map: null, roughness: 0.42, clearcoat: 0.5, clearcoatRoughness: 0.2,
     }),
@@ -367,7 +370,7 @@ export function armarBotella({ texturaDe }) {
   // la etiqueta se ve blanca como en la de verdad. Sin esto, al girar la botella
   // la etiqueta desaparecía detrás del tamarindo o la naranja.
   const reverso = new THREE.Mesh(
-    new THREE.CylinderGeometry(R + 0.0025, R + 0.0025, altoEtq, 160, 1, true, -arcoEtq / 2, arcoEtq),
+    new THREE.CylinderGeometry(R + 0.0025, R + 0.0025, altoEtq, ligera ? 72 : 160, 1, true, -arcoEtq / 2, arcoEtq),
     new THREE.MeshStandardMaterial({ color: 0xf1ece4, roughness: 0.85, side: THREE.BackSide }),
   )
   reverso.position.y = etiqueta.position.y

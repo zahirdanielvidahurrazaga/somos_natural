@@ -403,31 +403,6 @@ a { color: inherit; text-decoration: none; }
 
 .etq-medio-suelto { position: relative; z-index: 1; }
 
-/* ── Tira de textos fijos ────────────────────────────────────────────────── */
-
-/* La línea fija: quieta, centrada, como el pie de una etiqueta. */
-.tira {
-  background: var(--vino);
-  color: var(--crema);
-  padding: 1.05rem clamp(1.15rem, 4vw, 2.25rem);
-}
-.tira-fila {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 0.6rem clamp(1.25rem, 4vw, 3rem);
-  text-align: center;
-}
-.tira-fila i {
-  width: 4px; height: 4px;
-  border-radius: 50%;
-  background: currentColor;
-  opacity: .5;
-  flex-shrink: 0;
-}
-@media (max-width: 620px) { .tira-fila i { display: none; } }
-
 /* ── Pasos ───────────────────────────────────────────────────────────────── */
 
 .pasos { display: grid; gap: var(--hueco2); counter-reset: paso; }
@@ -1079,282 +1054,235 @@ figure img, figure video {
   to   { opacity: 1; translate: 0 0; }
 }
 
-/* ══ La portada es el refri (2026-10-18) ═════════════════════════════════
-   Capas fijas, de abajo arriba:
-     .lienzo-refri   (z 3)  el refri 3D, se acomoda sobre .refri-hueco
-     sección del sabor   fondo, mancha y nombre (en el flujo)
-     .lienzo-botella (z 65) solo la botella del sabor
-     textos y controles de la sección (z 70), encabezado (z 80)
-   Los lienzos no reciben clics: el mouse se escucha en los huecos. */
-
-.refri-portada { position: relative; }
-.refri-portada-caja {
-  display: grid;
-  align-items: center;
-  gap: var(--hueco2);
-  min-height: calc(100svh - 68px);
-  padding-top: clamp(1rem, 3vw, 2rem);
-  padding-bottom: clamp(1rem, 3vw, 2rem);
-}
-@media (min-width: 940px) {
-  .refri-portada-caja { grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr); gap: clamp(1.5rem, 3vw, 3rem); }
-}
-.refri-texto h1 { font-size: clamp(2.6rem, 5.6vw, 4.6rem); }
-.refri-texto h1 em { font-style: normal; color: var(--vino); }
-.refri-texto .entrada { margin-top: 1.2rem; max-width: 40ch; }
-.refri-texto .portada-botones { margin-top: var(--hueco2); }
-.refri-pista { margin-top: var(--hueco3); display: grid; gap: .3rem; }
-.refri-pista-nombre { font-family: 'Yeseva One', Georgia, serif; font-size: var(--d3); color: var(--vino); }
-.refri-pista .caps { color: var(--suave); }
-@media (max-width: 939px) {
-  .refri-texto { text-align: center; }
-  .refri-texto .entrada { margin-left: auto; margin-right: auto; }
-  .refri-texto .portada-botones { justify-content: center; }
-  .refri-pista { margin-top: 1.2rem; justify-items: center; }
-}
-
-.refri-hueco {
-  position: relative;
-  height: clamp(460px, 86svh, 840px);
-  touch-action: manipulation;
-}
-@media (max-width: 939px) { .refri-hueco { height: 74svh; } }
-
-/* El refri dibujado con CSS: mientras carga el 3D, y sin 3D (con etiquetas) */
-.refri-plano {
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  aspect-ratio: 6.9 / 7.4;
-  max-height: 100%;
-  max-width: 100%;
-  display: grid;
-  grid-template-rows: auto 1fr 1fr 1fr;
-  gap: 4%;
-  padding: 0 4% 4%;
-  border: 14px solid var(--vino);
-  border-top-width: 0;
-  background: linear-gradient(#f6e6e1, #ecd3cb);
-}
-.refri-plano-repisa {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: flex-end;
-  border-bottom: 3px solid #d8b9b0;
-  padding: 0 2%;
-  gap: 2%;
-}
-.refri-plano-repisa i {
-  width: 7%;
-  height: 72%;
-  border-radius: 30% 30% 6% 6% / 12% 12% 4% 4%;
-  background: var(--c);
-  opacity: .35;
-  animation: latido 1.4s ease-in-out infinite alternate;
-}
-@keyframes latido { to { opacity: .6; } }
-.refri-hueco[data-estado='plano'] .refri-plano { aspect-ratio: auto; height: auto; }
-.refri-hueco[data-estado='plano'] .refri-plano-repisa { flex-wrap: wrap; padding: 4% 2%; }
-.refri-plano-repisa button { width: 30%; padding: 0; border: 0; background: none; cursor: pointer; }
-.refri-plano-repisa button:focus-visible { outline: 2px solid var(--vino); outline-offset: 3px; }
-
-/* Los 14 como botones de verdad: escondidos hasta que llega el teclado */
-.refri-lista {
-  position: absolute;
-  width: 1px; height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-}
-.refri-lista:focus-within {
-  position: static;
-  width: auto; height: auto;
-  clip-path: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: .4rem;
-  justify-content: center;
-  padding: 1rem var(--pad) 2rem;
-}
-.refri-lista button { font: inherit; font-size: var(--t3); padding: .45rem .8rem; border: 1px solid var(--marco-firme); background: var(--hueso); cursor: pointer; }
-.refri-lista button:focus-visible { outline: 2px solid var(--vino); outline-offset: 2px; }
-
-.lienzo-refri, .lienzo-botella {
+/* ══ La botella acompaña la página (2026-10-18) ══════════════════════════
+   Referencia: el video de la lata de mango. UNA botella en un lienzo fijo
+   (botella/escenario.js) que se coloca sobre los huecos `data-botella`: la
+   portada, la galería y un carril pegado al lado de Cómo trabajamos, Tu
+   negocio y Eventos. Sin 3D (html sin data-botella) los carriles no ocupan
+   lugar y la galería enseña la etiqueta plana. */
+.botella-lienzo {
   position: fixed;
   inset: 0;
   width: 100vw;
   height: 100vh;
+  z-index: 40;
   pointer-events: none;
 }
-.lienzo-refri { z-index: 3; }
-.lienzo-botella { z-index: 65; }
+/* encabezado y botón flotante por encima de la botella */
+.techo { z-index: 60; }
+.flotante { z-index: 61; }
 
-/* ── La sección del sabor ───────────────────────────────────────────────── */
-/* Va justo abajo del refri, en el flujo de la página. Al tocar una botella la
-   página baja hasta aquí y la botella baja con el scroll (escena.js). El
-   fondo, la mancha y el nombre quedan por debajo del lienzo de la botella; los
-   textos y controles, por encima (z-index 70). */
-.sabor-escena {
-  position: relative;
-  height: calc(100svh - 68px);
-  min-height: 560px;
-  overflow: hidden;
-  background: color-mix(in srgb, var(--c) 16%, var(--crema));
-  transition: background-color .6s ease;
-}
-.sabor-info, .sabor-avance, .sabor-siguiente, .sabor-subir, .sabor-hueco { z-index: 70; }
-.sabor-subir {
-  position: absolute;
-  top: 1.4rem;
-  left: var(--pad);
-  border: 0;
-  background: none;
-  color: var(--suave);
-  cursor: pointer;
-  padding: .4rem 0;
-}
-.sabor-subir:hover { color: var(--vino); }
-/* el encabezado va encima del lienzo de la botella */
-.techo { z-index: 80; }
-
-.sabor-mancha {
-  position: absolute;
-  left: 50%;
-  top: 54%;
-  translate: -50% -50%;
-  width: min(42vw, 62vh, 560px);
-  aspect-ratio: 1;
-  animation: mancha-entra .8s cubic-bezier(.2,.8,.3,1) both;
-}
-.sabor-mancha svg { width: 100%; height: 100%; display: block; }
-.sabor-mancha path { fill: color-mix(in srgb, var(--c) 34%, var(--crema)); }
-.sabor-motivo { position: absolute; inset: 12%; width: 76%; height: 76%; color: var(--c); opacity: .55; }
-.sabor-motivo path, .sabor-motivo circle, .sabor-motivo ellipse {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: trazo-entra 1.4s .15s cubic-bezier(.4,.5,.2,1) forwards;
-}
-.sabor-gigante {
-  position: absolute;
-  left: 50%;
-  top: 24%;
-  translate: -50% -50%;
-  font-family: 'Yeseva One', Georgia, serif;
-  font-size: clamp(3.4rem, 11vw, 11rem);
-  line-height: .9;
-  white-space: nowrap;
-  color: var(--tinta);
-  animation: nombre-entra .75s cubic-bezier(.2,.8,.3,1) both;
-}
-
-.sabor-etiqueta-plana { position: absolute; inset: 30% -40% auto; }
-
-
-.sabor-info {
-  position: absolute;
-  left: var(--pad);
-  top: 50%;
-  translate: 0 -50%;
-  width: min(22rem, 28vw);
-  animation: dato-entra .55s .1s cubic-bezier(.2,.8,.3,1) both;
-}
-.sabor-info h2 { font-size: var(--d2); }
-.sabor-info .entrada { margin-top: 1rem; }
-.sabor-hechos { list-style: none; padding: 0; margin: 1.3rem 0 0; display: flex; flex-wrap: wrap; gap: .45rem; }
-.sabor-hechos li { padding: .45rem .8rem; border: 1px solid var(--marco-firme); }
-.sabor-mano { margin-top: 1.4rem; color: var(--suave); }
-
-
-
-@media (prefers-reduced-motion: reduce) {
-  .sabor-mancha, .sabor-gigante, .sabor-info { animation: none; }
-  .refri-plano-repisa i { animation: none; }
-}
-
-
-
-
-
-
-/* ── La presentación del sabor (solo para ver) ─────────────────────────── */
-.sabor-hueco {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  translate: -50% -50%;
-  width: min(26vw, 320px);
-  height: min(66vh, 660px);
-  touch-action: pan-y;
-  cursor: grab;
-}
-.sabor-hueco.agarrando { cursor: grabbing; }
-
-
-.sabor-avance {
-  position: absolute;
-  left: 50%;
-  bottom: 2.4rem;
-  translate: -50% 0;
-  display: flex;
+/* ── Portada ────────────────────────────────────────────────────────────── */
+.hero-caja {
+  display: grid;
   align-items: center;
-  gap: 1rem;
+  min-height: calc(100svh - 68px);
+  gap: var(--hueco2);
+  padding-top: clamp(1rem, 3vw, 2rem);
+  padding-bottom: clamp(2rem, 4vw, 3rem);
 }
-.sabor-flecha {
-  width: 2.8rem;
-  height: 2.8rem;
+@media (min-width: 900px) { .hero-caja { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); } }
+.hero h1 { font-size: clamp(3rem, 7.4vw, 6.4rem); line-height: 1.02; }
+.hero-linea { display: block; }
+.hero-palabra { display: inline-block; white-space: nowrap; margin-right: .22em; }
+.hero-acento { color: var(--vino); }
+/* cada letra sube desde abajo de su renglón, como en el video */
+.hero-letra {
+  display: inline-block;
+  animation: letra-sube .7s cubic-bezier(.2,.8,.3,1) both;
+  clip-path: inset(0 0 0 0);
+}
+.hero-linea:nth-child(1) .hero-palabra:nth-child(1) { --base: 0s; }
+.hero-linea:nth-child(1) .hero-palabra:nth-child(2) { --base: .08s; }
+.hero-linea:nth-child(1) .hero-palabra:nth-child(3) { --base: .26s; }
+.hero-linea:nth-child(2) .hero-palabra:nth-child(1) { --base: .4s; }
+.hero-linea:nth-child(2) .hero-palabra:nth-child(2) { --base: .48s; }
+.hero-linea:nth-child(2) .hero-palabra:nth-child(3) { --base: .68s; }
+.hero-palabra .hero-letra:nth-child(1) { animation-delay: calc(var(--base, 0s) + 0.03s); }
+.hero-palabra .hero-letra:nth-child(2) { animation-delay: calc(var(--base, 0s) + 0.06s); }
+.hero-palabra .hero-letra:nth-child(3) { animation-delay: calc(var(--base, 0s) + 0.09s); }
+.hero-palabra .hero-letra:nth-child(4) { animation-delay: calc(var(--base, 0s) + 0.12s); }
+.hero-palabra .hero-letra:nth-child(5) { animation-delay: calc(var(--base, 0s) + 0.15s); }
+.hero-palabra .hero-letra:nth-child(6) { animation-delay: calc(var(--base, 0s) + 0.18s); }
+.hero-palabra .hero-letra:nth-child(7) { animation-delay: calc(var(--base, 0s) + 0.21s); }
+.hero-palabra .hero-letra:nth-child(8) { animation-delay: calc(var(--base, 0s) + 0.24s); }
+@keyframes letra-sube {
+  from { opacity: 0; transform: translateY(.55em); }
+  to   { opacity: 1; transform: none; }
+}
+.hero-entra { animation: dato-entra .7s 1s cubic-bezier(.2,.8,.3,1) both; }
+.hero .entrada { margin-top: 1.4rem; max-width: 40ch; }
+.hero .portada-botones { margin-top: var(--hueco2); }
+.hero-hechos { list-style: none; padding: 0; margin: var(--hueco2) 0 0; display: flex; flex-wrap: wrap; gap: .5rem 1.4rem; color: var(--suave); }
+.hero-hechos li { display: flex; align-items: center; gap: .5rem; }
+.hero-hechos li::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--vino); }
+.hero-hueco { height: min(66svh, 640px); }
+@media (max-width: 899px) {
+  .hero-texto { order: 2; text-align: center; }
+  .hero .entrada { margin-left: auto; margin-right: auto; }
+  .hero .portada-botones, .hero-hechos { justify-content: center; }
+  .hero-hueco { order: 1; height: 42svh; }
+}
+
+/* ── La galería de sabores ──────────────────────────────────────────────── */
+.galeria {
+  --tono: color-mix(in srgb, var(--c) 86%, #fff);
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  --fg: var(--crema);
+  background: var(--tono);
+  color: var(--fg);
+  transition: background-color .6s ease;
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+/* en sabores claros el texto y los controles van en tinta (Galeria.jsx) */
+.galeria[data-tono='claro'] { --fg: var(--tinta); }
+.galeria-onda { position: absolute; left: 0; width: 100%; height: clamp(24px, 4vw, 56px); fill: var(--crema); z-index: 1; }
+.galeria-onda-arriba { top: -1px; }
+.galeria-onda-abajo { bottom: -1px; }
+.galeria-circulo {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  translate: -50% -50%;
+  width: min(46vw, 56svh, 540px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--fg) 16%, transparent);
   display: grid;
   place-items: center;
-  border-radius: 50%;
-  border: 1px solid var(--marco-firme);
-  background: color-mix(in srgb, var(--hueso) 60%, transparent);
-  color: var(--tinta);
-  cursor: pointer;
-  transition: background .2s, border-color .2s;
 }
-.sabor-flecha:hover { background: var(--hueso); border-color: var(--vino); }
-.sabor-puntos { display: flex; align-items: center; gap: .45rem; }
-.sabor-puntos button {
-  width: .55rem;
-  height: .55rem;
-  padding: 0;
-  border-radius: 999px;
-  border: 0;
-  background: color-mix(in srgb, var(--tinta) 25%, transparent);
+.galeria-motivo { width: 82%; height: 82%; color: var(--fg); opacity: .22; }
+.galeria-motivo path, .galeria-motivo circle, .galeria-motivo ellipse {
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  animation: trazo-entra 1.4s .1s cubic-bezier(.4,.5,.2,1) forwards;
+}
+.galeria-palabra {
+  position: absolute;
+  top: 44%;
+  translate: 0 -50%;
+  margin: 0;
+  font-family: 'Yeseva One', Georgia, serif;
+  font-size: clamp(2.4rem, 7.6vw, 7.2rem);
+  line-height: 1;
+  white-space: nowrap;
+  animation: palabra-entra .7s cubic-bezier(.2,.8,.3,1) both;
+}
+/* escalones por la palabra más larga (Galeria.jsx): así "Guanábana" o
+   "Chocolate" caben del lado derecho y "Agua de" queda del mismo tamaño */
+.galeria-palabra[data-largo='medio'] { font-size: clamp(2.2rem, 6.4vw, 6.2rem); }
+.galeria-palabra[data-largo='largo'] { font-size: clamp(2rem, 5.4vw, 5.2rem); }
+.galeria-palabra-der span { display: block; }
+.galeria-palabra-izq { right: calc(50% + min(12vw, 160px)); }
+.galeria-palabra-der { left: calc(50% + min(12vw, 160px)); animation-delay: .06s; }
+@keyframes palabra-entra {
+  from { opacity: 0; transform: translateY(.3em); }
+  to   { opacity: 1; transform: none; }
+}
+.galeria-hueco {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  translate: -50% -50%;
+  width: min(22vw, 260px);
+  height: min(56svh, 560px);
+  z-index: 45;
+  cursor: grab;
+  touch-action: pan-y;
+}
+.galeria-hueco.agarrando { cursor: grabbing; }
+.galeria-plana { position: absolute; inset: 34% -60% auto; display: none; }
+html:not([data-botella]) .galeria-plana { display: block; }
+
+.galeria-pie {
+  position: relative;
+  z-index: 46;
+  grid-row: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.2rem 2rem;
+  padding-bottom: clamp(3rem, 6vw, 5rem);
+}
+.galeria-dato { animation: dato-entra .5s .1s ease both; }
+.galeria-dato .caps { opacity: .8; }
+.galeria-dato h2 { font-size: var(--d3); margin-top: .4rem; }
+.galeria-hechos { list-style: none; padding: 0; margin: .8rem 0 0; display: flex; flex-wrap: wrap; gap: .4rem; }
+.galeria-hechos li { padding: .4rem .75rem; border: 1px solid color-mix(in srgb, var(--fg) 45%, transparent); }
+.galeria-avance { display: flex; align-items: center; gap: 1rem; }
+.galeria-flecha {
+  width: 2.9rem; height: 2.9rem;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--fg) 60%, transparent);
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.galeria-flecha:hover { background: var(--fg); color: var(--tono); }
+.galeria-puntos { display: flex; align-items: center; gap: .4rem; }
+.galeria-puntos button {
+  width: .55rem; height: .55rem; padding: 0;
+  border-radius: 999px; border: 0;
+  background: color-mix(in srgb, var(--fg) 40%, transparent);
   cursor: pointer;
   transition: width .35s cubic-bezier(.2,.8,.3,1), background .3s;
 }
-.sabor-puntos button[aria-selected='true'] { width: 1.9rem; background: var(--c); }
-.sabor-siguiente {
-  position: absolute;
-  left: 0; right: 0;
-  bottom: .9rem;
-  text-align: center;
-  color: var(--suave);
-  animation: dato-entra .5s .2s ease both;
+.galeria-puntos button[aria-selected='true'] { width: 1.9rem; background: var(--fg); }
+.galeria-flecha:focus-visible, .galeria-puntos button:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+@media (max-width: 859px) {
+  .galeria-palabra { top: 16%; font-size: clamp(2.2rem, 11vw, 4rem); translate: 0 0; }
+  .galeria-palabra-izq { right: 50%; margin-right: .2em; }
+  .galeria-palabra-der { left: 50%; margin-left: .2em; }
+  .galeria-circulo, .galeria-hueco { top: 47%; }
+  .galeria-hueco { width: 40vw; height: 46svh; }
+  .galeria-circulo { width: min(78vw, 46svh); }
+  .galeria-pie { justify-content: center; text-align: center; }
+  .galeria-hechos { justify-content: center; }
+  .galeria-avance { gap: .6rem; }
+  .galeria-puntos { gap: .28rem; }
+  .galeria-puntos button { width: .42rem; height: .42rem; }
+  .galeria-puntos button[aria-selected='true'] { width: 1.2rem; }
 }
-.sabor-subir:focus-visible, .sabor-flecha:focus-visible, .sabor-puntos button:focus-visible { outline: 2px solid var(--vino); outline-offset: 3px; }
 
-/* En teléfono: nombre arriba, botella al centro, datos y avance abajo */
-@media (max-width: 939px) {
-  .sabor-gigante { top: 13%; font-size: clamp(2.8rem, 15vw, 5rem); }
-  .sabor-mancha { top: 40%; width: min(78vw, 42svh); }
-  .sabor-hueco { top: 40%; width: 46vw; height: 46svh; }
-  .sabor-info {
-    left: var(--pad); right: var(--pad);
-    top: auto; bottom: 6.2rem;
-    translate: none;
-    width: auto;
-    text-align: center;
+/* ── Los carriles: la botella junto a la información ────────────────────── */
+.con-botella { position: relative; }
+.acompana-carril { display: none; }
+@media (min-width: 860px) {
+  html[data-botella='si'] .acompana-carril {
+    display: block;
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 28vw;
   }
-  .sabor-info .rotulo, .sabor-info .entrada { display: none; }
-  .sabor-info h2 { font-size: var(--d3); }
-  .sabor-hechos { justify-content: center; margin-top: .7rem; }
-  .sabor-hechos li { padding: .35rem .6rem; }
-  .sabor-avance { bottom: 2.2rem; gap: .6rem; }
-  .sabor-puntos { gap: .3rem; }
-  .sabor-puntos button { width: .42rem; height: .42rem; }
-  .sabor-puntos button[aria-selected='true'] { width: 1.2rem; }
+  html[data-botella='si'] .acompana-izq { left: 0; }
+  html[data-botella='si'] .acompana-der { right: 0; }
+  html[data-botella='si'] .acompana {
+    position: sticky;
+    top: calc(50vh - min(30vh, 280px) + 34px);
+    height: min(60vh, 560px);
+  }
+  /* el contenido se hace a un lado para dejarle su carril */
+  html[data-botella='si'] .con-botella-izq > .marco { margin-left: 28vw; margin-right: auto; max-width: min(var(--ancho), 68vw); }
+  html[data-botella='si'] .con-botella-der > .marco { margin-right: 28vw; margin-left: auto; max-width: min(var(--ancho), 68vw); }
+  html[data-botella='si'] .con-botella .pasos { grid-template-columns: repeat(2, 1fr); }
 }
-@media (min-width: 940px) and (max-height: 760px) {
-  .sabor-gigante { top: 20%; font-size: clamp(3rem, 9vw, 8rem); }
-  .sabor-avance { bottom: 1.8rem; }
+/* en teléfono el carril va arriba de la sección, en el flujo */
+@media (max-width: 859px) {
+  html[data-botella='si'] .acompana-carril { display: block; height: 40svh; margin-bottom: 1rem; }
+  html[data-botella='si'] .acompana { height: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-letra, .hero-entra, .galeria-palabra, .galeria-dato { animation: none; }
+  .galeria-motivo path, .galeria-motivo circle, .galeria-motivo ellipse { animation: none; stroke-dashoffset: 0; }
+}
+/* En las secciones con carril, la banda (foto o video a sangre) ya no sale a
+   los bordes: el marco está corrido y se salía de la pantalla por la derecha */
+@media (min-width: 860px) {
+  html[data-botella='si'] .con-botella .banda { width: auto; margin-left: 0; margin-right: 0; }
 }
