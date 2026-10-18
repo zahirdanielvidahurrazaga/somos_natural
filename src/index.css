@@ -1122,12 +1122,12 @@ figure img, figure video {
 .hero-hechos { list-style: none; padding: 0; margin: var(--hueco2) 0 0; display: flex; flex-wrap: wrap; gap: .5rem 1.4rem; color: var(--suave); }
 .hero-hechos li { display: flex; align-items: center; gap: .5rem; }
 .hero-hechos li::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--vino); }
-.hero-hueco { height: min(66svh, 640px); }
+.hero-hueco { height: min(82svh, 780px); }
 @media (max-width: 899px) {
   .hero-texto { order: 2; text-align: center; }
   .hero .entrada { margin-left: auto; margin-right: auto; }
   .hero .portada-botones, .hero-hechos { justify-content: center; }
-  .hero-hueco { order: 1; height: 42svh; }
+  .hero-hueco { order: 1; height: 52svh; }
 }
 
 /* ── La galería de sabores ──────────────────────────────────────────────── */
@@ -1137,9 +1137,9 @@ figure img, figure video {
   min-height: 100svh;
   overflow: hidden;
   --fg: var(--crema);
-  background: var(--tono);
+  --tono0: color-mix(in srgb, var(--c0, var(--c)) 86%, #fff);
+  background: var(--tono0);
   color: var(--fg);
-  transition: background-color .6s ease;
   display: grid;
   grid-template-rows: 1fr auto;
 }
@@ -1148,52 +1148,13 @@ figure img, figure video {
 .galeria-onda { position: absolute; left: 0; width: 100%; height: clamp(24px, 4vw, 56px); fill: var(--crema); z-index: 1; }
 .galeria-onda-arriba { top: -1px; }
 .galeria-onda-abajo { bottom: -1px; }
-.galeria-circulo {
-  position: absolute;
-  left: 50%;
-  top: 44%;
-  translate: -50% -50%;
-  width: min(46vw, 56svh, 540px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--fg) 16%, transparent);
-  display: grid;
-  place-items: center;
-}
-.galeria-motivo { width: 82%; height: 82%; color: var(--fg); opacity: .22; }
-.galeria-motivo path, .galeria-motivo circle, .galeria-motivo ellipse {
-  stroke-dasharray: 1; stroke-dashoffset: 1;
-  animation: trazo-entra 1.4s .1s cubic-bezier(.4,.5,.2,1) forwards;
-}
-.galeria-palabra {
-  position: absolute;
-  top: 44%;
-  translate: 0 -50%;
-  margin: 0;
-  font-family: 'Yeseva One', Georgia, serif;
-  font-size: clamp(2.4rem, 7.6vw, 7.2rem);
-  line-height: 1;
-  white-space: nowrap;
-  animation: palabra-entra .7s cubic-bezier(.2,.8,.3,1) both;
-}
-/* escalones por la palabra más larga (Galeria.jsx): así "Guanábana" o
-   "Chocolate" caben del lado derecho y "Agua de" queda del mismo tamaño */
-.galeria-palabra[data-largo='medio'] { font-size: clamp(2.2rem, 6.4vw, 6.2rem); }
-.galeria-palabra[data-largo='largo'] { font-size: clamp(2rem, 5.4vw, 5.2rem); }
-.galeria-palabra-der span { display: block; }
-.galeria-palabra-izq { right: calc(50% + min(12vw, 160px)); }
-.galeria-palabra-der { left: calc(50% + min(12vw, 160px)); animation-delay: .06s; }
-@keyframes palabra-entra {
-  from { opacity: 0; transform: translateY(.3em); }
-  to   { opacity: 1; transform: none; }
-}
 .galeria-hueco {
   position: absolute;
   left: 50%;
-  top: 44%;
+  top: 47%;
   translate: -50% -50%;
-  width: min(22vw, 260px);
-  height: min(56svh, 560px);
+  width: min(26vw, 320px);
+  height: min(74svh, 720px);
   z-index: 45;
   cursor: grab;
   touch-action: pan-y;
@@ -1241,19 +1202,53 @@ html:not([data-botella]) .galeria-plana { display: block; }
 .galeria-puntos button[aria-selected='true'] { width: 1.9rem; background: var(--fg); }
 .galeria-flecha:focus-visible, .galeria-puntos button:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
 @media (max-width: 859px) {
-  .galeria-palabra { top: 16%; font-size: clamp(2.2rem, 11vw, 4rem); translate: 0 0; }
-  .galeria-palabra-izq { right: 50%; margin-right: .2em; }
-  .galeria-palabra-der { left: 50%; margin-left: .2em; }
-  .galeria-circulo, .galeria-hueco { top: 47%; }
-  .galeria-hueco { width: 40vw; height: 46svh; }
-  .galeria-circulo { width: min(78vw, 46svh); }
-  .galeria-pie { justify-content: center; text-align: center; }
+        .galeria-hueco { width: 54vw; height: 58svh; top: 44%; }
+    .galeria-pie { justify-content: center; text-align: center; }
   .galeria-hechos { justify-content: center; }
   .galeria-avance { gap: .6rem; }
   .galeria-puntos { gap: .28rem; }
   .galeria-puntos button { width: .42rem; height: .42rem; }
   .galeria-puntos button[aria-selected='true'] { width: 1.2rem; }
 }
+
+/* Barrido de color (referencia "Fruity"): el color nuevo entra de lado */
+.galeria-barrido {
+  position: absolute;
+  inset: 0;
+  background: var(--tono);
+  animation: barrido-der .75s cubic-bezier(.7,0,.2,1) both;
+}
+.galeria-barrido[data-dir='izq'] { animation-name: barrido-izq; }
+@keyframes barrido-der { from { clip-path: inset(0 0 0 100%); } to { clip-path: inset(0); } }
+@keyframes barrido-izq { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+
+/* El nombre gigante, de orilla a orilla, detrás de la botella. La letra se
+   calcula para que la palabra más larga llene ~94% del ancho. */
+.galeria-gigante {
+  position: absolute;
+  left: 0; right: 0;
+  top: 47%;
+  translate: 0 -50%;
+  margin: 0;
+  text-align: center;
+  font-family: 'Yeseva One', Georgia, serif;
+  line-height: .86;
+  letter-spacing: -.01em;
+  color: var(--fg);
+  white-space: nowrap;
+  pointer-events: none;
+  animation: gigante-entra .8s .15s cubic-bezier(.2,.8,.3,1) both;
+}
+.galeria-gigante span { display: block; }
+.galeria-gigante[data-letras='4'] { font-size: min(39.2vw, 40svh); }
+.galeria-gigante[data-letras='5'] { font-size: min(31.3vw, 40svh); }
+.galeria-gigante[data-letras='6'] { font-size: min(26.1vw, 40svh); }
+.galeria-gigante[data-letras='7'] { font-size: min(22.4vw, 40svh); }
+.galeria-gigante[data-letras='8'] { font-size: min(19.6vw, 40svh); }
+.galeria-gigante[data-letras='9'] { font-size: min(17.4vw, 40svh); }
+@keyframes gigante-entra { from { opacity: 0; transform: translateX(6%); } to { opacity: 1; transform: none; } }
+@media (max-width: 859px) { .galeria-gigante { top: 44%; } }
+@media (prefers-reduced-motion: reduce) { .galeria-barrido, .galeria-gigante { animation: none; } }
 
 /* ── Los carriles: la botella junto a la información ────────────────────── */
 .con-botella { position: relative; }
@@ -1269,8 +1264,8 @@ html:not([data-botella]) .galeria-plana { display: block; }
   html[data-botella='si'] .acompana-der { right: 0; }
   html[data-botella='si'] .acompana {
     position: sticky;
-    top: calc(50vh - min(30vh, 280px) + 34px);
-    height: min(60vh, 560px);
+    top: calc(50vh - min(36vh, 340px) + 34px);
+    height: min(72vh, 680px);
   }
   /* el contenido se hace a un lado para dejarle su carril */
   html[data-botella='si'] .con-botella-izq > .marco { margin-left: 24vw; margin-right: auto; max-width: min(var(--ancho), 72vw); }
@@ -1279,13 +1274,12 @@ html:not([data-botella]) .galeria-plana { display: block; }
 }
 /* en teléfono el carril va arriba de la sección, en el flujo */
 @media (max-width: 859px) {
-  html[data-botella='si'] .acompana-carril { display: block; height: 40svh; margin-bottom: 1rem; }
+  html[data-botella='si'] .acompana-carril { display: block; height: 50svh; margin-bottom: 1rem; }
   html[data-botella='si'] .acompana { height: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-letra, .hero-entra, .galeria-palabra, .galeria-dato { animation: none; }
-  .galeria-motivo path, .galeria-motivo circle, .galeria-motivo ellipse { animation: none; stroke-dashoffset: 0; }
+  .hero-letra, .hero-entra, .galeria-dato { animation: none; }
 }
 /* En las secciones con carril, la banda (foto o video a sangre) ya no sale a
    los bordes: el marco está corrido y se salía de la pantalla por la derecha */
@@ -1345,4 +1339,9 @@ html:not([data-botella]) .galeria-plana { display: block; }
 @media (max-width: 859px) {
   .galeria-avance { flex-wrap: wrap; justify-content: center; }
   .galeria-ver { order: 4; flex-basis: 100%; }
+}
+/* pantallas bajitas: botella y nombre suben para dejarle aire a los datos */
+@media (min-width: 860px) and (max-height: 780px) {
+  .galeria-hueco { height: 62svh; top: 42%; }
+  .galeria-gigante { top: 40%; }
 }

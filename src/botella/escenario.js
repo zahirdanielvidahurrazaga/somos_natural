@@ -200,7 +200,7 @@ export function crearEscenario(canvas, { movil = false, quieto = false } = {}) {
       })
       const p = suave(Math.min(1, pres * 1.6))
       const r = rs[mejor]
-      const altoEsquina = vh * 0.2
+      const altoEsquina = vh * 0.26
       // pasado el último hueco (Dónde comprar, el pedido), se va de la
       // esquina hacia la izquierda para no estorbar en el formulario
       const salida = Math.min(1, Math.max(0, -ultimo.bottom / (vh * 0.6)))

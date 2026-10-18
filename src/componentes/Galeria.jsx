@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { grupos } from '../datos/negocio'
-import Motivo from './Motivos'
 import EtiquetaReal from './EtiquetaReal'
-import { ORDEN, ponerSaborActual, useSaborActual } from '../botella/saborActual'
+import { ORDEN, ladoDelCambio, ponerSaborActual, useSaborActual } from '../botella/saborActual'
 
 // La galería de sabores: la sección a todo color del video de la lata
 // ("FRESH | JUICE"), con la botella al centro, derecha, un círculo detrás y la
@@ -82,15 +81,22 @@ export default function Galeria() {
   // ("Frutos / rojos") y, según la palabra más larga, la letra de las dos
   // palabras baja un escalón para que nunca se corte en la orilla.
   const renglones = s.nombre.split(',')[0].split(' ')
-  const masLarga = Math.max(7, ...renglones.map((w) => w.length))
-  const largo = masLarga <= 7 ? 'corto' : masLarga <= 8 ? 'medio' : 'largo'
+  // el nombre gigante llena el ancho: la letra depende de la palabra más larga
+  const letras = Math.min(9, Math.max(4, ...renglones.map((w) => w.length)))
+
+  // Barrido de color al cambiar (referencia "Fruity" de Zahir): abajo se queda
+  // el color anterior y encima entra el nuevo deslizándose desde el lado.
+  const antes = useRef(s.color)
+  const anterior = useRef(s.color)
+  if (antes.current !== s.color) { anterior.current = antes.current; antes.current = s.color }
+  const dir = ladoDelCambio() < 0 ? 'izq' : 'der'
 
   return (
     <section
       className="galeria"
       id="sabor"
       ref={ref}
-      style={{ '--c': s.color }}
+      style={{ '--c': s.color, '--c0': anterior.current }}
       data-tono={esClaro(s.color) ? 'claro' : 'oscuro'}
       aria-label="Los sabores"
       onPointerDown={alBajar}
@@ -100,12 +106,10 @@ export default function Galeria() {
         <path d="M0 0h1440v22c-120 26-240 26-360 0s-240-26-360 0-240 26-360 0-240-26-360 0V0z" />
       </svg>
 
-      <div className="galeria-circulo" aria-hidden="true">
-        <Motivo nombre={s.etiqueta.motivo} className="galeria-motivo" key={`m-${s.nombre}`} />
-      </div>
+      <div className="galeria-barrido" data-dir={dir} key={`f-${s.nombre}`} aria-hidden="true" />
 
-      <p className="galeria-palabra galeria-palabra-izq" data-largo={largo} aria-hidden="true" key={`a-${s.nombre}`}>Agua de</p>
-      <p className="galeria-palabra galeria-palabra-der" data-largo={largo} aria-hidden="true" key={`b-${s.nombre}`}>
+      {/* El nombre gigante, de orilla a orilla, detrás de la botella */}
+      <p className="galeria-gigante" data-letras={letras} aria-hidden="true" key={`g-${s.nombre}`}>
         {renglones.map((w) => <span key={w}>{w}</span>)}
       </p>
 
