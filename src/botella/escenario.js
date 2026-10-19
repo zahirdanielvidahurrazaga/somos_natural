@@ -16,7 +16,7 @@ import { ALTO_BOTELLA, armarBotella, crearTexturas, estudioDe } from './modelo'
 // van pegados (sticky), así la botella se queda junto al texto mientras se lee.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export function crearEscenario(canvas, { movil = false, quieto = false } = {}) {
+export function crearEscenario(canvas, { movil = false, quieto = false, alPedirSabor } = {}) {
   // Suavizado siempre y resolución 2× en celular: sin suavizado y a 1.5× la
   // botella se veía pixeleada en un iPhone (pantalla 3×). Si el aparato no
   // alcanza, la resolución baja sola (ver `ajustarCalidad`).
@@ -82,6 +82,7 @@ export function crearEscenario(canvas, { movil = false, quieto = false } = {}) {
     }
   }
   let huecos = []
+
   addEventListener('resize', medir)
 
   // ── Sabor (con una vuelta; el cambio ocurre de espaldas) ───────────────
@@ -139,6 +140,8 @@ export function crearEscenario(canvas, { movil = false, quieto = false } = {}) {
   let vivo = true
   let dormido = false
   let pintada = false
+  let inclVista = null
+  let pedido = ''
   const GIRO_SOLO = quieto ? 0 : 0.4
   const suave = (t) => t * t * (3 - 2 * t)
   const curva = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2)
@@ -169,7 +172,7 @@ export function crearEscenario(canvas, { movil = false, quieto = false } = {}) {
     // deslizándose después del último hueco.
     if (ultimo.bottom < (movil ? -vh : -60) || primero.top > vh + 60) { dormir(); return }
 
-    let cx, cy, alto, incl, rodar, aqui
+    let cx, cy, alto, incl, rodar, aqui, cerca
     if (!movil) {
       // en qué tramo va: el primero que todavía no termina
       let k = 0
@@ -185,6 +188,7 @@ export function crearEscenario(canvas, { movil = false, quieto = false } = {}) {
       // de un hueco al otro da una vuelta completa
       rodar = (k + s) * Math.PI * 2
       aqui = s < 0.02 ? ea : s > 0.98 ? eb : null
+      cerca = s < 0.5 ? ea : eb
       if (cy + alto / 2 < -40 || cy - alto / 2 > vh + 40) { dormir(); return }
     } else {
       // En teléfono no hay espacio a los lados: mientras se lee, la botella
@@ -195,7 +199,11 @@ export function crearEscenario(canvas, { movil = false, quieto = false } = {}) {
       let mejor = 0, pres = 0
       rs.forEach((r, i) => {
         const c = r.top + r.height / 2
-        const p = Math.max(0, 1 - Math.abs(c - vh / 2) / (vh * 0.5))
+        // margen amplio (¾ de pantalla): los huecos de teléfono ya no van al
+        // centro (la portada la tiene arriba a la derecha) y con medio
+        // pantalla la botella se quedaba a medio camino entre la esquina y
+        // su lugar, encima del título
+        const p = Math.max(0, 1 - Math.abs(c - vh / 2) / (vh * 0.75))
         if (p > pres) { pres = p; mejor = i }
       })
       const p = suave(Math.min(1, pres * 1.6))
@@ -213,9 +221,24 @@ export function crearEscenario(canvas, { movil = false, quieto = false } = {}) {
       incl = -0.35 + (Number(visibles[mejor].dataset.inclina || 0) + 0.35) * p
       rodar = quieto ? 0 : scrollY * 0.006
       aqui = p > 0.98 ? visibles[mejor] : null
+      cerca = p > 0.5 ? visibles[mejor] : null
     }
 
     escuchar(aqui && aqui.dataset.agarrable !== undefined ? aqui : null)
+
+    // El hueco puede pedir su propio sabor (`data-sabor`, las escenas). Se
+    // decide por el hueco más cercano y no solo al llegar, así el cambio (con
+    // su vuelta) ocurre en el camino. Sin `data-sabor`: el de la galería.
+    {
+      const pide = cerca ? (cerca.dataset.sabor || '') : pedido
+      if (pide !== pedido) { pedido = pide; alPedirSabor?.(pide || null) }
+    }
+
+    // la inclinación llega suave: en las escenas el hueco cambia la suya en
+    // cada paso y sin esto la botella daba un salto
+    if (inclVista === null) inclVista = incl
+    inclVista += (incl - inclVista) * Math.min(1, dt * 5)
+    incl = inclVista
 
     // cambio de sabor con una vuelta
     let giroCambio = 0

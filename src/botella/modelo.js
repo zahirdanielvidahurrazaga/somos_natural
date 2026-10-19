@@ -10,6 +10,10 @@ import * as THREE from 'three'
 
 export const ALTO_BOTELLA = 2.16   // de la base a la tapa, en unidades
 
+// La forma de la botella. Boston round de 500 ml.
+const FORMA = { R: 0.32, HOMBRO: 1.5, CUELLO: 0.142, DOMO: 0.4, NIVEL: 1.83 }
+
+
 export function estudioDe(renderer) {
   const pmrem = new THREE.PMREMGenerator(renderer)
 // ── Luz de estudio ───────────────────────────────────────────────────────
@@ -70,10 +74,10 @@ export function armarBotella({ texturaDe, ligera = false }) {
   // Boston round de 500 ml: cuerpo recto y liso, hombro en domo, cuello corto
   // con su anillo y tapa de 28 mm. Medidas de catálogo (proporciones sacadas de sus
   // fotos: esbelta, unas 3.5 veces más alta que ancha, con el hombro largo.
-  const R = 0.32
-  const HOMBRO = 1.5          // donde termina lo recto
-  const CUELLO = 0.142        // radio del cuello en la base del domo
-  const DOMO = 0.4            // alto del hombro: en sus fotos es largo y suave
+  // R: radio del cuerpo · HOMBRO: donde termina lo recto · CUELLO: radio del
+  // cuello en la base del domo · DOMO: alto del hombro (en sus fotos es largo
+  // y suave)
+  const { R, HOMBRO, CUELLO, DOMO } = FORMA
   const perfil = [new THREE.Vector2(0, 0.004)]
   // fondo con un redondeo chico
   for (let k = 0; k <= 6; k++) {
@@ -129,7 +133,7 @@ export function armarBotella({ texturaDe, ligera = false }) {
   // botella acelera o frena, y lleva una ola que crece con el movimiento. La
   // cara de arriba del agua son las caras de atrás de la malla, pintadas de un
   // tono más claro: el truco de siempre para "rellenar" un corte.
-  const nivel = 1.83  // casi hasta el cuello, como en sus fotos
+  const nivel = FORMA.NIVEL  // casi hasta el cuello, como en sus fotos
   const perfilAgua = perfil
     .filter((p) => p.y <= 1.96)
     .map((p) => new THREE.Vector2(Math.max(0, p.x - 0.01), Math.max(0.012, p.y)))

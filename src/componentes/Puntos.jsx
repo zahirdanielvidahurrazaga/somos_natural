@@ -19,11 +19,11 @@ export default function Puntos() {
   const hayColonias = puntosDeVenta.every((p) => p.colonia)
 
   return (
-    <section className="seccion" id="puntos">
+    <section className="seccion lienzo lienzo-rosa" id="puntos">
       <div className="marco">
-        <div className="cabeza" data-revelar>
+        <div className="cabeza cabeza-gigante" data-revelar>
           <span className="rotulo caps">Puntos de venta</span>
-          <h2>Encuentra la más cercana.</h2>
+          <h2>La más cercana.</h2>
           <p className="entrada">
             Estos negocios de la zona ya las tienen frías. Si quieres una sola y
             no llegas a las {minimo} del pedido, ahí la encuentras.

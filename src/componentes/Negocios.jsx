@@ -1,5 +1,14 @@
-import { negocio, ventajas, puntosDeVenta } from '../datos/negocio'
+import { negocio, ventajas, puntosDeVenta, minimo } from '../datos/negocio'
 import { enlaceWhatsapp } from '../lib/whatsapp'
+import Escena from './Escena'
+
+// Tu negocio como escena: un paso por cada ventaja, con su palabra gigante.
+const PALABRAS = [
+  { palabra: [`Desde ${minimo}`], incl: -0.3, sabor: 'Horchata' },
+  { palabra: ['Envases'], incl: 0.34, sabor: 'Maracuyá' },
+  { palabra: ['Del día'], incl: -0.18, sabor: 'Tamarindo' },
+  { palabra: ['Familia'], incl: 0.26, sabor: 'Naranja' },
+]
 
 export default function Negocios() {
   const enlace = enlaceWhatsapp(
@@ -9,49 +18,28 @@ export default function Negocios() {
   )
 
   return (
-    <section className="seccion franja-honda con-botella con-botella-der" id="negocios">
-      {/* El carril de la botella: la acompaña pegada a un lado mientras se lee
-          esta sección (ver botella/escenario.js) */}
-      <div className="acompana-carril acompana-der" aria-hidden="true">
-        <div className="acompana" data-botella="" data-inclina="-0.3" />
-      </div>
-      <div className="marco">
-        <div className="cabeza" data-revelar>
-          <span className="rotulo caps">Tiendas, torterías y restaurantes</span>
-          <h2>Nosotros pasamos a ver cuánto te queda.</h2>
-          <p className="entrada">
-            No tienes que acordarte de pedir ni calcular de más. Cada semana nos
-            paramos en tu negocio, revisamos y surtimos lo que se vendió.
-          </p>
-        </div>
-
-        <div className="puntos">
-          {ventajas.map((v) => (
-            <div className="punto" key={v.titulo} data-revelar>
-              <h3>{v.titulo}</h3>
-              <p>{v.texto}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* La prueba social sale de un dato que ya existe: las tiendas que hoy las
-            venden. Para el siguiente dueño, "estos ya nos venden" pesa más que
-            cualquier promesa. Si un día no hubiera lista, la frase no aparece. */}
-        {puntosDeVenta.length > 0 && (
-          <p className="prueba" data-revelar>
-            Hoy nos venden <a href="#puntos">{puntosDeVenta.length} negocios de la zona</a>.
-            Tiendas, misceláneas, torterías y hasta un puesto de hot dogs.
-          </p>
-        )}
-
-        {enlace && (
-          <div className="cierre" data-revelar>
-            <a className="boton boton-claro" href={enlace} target="_blank" rel="noopener noreferrer">
+    <Escena
+      id="negocios"
+      nombre="negocios"
+      rotulo="Tiendas, torterías y restaurantes"
+      titulo="Nosotros pasamos a ver cuánto te queda."
+      pasos={ventajas.map((v, i) => ({ ...v, ...PALABRAS[i] }))}
+      extra={
+        <>
+          {/* La prueba social sale de un dato que ya existe: las tiendas que
+              hoy las venden. Si un día no hubiera lista, la frase no aparece. */}
+          {puntosDeVenta.length > 0 && (
+            <p className="escena-prueba">
+              Hoy nos venden <a href="#puntos">{puntosDeVenta.length} negocios de la zona</a>
+            </p>
+          )}
+          {enlace && (
+            <a className="boton escena-boton" href={enlace} target="_blank" rel="noopener noreferrer">
               Que pasen a mi negocio
             </a>
-          </div>
-        )}
-      </div>
-    </section>
+          )}
+        </>
+      }
+    />
   )
 }

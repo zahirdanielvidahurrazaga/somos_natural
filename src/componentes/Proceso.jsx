@@ -1,32 +1,24 @@
 import { proceso } from '../datos/negocio'
+import Escena from './Escena'
+
+// Cómo trabajamos como escena: el día de una botella, de la revisión en tienda
+// a la madrugada fría del reparto (los colores, en index.css). Cada paso
+// enseña un sabor que resalte sobre su color.
+const PALABRAS = [
+  { palabra: ['Revisamos'], incl: 0.28, sabor: 'Jamaica' },
+  { palabra: ['Pides'], incl: -0.32, sabor: 'Horchata' },
+  { palabra: ['Esa tarde'], incl: 0.42, sabor: 'Limón, pepino y chía' },
+  { palabra: ['Temprano'], incl: -0.12, sabor: 'Mango' },
+]
 
 export default function Proceso() {
   return (
-    <section className="seccion franja-suave con-botella con-botella-izq" id="proceso">
-      {/* El carril de la botella: la acompaña pegada a un lado mientras se lee
-          esta sección (ver botella/escenario.js) */}
-      <div className="acompana-carril acompana-izq" aria-hidden="true">
-        <div className="acompana" data-botella="" data-inclina="0.3" />
-      </div>
-      <div className="marco">
-        <div className="cabeza" data-revelar>
-          <span className="rotulo caps">Cómo trabajamos</span>
-          <h2>Se echan a perder rápido. Por eso trabajamos así.</h2>
-          <p className="entrada">
-            Un agua natural no aguanta semanas guardada. En vez de pelearnos con
-            eso, todo está armado para que nadie se quede con producto parado.
-          </p>
-        </div>
-
-        <div className="pasos">
-          {proceso.map((p) => (
-            <div className="paso" key={p.titulo} data-revelar>
-              <h3>{p.titulo}</h3>
-              <p>{p.texto}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
+    <Escena
+      id="proceso"
+      nombre="proceso"
+      rotulo="Cómo trabajamos"
+      titulo="Se echan a perder rápido. Por eso trabajamos así."
+      pasos={proceso.map((p, i) => ({ ...p, ...PALABRAS[i] }))}
+    />
   )
 }

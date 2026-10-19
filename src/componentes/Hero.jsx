@@ -17,7 +17,12 @@ export default function Hero() {
     <section className="hero" id="arriba">
       <div className="marco hero-caja">
         <div className="hero-texto">
-          <p className="hero-quien hero-entra">Aguas naturales para tiendas, torterías y restaurantes · Zona sur de Puebla</p>
+          {/* En teléfono se depura (Zahir: "demasiado texto"): esta línea se
+              queda en "Aguas naturales · Zona sur de Puebla" y se esconden el
+              párrafo y los datos de abajo (ver index.css, bloque de teléfono). */}
+          <p className="hero-quien hero-entra">
+            Aguas naturales<span className="hero-quien-largo"> para tiendas, torterías y restaurantes</span> · Zona sur de Puebla
+          </p>
           {/* Cada letra en su caja para que suba sola; el lector de pantalla
               lee el título entero desde aria-label. */}
           <h1 aria-label="Se hacen hoy. Te llegan mañana.">
@@ -44,7 +49,9 @@ export default function Hero() {
             {HECHOS.map((h) => <li key={h}>{h}</li>)}
           </ul>
         </div>
-        <div className="hero-hueco" data-botella="" data-inclina="-0.32" aria-hidden="true" />
+        {/* La portada SIEMPRE enseña jamaica (pedido de Zahir), aunque en la
+            galería se haya elegido otro sabor: el hueco lo pide. */}
+        <div className="hero-hueco" data-botella="" data-inclina="-0.32" data-sabor="Jamaica" aria-hidden="true" />
       </div>
     </section>
   )

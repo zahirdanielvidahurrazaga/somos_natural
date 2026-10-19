@@ -70,11 +70,11 @@ export default function Pedido() {
   const enlace = total > 0 ? enlaceWhatsapp(negocio.whatsapp, mensaje) : null
 
   return (
-    <section className="seccion franja-suave" id="pedido">
+    <section className="seccion lienzo lienzo-vino" id="pedido">
       <div className="marco">
-        <div className="cabeza cabeza-centro" data-revelar>
+        <div className="cabeza cabeza-gigante" data-revelar>
           <span className="rotulo caps">Hacer un pedido</span>
-          <h2>Ármalo aquí y te lo mandas por WhatsApp.</h2>
+          <h2>Arma tu pedido.</h2>
           <p className="entrada">
             Elige tamaño, dulzura y cuántas quieres de cada sabor. Al terminar se
             abre WhatsApp con el mensaje ya escrito; tú nada más le das enviar.
@@ -118,7 +118,11 @@ export default function Pedido() {
               <div>
                 {sabores.map((s) => (
                   <div className="linea" key={s.nombre} style={{ '--c': s.color }}>
-                    <span className="gota" />
+                    {/* la etiqueta de verdad, chiquita: es la misma que la
+                        botella de arriba; sin arte, la gota de su color */}
+                    {s.botella?.etq
+                      ? <img className="linea-etiqueta" src={`/etiquetas/${s.botella.etq}.webp`} alt="" width="1181" height="591" loading="lazy" decoding="async" />
+                      : <span className="gota" />}
                     <span className="linea-nombre">{s.nombre}</span>
                     <span className="contador">
                       <button type="button" onClick={() => mover(s.nombre, -1)} disabled={cantidades[s.nombre] === 0} aria-label={`Quitar una de ${s.nombre}`}>

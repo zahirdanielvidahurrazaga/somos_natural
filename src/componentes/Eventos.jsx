@@ -1,6 +1,15 @@
 import { negocio, eventos } from '../datos/negocio'
 import { enlaceWhatsapp } from '../lib/whatsapp'
-import Banda from './Banda'
+import Escena from './Escena'
+
+// Eventos como escena. El video del paseo por la casa queda de fondo, teñido
+// con el color de cada paso: se siente el lugar sin que la botella 3D quede
+// encima de una foto real.
+const PALABRAS = [
+  { palabra: ['Aparta'], incl: 0.3, sabor: 'Piña' },
+  { palabra: ['Tu gente'], incl: -0.28, sabor: 'Frutos rojos' },
+  { palabra: ['Frías'], incl: 0.16, sabor: 'Melón' },
+]
 
 export default function Eventos() {
   const enlace = enlaceWhatsapp(
@@ -9,48 +18,33 @@ export default function Eventos() {
   )
 
   return (
-    <section className="seccion con-botella con-botella-izq" id="eventos">
-      {/* El carril de la botella: la acompaña pegada a un lado mientras se lee
-          esta sección (ver botella/escenario.js) */}
-      <div className="acompana-carril acompana-izq" aria-hidden="true">
-        <div className="acompana" data-botella="" data-inclina="0.3" />
-      </div>
-      <div className="marco">
-        <div className="cabeza" data-revelar>
-          <span className="rotulo caps">Fiestas y reuniones</span>
-          <h2>Para tu fiesta, hechas ese día.</h2>
-          <p className="entrada">
-            Bautizos, cumpleaños, comidas de oficina. Apartas la fecha y esa
-            mañana te las llevamos frías: en botella o en garrafón de 20&nbsp;L.
-          </p>
-        </div>
-
-        <Banda
-          video="/video/paseo.mp4"
-          cartel="/video/paseo.jpg"
-          alt="Recorrido por la fachada de la casa donde se preparan las aguas"
-          rotulo="Se hacen para tu evento"
-          frase="No salen de una bodega. Se preparan la tarde anterior y llegan frías el día que quedamos."
+    <Escena
+      id="eventos"
+      nombre="eventos"
+      rotulo="Fiestas y reuniones"
+      titulo="Para tu fiesta, hechas ese día."
+      pasos={eventos.map((e, i) => ({ ...e, ...PALABRAS[i] }))}
+      fondo={
+        <video
+          src="/video/paseo.mp4"
+          poster="/video/paseo.jpg"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
         />
-
-        <div className="puntos">
-          {eventos.map((e) => (
-            <div className="punto" key={e.titulo} data-revelar>
-              <h3>{e.titulo}</h3>
-              <p>{e.texto}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="portada-botones" data-revelar>
+      }
+      extra={
+        <div className="escena-botones">
           {enlace && (
-            <a className="boton boton-vino" href={enlace} target="_blank" rel="noopener noreferrer">
+            <a className="boton escena-boton" href={enlace} target="_blank" rel="noopener noreferrer">
               Apartar una fecha
             </a>
           )}
-          <a className="boton" href="#pedido">Armar el pedido</a>
+          <a className="boton escena-boton escena-boton-hueco" href="#pedido">Armar el pedido</a>
         </div>
-      </div>
-    </section>
+      }
+    />
   )
 }

@@ -110,31 +110,6 @@ a { color: inherit; text-decoration: none; }
    igual —rótulo, título, párrafo, todo en la columna izquierda— y la mitad
    derecha quedaba vacía; se leía como plantilla. La de Pedido sigue centrada
    a propósito: es el cierre y le toca ser distinta. */
-@media (min-width: 860px) {
-  .cabeza:not(.cabeza-centro) {
-    max-width: none;
-    display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    grid-template-rows: auto auto;
-    column-gap: clamp(2.5rem, 6vw, 6rem);
-    align-items: end;
-  }
-  .cabeza:not(.cabeza-centro) .rotulo  { grid-column: 1; grid-row: 1; }
-  .cabeza:not(.cabeza-centro) h2       { grid-column: 1; grid-row: 2; }
-  .cabeza:not(.cabeza-centro) .entrada {
-    grid-column: 2;
-    grid-row: 1 / 3;
-    align-self: end;
-    margin-top: 0;
-    max-width: none;
-    /* compensa el descenso de la línea de 1.06 del título para que las dos
-       últimas líneas se apoyen en el mismo piso */
-    padding-bottom: .25em;
-  }
-}
-
-.cabeza-centro { margin-left: auto; margin-right: auto; text-align: center; }
-.cabeza-centro .entrada { margin-left: auto; margin-right: auto; }
 
 /* ── Botones ─────────────────────────────────────────────────────────────── */
 
@@ -254,7 +229,6 @@ a { color: inherit; text-decoration: none; }
 .etq-titulo { display: block; }
 .etq-pie { display: block; }
 
-
 .etq-regla {
   display: block;
   width: 26%;
@@ -280,7 +254,6 @@ a { color: inherit; text-decoration: none; }
   text-transform: uppercase;
 }
 
-
 /* ── Adornos de fondo ────────────────────────────────────────────────────── */
 
 .etq-ondas {
@@ -296,7 +269,6 @@ a { color: inherit; text-decoration: none; }
 .etq-sembrado { position: absolute; z-index: 0; inset: 0; pointer-events: none; }
 .etq-sembrado > span { position: absolute; display: block; }
 .etq-sembrado svg { width: 100%; height: auto; color: var(--onda); opacity: .55; }
-
 
 /* Chocolate escurriendo arriba y barras abajo. */
 .etq-goteo {
@@ -403,63 +375,6 @@ a { color: inherit; text-decoration: none; }
 
 .etq-medio-suelto { position: relative; z-index: 1; }
 
-/* ── Pasos ───────────────────────────────────────────────────────────────── */
-
-.pasos { display: grid; gap: var(--hueco2); counter-reset: paso; }
-@media (min-width: 700px)  { .pasos { grid-template-columns: repeat(2, 1fr); gap: var(--hueco3) var(--hueco2); } }
-@media (min-width: 1000px) { .pasos { grid-template-columns: repeat(4, 1fr); } }
-
-.paso { padding-top: 1.15rem; border-top: 1px solid var(--marco); }
-.paso::before {
-  counter-increment: paso;
-  content: '0' counter(paso);
-  display: block;
-  font-family: 'Yeseva One', Georgia, serif;
-  font-size: var(--t2);
-  color: var(--vino);
-  margin-bottom: 0.9rem;
-}
-.paso h3 { font-size: 1.12rem; margin-bottom: 0.45rem; }
-.paso p  { font-size: var(--t2); font-weight: 400; color: var(--suave); }
-
-/* ── Franjas ─────────────────────────────────────────────────────────────── */
-
-.franja-honda {
-  background: var(--vino-hondo);
-  color: var(--crema);
-  border-top: 0;
-}
-.franja-honda .rotulo  { color: #E9B9C6; }
-.franja-honda .entrada { color: rgba(250,237,233,.72); }
-.franja-honda .paso    { border-top-color: rgba(250,237,233,.22); }
-.franja-honda .paso::before { color: #E9B9C6; }
-.franja-honda .paso p  { color: rgba(250,237,233,.68); }
-
-.franja-suave { background: var(--crema-honda); }
-
-/* Lista de argumentos */
-.puntos { display: grid; gap: 0; margin-bottom: var(--hueco3); }
-@media (min-width: 760px) { .puntos { grid-template-columns: repeat(2, 1fr); column-gap: var(--hueco3); } }
-
-.punto { padding: 1.35rem 0; border-top: 1px solid var(--marco); }
-.franja-honda .punto { border-top-color: rgba(250,237,233,.22); }
-.punto h3 { font-size: 1.1rem; margin-bottom: 0.4rem; }
-.punto p  { font-size: var(--t2); font-weight: 400; color: var(--suave); }
-.franja-honda .punto p { color: rgba(250,237,233,.68); }
-
-/* La prueba social de Tu negocio: una sola línea, centrada, sobre la franja
-   honda. Va entre las ventajas y el botón, que es donde se decide. */
-.prueba {
-  margin-top: var(--hueco3);
-  font-size: var(--t1);
-  color: var(--crema);
-  max-width: 62ch;
-}
-.prueba a { border-bottom: 1px solid #E9B9C6; color: #E9B9C6; transition: color .2s ease; }
-.prueba a:hover { color: var(--crema); border-color: var(--crema); }
-
-
-
 /* ── Fotos ───────────────────────────────────────────────────────────────── */
 /* Regla del sitio: NINGUNA foto flota dentro de una caja con márgenes. Todas
    sangran hasta el borde de la pantalla. Un recuadro con aire alrededor se lee
@@ -486,63 +401,6 @@ figure img, figure video {
   mix-blend-mode: soft-light;
   opacity: .5;
   pointer-events: none;
-}
-
-/* Franja: UNA foto ancha, de borde a borde y en silencio. */
-/* Banda: de borde a borde, con la frase encima. */
-.banda {
-  position: relative;
-  overflow: hidden;
-  margin: 0 calc(50% - 50vw) var(--hueco3);
-  width: 100vw;
-}
-.banda img, .banda video { aspect-ratio: 5 / 3; }
-.banda::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(100deg,
-    rgba(43,24,29,.88) 0%,
-    rgba(43,24,29,.58) 44%,
-    rgba(43,24,29,.18) 100%);
-}
-.banda figcaption {
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  z-index: 2;
-  max-width: var(--ancho);
-  margin: 0 auto;
-  padding: clamp(1.2rem, 4vw, 3rem) clamp(1.15rem, 4vw, 2.25rem);
-  color: var(--crema);
-}
-.banda figcaption > .caps { display: block; color: #E9B9C6; margin-bottom: 0.8rem; }
-.banda-frase { font-family: 'Yeseva One', Georgia, serif; font-size: var(--d3); line-height: 1.18; max-width: 26ch; }
-
-/* Retrato: la foto sale por el borde izquierdo, el texto se queda alineado
-   con el resto de la página. Esta sección NO va dentro de .marco. */
-.retrato { display: grid; }
-.retrato figure img { aspect-ratio: 4 / 5; }
-.retrato-texto {
-  padding: var(--hueco2) clamp(1.15rem, 4vw, 2.25rem) 0;
-}
-.retrato h2 { font-size: var(--d2); }
-.retrato .entrada { margin-top: 1.15rem; }
-
-@media (min-width: 860px) {
-  .retrato {
-    grid-template-columns: 48vw 1fr;
-    align-items: center;
-    gap: clamp(2rem, 5vw, 4rem);
-  }
-  .retrato-texto {
-    padding: 0 max(1.15rem, calc((100vw - var(--ancho)) / 2 + 1.15rem)) 0 0;
-    max-width: 52ch;
-  }
-}
-
-@media (max-width: 560px) {
-  .banda img, .banda video { aspect-ratio: 4 / 3; }
-  .franja img { aspect-ratio: 16 / 10; }
 }
 
 /* ── Puntos de venta ─────────────────────────────────────────────────────── */
@@ -680,7 +538,6 @@ figure img, figure video {
   .puntos-caja-ancha .puntos-lista li:nth-last-child(-n+2) a { border-bottom: 1px solid var(--marco); }
 }
 
-
 .punto-nombre { font-size: var(--t2); }
 .punto-colonia {
   display: block;
@@ -719,8 +576,6 @@ figure img, figure video {
 .fichas button[data-activo='si'] { background: var(--vino); border-color: var(--vino); color: var(--hueso); }
 
 .minimo { color: var(--vino); text-align: right; margin-top: 0.5rem; }
-
-.cierre { padding-top: var(--hueco2); border-top: 1px solid rgba(250,237,233,.22); }
 
 /* ── Armador de pedido ───────────────────────────────────────────────────── */
 
@@ -908,7 +763,6 @@ figure img, figure video {
 .flotante:hover { background: var(--vino-hondo); }
 .flotante svg { width: 26px; height: 26px; }
 
-
 /* ═══════════════════════════════════════════════════════════════════════════
    MOVIMIENTO
    Todo sale del vocabulario de la marca: el sello redondo gira, la etiqueta
@@ -972,15 +826,12 @@ figure img, figure video {
 }
 .menu a:hover::after { transform: scaleX(1); transform-origin: left; }
 
-
 /* ═══════════════════════════════════════════════════════════════════════════
    LA GOTITA
    Un solo dibujo, cuatro apariciones distintas. En la portada se TIÑE del
    sabor que esté mostrando la etiqueta (--giro sale de lib/color.js), y en el
    pie es solo una silueta recortada con máscara, para que no compita.
    ═══════════════════════════════════════════════════════════════════════════ */
-
-
 
 /* Asomada por encima del panel del pedido. */
 .resumen { position: relative; }
@@ -1057,9 +908,9 @@ figure img, figure video {
 /* ══ La botella acompaña la página (2026-10-18) ══════════════════════════
    Referencia: el video de la lata de mango. UNA botella en un lienzo fijo
    (botella/escenario.js) que se coloca sobre los huecos `data-botella`: la
-   portada, la galería y un carril pegado al lado de Cómo trabajamos, Tu
-   negocio y Eventos. Sin 3D (html sin data-botella) los carriles no ocupan
-   lugar y la galería enseña la etiqueta plana. */
+   portada, la galería y las tres escenas (Cómo trabajamos, Tu negocio y
+   Eventos). Sin 3D (html sin data-botella) la galería enseña la etiqueta
+   plana. */
 .botella-lienzo {
   position: fixed;
   top: 0;
@@ -1250,43 +1101,9 @@ html:not([data-botella]) .galeria-plana { display: block; }
 @media (max-width: 859px) { .galeria-gigante { top: 44%; } }
 @media (prefers-reduced-motion: reduce) { .galeria-barrido, .galeria-gigante { animation: none; } }
 
-/* ── Los carriles: la botella junto a la información ────────────────────── */
-.con-botella { position: relative; }
-.acompana-carril { display: none; }
-@media (min-width: 860px) {
-  html[data-botella='si'] .acompana-carril {
-    display: block;
-    position: absolute;
-    top: 0; bottom: 0;
-    width: 24vw;
-  }
-  html[data-botella='si'] .acompana-izq { left: 0; }
-  html[data-botella='si'] .acompana-der { right: 0; }
-  html[data-botella='si'] .acompana {
-    position: sticky;
-    top: calc(50vh - min(36vh, 340px) + 34px);
-    height: min(72vh, 680px);
-  }
-  /* el contenido se hace a un lado para dejarle su carril */
-  html[data-botella='si'] .con-botella-izq > .marco { margin-left: 24vw; margin-right: auto; max-width: min(var(--ancho), 72vw); }
-  html[data-botella='si'] .con-botella-der > .marco { margin-right: 24vw; margin-left: auto; max-width: min(var(--ancho), 72vw); }
-  html[data-botella='si'] .con-botella .pasos { grid-template-columns: repeat(2, 1fr); }
-}
-/* en teléfono el carril va arriba de la sección, en el flujo */
-@media (max-width: 859px) {
-  html[data-botella='si'] .acompana-carril { display: block; height: 50svh; margin-bottom: 1rem; }
-  html[data-botella='si'] .acompana { height: 100%; }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .hero-letra, .hero-entra, .galeria-dato { animation: none; }
 }
-/* En las secciones con carril, la banda (foto o video a sangre) ya no sale a
-   los bordes: el marco está corrido y se salía de la pantalla por la derecha */
-@media (min-width: 860px) {
-  html[data-botella='si'] .con-botella .banda { width: auto; margin-left: 0; margin-right: 0; }
-}
-
 /* "Ver los 14 sabores": la lista para saltar directo a uno */
 .galeria-ver {
   border: 1.5px solid color-mix(in srgb, var(--fg) 60%, transparent);
@@ -1357,25 +1174,36 @@ html:not([data-botella]) .galeria-plana { display: block; }
 }
 
 /* ── Frutas flotando alrededor de la botella ─────────────────────────────── */
-/* Cinco lugares fijos; las de "atrás" (a, d) van detrás del nombre gigante,
-   más chicas y desenfocadas; las de "adelante" encima, más grandes. Entran
-   cayendo al cambiar de sabor y luego se mecen despacio. */
+/* Seis lugares fijos en tres planos (--p = qué tan cerca están):
+   atrás (a, d) chicas, desenfocadas y detrás del nombre; en medio (b, c, e)
+   nítidas, encima del nombre; y una de primer plano (f) grande y muy
+   desenfocada ENCIMA de la botella. Entran cayendo al cambiar de sabor, se
+   mecen despacio y se desplazan con el mouse y el scroll según su plano
+   (--mx, --my, --sy los pone Galeria.jsx): eso es lo que da profundidad.
+   La sombra va teñida del color del sabor, no gris: la gris las hacía ver
+   recortadas y pegadas. */
 .galeria-frutas { position: absolute; inset: 0; pointer-events: none; }
 .galeria-fruta {
   position: absolute;
   width: var(--t, 12vw);
   height: auto;
   rotate: var(--r, 0deg);
-  filter: drop-shadow(0 18px 24px rgba(0, 0, 0, .18));
+  --sombra: drop-shadow(0 22px 28px color-mix(in srgb, color-mix(in srgb, var(--c), #000 55%) 45%, transparent));
+  filter: var(--sombra);
+  translate:
+    calc(var(--mx, 0) * var(--p, 1) * -26px)
+    calc(var(--my, 0) * var(--p, 1) * -18px + var(--sy, 0) * var(--p, 1) * -14svh);
+  transition: translate .6s cubic-bezier(.2,.8,.3,1);
   animation:
     fruta-entra .9s var(--d, 0s) cubic-bezier(.2,.8,.3,1) both,
     fruta-mece 6s calc(var(--d, 0s) + .9s) ease-in-out infinite alternate;
 }
-.galeria-fruta[data-lugar='a'] { --t: 9vw;  --r: -18deg; --d: .05s; left: 12%; top: 14%; filter: blur(2px); opacity: .9; }
-.galeria-fruta[data-lugar='b'] { --t: 15vw; --r: 24deg;  --d: .12s; right: 8%;  top: 8%;  z-index: 44; }
-.galeria-fruta[data-lugar='c'] { --t: 11vw; --r: -32deg; --d: .2s;  left: 3%;   top: 40%;  z-index: 44; }
-.galeria-fruta[data-lugar='d'] { --t: 8vw;  --r: 40deg;  --d: .28s; right: 26%; top: 56%; filter: blur(3px); opacity: .85; }
-.galeria-fruta[data-lugar='e'] { --t: 11vw; --r: 12deg;  --d: .34s; right: 4%;  bottom: 18%; z-index: 44; }
+.galeria-fruta[data-lugar='a'] { --t: 8vw;  --r: -18deg; --d: .05s; --p: .35; left: 13%; top: 14%; filter: blur(3px); opacity: .85; }
+.galeria-fruta[data-lugar='b'] { --t: 14vw; --r: 24deg;  --d: .12s; --p: 1;   right: 8%;  top: 8%;  z-index: 44; }
+.galeria-fruta[data-lugar='c'] { --t: 11vw; --r: -32deg; --d: .2s;  --p: .8;  left: 3%;   top: 40%;  z-index: 44; }
+.galeria-fruta[data-lugar='d'] { --t: 7vw;  --r: 40deg;  --d: .28s; --p: .3;  right: 27%; top: 58%; filter: blur(4px); opacity: .8; }
+.galeria-fruta[data-lugar='e'] { --t: 11vw; --r: 12deg;  --d: .34s; --p: 1.1; right: 4%;  bottom: 18%; z-index: 44; }
+.galeria-fruta[data-lugar='f'] { --t: 21vw; --r: -14deg; --d: .4s;  --p: 2.2; right: 18%; bottom: -16%; z-index: 44; filter: blur(9px) var(--sombra); opacity: .95; }
 @keyframes fruta-entra {
   from { opacity: 0; transform: translateY(-40%) scale(.7); }
   to   { opacity: 1; transform: none; }
@@ -1386,6 +1214,348 @@ html:not([data-botella]) .galeria-plana { display: block; }
   .galeria-fruta[data-lugar='b'] { --t: 26vw; right: -4%; top: 8%; }
   .galeria-fruta[data-lugar='c'] { --t: 22vw; left: -2%; bottom: 30%; }
   .galeria-fruta[data-lugar='d'] { display: none; }
+  .galeria-fruta[data-lugar='f'] { --t: 34vw; right: 4%; bottom: -10%; }
   .galeria-fruta[data-lugar='e'] { --t: 20vw; right: 0; bottom: 34%; }
 }
 @media (prefers-reduced-motion: reduce) { .galeria-fruta { animation: none; } }
+
+/* ── Escenas: la pantalla se queda y la historia avanza ─────────────────────
+   (2026-10-18) Mismo lenguaje que la galería —color a sangre, palabra gigante,
+   la botella al centro— pero el avance va con el scroll: la sección mide una
+   pantalla por paso y adentro todo se queda pegado. El color de cada paso
+   sale de la historia: la tienda (rosa jamaica), el pedido (vino), la tarde en
+   que se hacen (naranja de atardecer) y la madrugada fría del reparto. */
+.escena { position: relative; height: calc(100svh * var(--pasos, 4)); }
+.escena[data-pasos='3'] { --pasos: 3; }
+.escena { --fg: var(--crema); }
+/* atrás: color, video y palabra gigante (detrás de la botella) */
+.escena-fija {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  background: var(--fondo);
+  color: var(--fg);
+  transition: background-color .7s cubic-bezier(.6,0,.2,1), color .7s;
+}
+/* adelante: texto y botones (encima de la botella). Se monta sobre la capa
+   de atrás con margen negativo y se pega igual que ella. */
+.escena-frente {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  margin-top: -100svh;
+  z-index: 46;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: minmax(0, 1fr);
+  color: var(--fg);
+  transition: color .7s;
+  pointer-events: none;
+}
+.escena-frente > * { pointer-events: auto; }
+.escena[data-escena='proceso'][data-paso='0'] { --fondo: #E9B9C6; --fg: var(--tinta); }
+.escena[data-escena='proceso'][data-paso='1'] { --fondo: var(--vino); }
+.escena[data-escena='proceso'][data-paso='2'] { --fondo: #C2552E; }
+.escena[data-escena='proceso'][data-paso='3'] { --fondo: #2F4F6E; }
+/* Tu negocio: el vino hondo de la marca, el olivo del maracuyá, el papel
+   amarillo del tamarindo y la tinta. */
+.escena[data-escena='negocios'][data-paso='0'] { --fondo: var(--vino-hondo); }
+.escena[data-escena='negocios'][data-paso='1'] { --fondo: #4F5A2E; }
+.escena[data-escena='negocios'][data-paso='2'] { --fondo: #EED9A0; --fg: var(--tinta); }
+.escena[data-escena='negocios'][data-paso='3'] { --fondo: var(--tinta); }
+/* Eventos: colores de fiesta, sobre el video teñido */
+.escena[data-escena='eventos'][data-paso='0'] { --fondo: #C93D62; }
+.escena[data-escena='eventos'][data-paso='1'] { --fondo: #E39A2D; --fg: var(--tinta); }
+.escena[data-escena='eventos'][data-paso='2'] { --fondo: #2C6A63; }
+
+/* el fondo (video) se ve a través del color: el color manda, el video da vida */
+.escena-fondo { position: absolute; inset: 0; }  /* sin z-index: si crea su propia capa, el multiply no se mezcla con el color */
+.escena-fondo video, .escena-fondo img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.1); mix-blend-mode: multiply; opacity: .35; }
+
+.escena-lado { display: flex; flex-direction: column; align-items: flex-end; gap: .9rem; text-align: right; }
+.escena-prueba { margin: 0; font-size: var(--t2); opacity: .9; }
+.escena-prueba a { color: inherit; text-underline-offset: 3px; }
+.escena-botones { display: flex; gap: .6rem; flex-wrap: wrap; justify-content: flex-end; }
+.escena-boton { background: var(--fg); color: var(--fondo); border-color: var(--fg); }
+.escena-boton:hover { background: transparent; color: var(--fg); }
+.escena-boton-hueco { background: transparent; color: var(--fg); }
+.escena-boton-hueco:hover { background: var(--fg); color: var(--fondo); }
+/* la ola de abajo de la galería ya entra con el color del primer paso */
+#sabor .galeria-onda-abajo { fill: #E9B9C6; }
+/* el botón de WhatsApp es vino: sobre el paso vino desaparecía */
+.flotante { box-shadow: 0 0 0 2px var(--crema); }
+
+.escena-arriba { padding-top: calc(68px + clamp(1rem, 3vh, 2rem)); position: relative; }
+.escena-arriba .caps { opacity: .8; }
+.escena-titulo { font-size: var(--d3); margin-top: .4rem; max-width: 22ch; }
+.escena-gigante { color: var(--fg); opacity: .96; top: 55%; }
+/* a dos renglones ("Esa / tarde") la letra se limita por alto: si no, en una
+   pantalla bajita se montaba sobre el título de arriba */
+.escena-gigante[data-renglones='2'] { font-size: min(26vw, 25svh); }
+.escena-hueco {
+  position: absolute;
+  left: 50%; top: 52%;
+  translate: -50% -50%;
+  width: 30vw;
+  height: 74svh;
+}
+.escena-pie {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--hueco2);
+  padding-bottom: clamp(1.5rem, 5vh, 3rem);
+  /* siempre en el renglón de abajo: el de en medio (1fr) es de la botella.
+     Sin esto, en teléfono el texto del paso caía al centro, encima de ella
+     (revisión de ChatGPT). */
+  grid-row: 3;
+}
+.escena-dato { max-width: 34ch; animation: dato-entra .5s .1s ease both; }
+.escena-dato .caps { opacity: .8; }
+.escena-dato h3 { font-size: var(--d3); margin: .4rem 0 .5rem; }
+.escena-dato p { margin: 0; font-size: var(--t2); opacity: .85; }
+.escena-avance { list-style: none; margin: 0; padding: 0; display: flex; gap: .45rem; }
+.escena-avance li { width: 2.2rem; height: 3px; background: color-mix(in srgb, var(--fg) 30%, transparent); transition: background .5s; }
+.escena-avance li[data-hecho] { background: var(--fg); }
+@media (max-width: 859px) {
+  .escena-hueco { width: 60vw; height: 50svh; top: 50%; }
+  .escena-pie { flex-direction: column; align-items: center; justify-content: flex-end; text-align: center; }
+  .escena-lado { align-items: center; text-align: center; }
+  .escena-botones { justify-content: center; }
+  .escena-titulo { max-width: none; }
+}
+
+/* ── La parte de abajo, con el mismo lenguaje que las escenas (2026-10-18) ──
+   Después de la botella: la foto real a pantalla completa, y luego dos lienzos
+   de color a sangre (Dónde comprar en rosa jamaica, el pedido en vino hondo)
+   con el título gigante. El pie, en tinta, cierra la secuencia. */
+
+/* "Así salen": la fila de botellas de verdad, pegada y acercándose */
+.foto-escena { position: relative; height: 170svh; }
+.foto-escena-fija {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  background: var(--tinta);
+  color: var(--crema);
+}
+.foto-escena-fija img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 70%;
+  transform: scale(var(--z, 1));
+  transform-origin: 50% 70%;
+}
+/* un velo parejo de tinta sobre toda la foto (un velo solo arriba dejaba
+   una orilla dura a media pantalla) */
+.foto-escena-fija::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(43, 24, 29, .3);
+  z-index: 1;
+}
+.foto-escena-texto { position: relative; z-index: 2; padding-top: calc(68px + clamp(1.2rem, 4vh, 2.5rem)); width: 100%; }
+.foto-escena-texto .caps { opacity: .85; }
+.foto-escena-texto h2 { font-size: clamp(2.6rem, 6.4vw, 6.4rem); line-height: .95; margin: .4rem 0 .8rem; }
+.foto-escena-texto p { max-width: 44ch; margin: 0; font-size: var(--t2); opacity: .92; }
+@media (max-width: 859px) {
+  .foto-escena-fija img { object-position: 30% 75%; }
+}
+
+/* Lienzos de color a sangre */
+.lienzo { --fg: var(--crema); background: var(--fondo); color: var(--fg); }
+.seccion.lienzo + .seccion, .foto-escena + .seccion { border-top: 0; }
+.lienzo-rosa { --fondo: #E9B9C6; --fg: var(--tinta); }
+.lienzo-vino { --fondo: var(--vino-hondo); }
+.lienzo .rotulo { color: inherit; opacity: .8; }
+.lienzo .entrada { color: inherit; opacity: .85; }
+
+/* El título gigante de las escenas, ahora en el flujo */
+.cabeza-gigante { display: block; margin-bottom: var(--hueco3); }
+.cabeza-gigante h2 { font-size: clamp(2.8rem, 7vw, 6.4rem); line-height: .92; letter-spacing: -.01em; margin: .5rem 0 0; }
+.cabeza-gigante .entrada { max-width: 46ch; }
+
+/* Dónde comprar: el mapa sin caja y las tiendas como etiquetas que se tocan */
+.lienzo-rosa .mapa-google { outline: 1px solid rgba(43,24,29,.25); }
+.lienzo-rosa .mapa-abrir { color: var(--tinta); }
+.lienzo-rosa .puntos-caja-ancha .puntos-lista { display: flex; flex-wrap: wrap; gap: .5rem; }
+.lienzo-rosa .puntos-lista a,
+.lienzo-rosa .puntos-lista li:last-child a,
+.lienzo-rosa .puntos-caja-ancha .puntos-lista li:nth-last-child(-n+2) a {
+  border: 1px solid rgba(43,24,29,.35);
+  padding: .55rem .9rem;
+  gap: .7rem;
+}
+.lienzo-rosa .punto-mapa { display: none; }
+.lienzo-rosa .puntos-lista a::after { content: '↗'; opacity: .6; }
+.lienzo-rosa .puntos-lista a:hover,
+.lienzo-rosa .puntos-lista li[data-activo='si'] a { background: var(--tinta); color: var(--crema); border-color: var(--tinta); }
+
+/* El pedido: el armador va en un panel crema sobre el vino */
+.lienzo-vino .pedido-caja {
+  background: var(--hueso);
+  color: var(--tinta);
+  padding: clamp(1.2rem, 3vw, 2.5rem);
+}
+.lienzo-vino .resumen { padding-top: .5rem; }
+.linea-etiqueta { width: 58px; height: 29px; object-fit: cover; flex-shrink: 0; box-shadow: 0 0 0 1px var(--marco); }
+
+/* Solo para lectores de pantalla: fuera de la vista, dentro del documento */
+.solo-lector {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Menos movimiento en las escenas: va al final para ganarle por orden a las
+   reglas de las escenas, que vienen después de las demás. */
+@media (prefers-reduced-motion: reduce) {
+  .escena-dato { animation: none; }
+  .escena-fija { transition: none; }
+}
+
+/* ── Teléfono: escenas y galería sin choques (2026-10-18) ───────────────────
+   En pantalla chica la botella y la palabra gigante ya no van centradas sobre
+   toda la pantalla: se meten al renglón de en medio (1fr), el espacio que
+   sobra entre el título y el texto. Así el texto nunca queda encima de la
+   botella. El texto va alineado a la izquierda y más compacto, y la barra de
+   avance baja a la esquina (el botón de WhatsApp ocupa la otra). Va al final
+   para ganarle por orden a las reglas de arriba. */
+@media (max-width: 859px) {
+  /* escenas: la palabra gigante a media pantalla y la botella NO en medio
+     (pedido de Zahir): grande, cargada a la esquina derecha, saliéndose de la
+     orilla y DETRÁS del texto (la capa de adelante va encima del lienzo). */
+  .escena-fija .escena-gigante { top: 45%; }
+  .escena-fija .escena-hueco {
+    left: auto; right: -18vw;
+    top: 52%;
+    translate: 0 -50%;
+    width: 64vw;
+    height: 82svh;
+  }
+  .escena-arriba { padding-top: calc(68px + .9rem); grid-row: 1; }
+  .escena-titulo { font-size: 1.15rem; }
+  .escena-pie {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-end;
+    text-align: left;
+    gap: .9rem;
+    padding-bottom: 5.2rem;
+  }
+  .escena-dato { max-width: none; }
+  .escena-dato h3 { font-size: 1.3rem; margin: .3rem 0 .35rem; }
+  .escena-dato p { font-size: var(--t3); line-height: 1.5; max-width: 64vw; }
+  /* el título y el párrafo no pasan por encima de la botella (en las oscuras
+     no se leían); los botones sí, porque son sólidos */
+  .escena-titulo { max-width: 66vw; }
+  .escena-lado { align-items: stretch; text-align: left; gap: .7rem; }
+  .escena-prueba { font-size: var(--t3); }
+  .escena-botones { flex-wrap: nowrap; justify-content: stretch; gap: .5rem; }
+  .escena-botones .escena-boton { flex: 1; }
+  .escena-boton { padding: .8rem .6rem; font-size: var(--t4); text-align: center; }
+  .escena-avance { position: absolute; left: var(--pad); bottom: 2.4rem; }
+
+  /* galería */
+  .galeria { padding-top: 3.2rem; }
+  .galeria > .galeria-gigante {
+    position: relative;
+    grid-row: 1;
+    grid-column: 1;
+    left: auto; top: auto;
+    translate: none;
+  }
+  .galeria { grid-template-columns: minmax(0, 1fr); }
+  .galeria-pie { grid-column: 1; }
+  .galeria > .galeria-gigante { width: 100%; align-self: center; }
+  .galeria .galeria-hueco {
+    position: absolute;
+    grid-row: auto;
+    left: auto; right: -16vw;
+    top: 50%;
+    translate: 0 -50%;
+    width: 62vw;
+    height: 80svh;
+  }
+  .galeria-pie { justify-content: flex-start; text-align: left; gap: .8rem; padding-bottom: 2.6rem; }
+  .galeria-dato h2 { font-size: 1.35rem; }
+  .galeria-hechos { display: none; }
+  .galeria-avance { justify-content: flex-start; }
+  .galeria-ver { padding: .6rem 1rem; }
+
+  /* portada: a la izquierda como las escenas, y la botella más baja para que
+     los botones alcancen a verse en la primera pantalla */
+  .hero-texto { text-align: left; }
+  .hero .entrada { margin-left: 0; }
+  .hero .portada-botones, .hero-hechos { justify-content: flex-start; }
+  /* la botella de la portada también va esquinada, grande y detrás del
+     texto (no en medio); el texto baja a la parte de abajo de la pantalla */
+  .hero { position: relative; }
+  /* Portada en teléfono = el acomodo que Zahir eligió (su captura del
+     18-oct): la botella GRANDE en la esquina derecha, saliéndose de la
+     orilla, y el texto a la izquierda POR DELANTE. Solo se depuró el texto:
+     línea corta arriba, sin párrafo y sin la lista de datos. Se probaron y
+     RECHAZARON: botella al centro, palabra gigante "Natural" detrás, frutas
+     alrededor y portada sin botones. */
+  .hero { position: relative; }
+  .hero .hero-hueco {
+    position: absolute;
+    right: -12vw;
+    top: 50%;
+    translate: 0 -50%;
+    width: 74vw;
+    height: 78svh;
+  }
+  .hero-texto { position: relative; z-index: 46; }
+  .hero-quien { max-width: 62vw; }
+  /* sin botones (pedido de Zahir, con su captura): los pedidos van abajo */
+  .hero-quien-largo, .hero .entrada, .hero-hechos, .hero .portada-botones { display: none; }
+
+  /* pedido: el panel con menos relleno y los tres caminos en un renglón */
+  .lienzo-vino .pedido-caja { padding: 1rem; }
+  .cambiador { flex-wrap: nowrap; }
+  .cambiador button { padding: .8rem .4rem; letter-spacing: .08em; }
+}
+
+
+/* Pantallas bajitas (teléfono acostado, letra agrandada): la capa de adelante
+   de una escena mide una pantalla y va pegada; si su contenido no cabe, lo que
+   se sale queda pegado fuera de la vista y nunca se alcanza a leer (revisión
+   de ChatGPT). Aquí la escena deja de ser pegada y se vuelve una sección
+   normal que enseña TODOS los pasos en lista (la misma lista que leen los
+   lectores de pantalla), con su color y su botella. */
+@media (max-height: 520px) {
+  .escena { height: auto; }
+  .escena-fija { position: absolute; inset: 0; height: auto; }
+  .escena-frente { position: relative; height: auto; min-height: 100svh; margin-top: 0; }
+  .escena-arriba { padding-bottom: 1.2rem; }
+  /* con todos los pasos a la vista, la palabra gigante estorbaba la lectura */
+  .escena-dato, .escena-avance, .escena-gigante { display: none; }
+  .escena-frente .solo-lector {
+    position: static;
+    width: auto; height: auto;
+    margin: 0; padding: 0;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
+    list-style: none;
+    display: grid;
+    gap: .9rem;
+    max-width: 46ch;
+  }
+  .escena-frente .solo-lector h3 { font-size: 1.15rem; margin-bottom: .2rem; }
+  .escena-frente .solo-lector p { font-size: var(--t3); line-height: 1.5; }
+}

@@ -12,9 +12,11 @@ import { ORDEN, ladoDelCambio, ponerSaborActual, useSaborActual } from '../botel
 // imágenes por sabor (public/frutas/<etq>-1.webp y -2.webp, generadas con
 // ChatGPT en un mismo estilo), repetidas en cinco lugares con tamaño, giro y
 // profundidad distintos. Si una imagen falta, simplemente no se ve.
+// La sexta (f) es la de primer plano: grande, desenfocada y ENCIMA de la
+// botella, como si estuviera entre la cámara y ella. Es la que da profundidad.
 const FRUTAS = [
   { n: 1, lugar: 'a' }, { n: 2, lugar: 'b' }, { n: 1, lugar: 'c' },
-  { n: 2, lugar: 'd' }, { n: 1, lugar: 'e' },
+  { n: 2, lugar: 'd' }, { n: 1, lugar: 'e' }, { n: 2, lugar: 'f' },
 ]
 
 const slug = (s) => s.nombre.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
@@ -61,6 +63,32 @@ export default function Galeria() {
     }, 200)
   }, [])
 
+  // Profundidad: las frutas se mueven con el mouse y con el scroll, cada una
+  // según qué tan cerca está (--p en el CSS). Aquí solo se publican tres
+  // números en la sección; el movimiento lo hace el CSS.
+  useEffect(() => {
+    const el = ref.current
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    let pendiente = false
+    const rodar = () => {
+      pendiente = false
+      const r = el.getBoundingClientRect()
+      // -1 cuando la galería entra por abajo, 0 al centro, 1 cuando sale
+      const y = (innerHeight / 2 - (r.top + r.height / 2)) / ((innerHeight + r.height) / 2)
+      el.style.setProperty('--sy', Math.max(-1, Math.min(1, y)).toFixed(3))
+    }
+    const alRodar = () => { if (!pendiente) { pendiente = true; requestAnimationFrame(rodar) } }
+    const alMover = (e) => {
+      if (e.pointerType !== 'mouse') return
+      el.style.setProperty('--mx', ((e.clientX / innerWidth) * 2 - 1).toFixed(3))
+      el.style.setProperty('--my', ((e.clientY / innerHeight) * 2 - 1).toFixed(3))
+    }
+    rodar()
+    addEventListener('scroll', alRodar, { passive: true })
+    el.addEventListener('pointermove', alMover)
+    return () => { removeEventListener('scroll', alRodar); el.removeEventListener('pointermove', alMover) }
+  }, [])
+
   // flechas del teclado mientras la galería está a la vista
   useEffect(() => {
     const tecla = (e) => {
@@ -95,9 +123,10 @@ export default function Galeria() {
 
   // Barrido de color al cambiar (referencia "Fruity" de Zahir): abajo se queda
   // el color anterior y encima entra el nuevo deslizándose desde el lado.
-  const antes = useRef(s.color)
-  const anterior = useRef(s.color)
-  if (antes.current !== s.color) { anterior.current = antes.current; antes.current = s.color }
+  const fondo = s.fondoGaleria || s.color
+  const antes = useRef(fondo)
+  const anterior = useRef(fondo)
+  if (antes.current !== fondo) { anterior.current = antes.current; antes.current = fondo }
   const dir = ladoDelCambio() < 0 ? 'izq' : 'der'
 
   return (
@@ -105,8 +134,8 @@ export default function Galeria() {
       className="galeria"
       id="sabor"
       ref={ref}
-      style={{ '--c': s.color, '--c0': anterior.current }}
-      data-tono={esClaro(s.color) ? 'claro' : 'oscuro'}
+      style={{ '--c': fondo, '--c0': anterior.current }}
+      data-tono={esClaro(fondo) ? 'claro' : 'oscuro'}
       aria-label="Los sabores"
       onPointerDown={alBajar}
       onPointerUp={alSoltar}

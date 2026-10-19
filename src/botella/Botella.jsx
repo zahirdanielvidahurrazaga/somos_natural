@@ -20,12 +20,15 @@ export default function Botella() {
         if (!vivo || !hayWebGL()) return
         const { crearEscenario } = await import('./escenario')
         if (!vivo) return
-        motor = crearEscenario(lienzo.current, { movil, quieto })
         const receta = (n) => sabores.find((s) => s.nombre === n)?.botella
+        // una escena pide su sabor; al salir de ella vuelve el de la galería
+        let propio = null
+        const alPedirSabor = (n) => { propio = n; motor?.ponerSabor(receta(n || saborActual())) }
+        motor = crearEscenario(lienzo.current, { movil, quieto, alPedirSabor })
         motor.ponerSabor(receta(saborActual()), { inmediato: true })
         const despues = window.requestIdleCallback || ((f) => setTimeout(f, 1500))
         despues(() => motor?.precargar(sabores.map((s) => s.botella)))
-        soltar = oirSabor(() => motor?.ponerSabor(receta(saborActual())))
+        soltar = oirSabor(() => { if (!propio) motor?.ponerSabor(receta(saborActual())) })
         document.documentElement.dataset.botella = 'si'
         motor.remedir()
       })

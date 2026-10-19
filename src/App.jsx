@@ -21,13 +21,15 @@ export default function App() {
       <main>
         <Hero />
         <Galeria />
+        {/* Las tres escenas van seguidas: la botella pasa de una a otra sin
+            cruzar nada. Primero los dos caminos por los que el negocio vende
+            —tiendas y eventos— y luego, ya sin botella, la foto real (la 3D
+            nunca pasa encima de una foto de verdad) y dónde comprar una sola,
+            pegado al armador: el aviso de "faltan N para el mínimo" enlaza ahí. */}
         <Proceso />
-        <Formacion />
-        {/* Primero los dos caminos por los que el negocio vende —tiendas y
-            eventos—, y después dónde comprar una sola, pegado al armador: el
-            aviso de "faltan N para el mínimo" enlaza justo ahí arriba. */}
         <Negocios />
         <Eventos />
+        <Formacion />
         <Puntos />
         <Pedido />
       </main>

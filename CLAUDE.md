@@ -312,6 +312,117 @@ aire. Si falta una, no se ve (onError).
 Medido en compu: 60 fps estables. **Falta probar en el iPhone** (diseño de
 celular sin revisar: el Chrome de la extensión no se deja achicar).
 
+## ESCENAS: Cómo trabajamos, Tu negocio y Eventos (2026-10-18, sin commit)
+
+Zahir: *"quiero inmersión, no un sitio web que parece del 2010"* y **NO quiere
+hielera**. Diagnóstico previo: cuatro lenguajes visuales sin hablarse, la botella
+de adorno en un carril sin relación con el texto, tapando la foto real y
+desapareciendo antes del final. Se tomó el lenguaje de la galería y se llevó a
+las secciones:
+
+- `Escena.jsx`: sección de **una pantalla por paso**, adentro todo pegado
+  (sticky). Al bajar avanza el paso: cambia el **color de toda la pantalla**, la
+  **palabra gigante** detrás de la botella, la inclinación y **el sabor** de la
+  botella (`data-sabor` en el hueco, escogido para resaltar sobre ese color; sin
+  él vuelve el de la galería). Texto del paso abajo izq., `extra` (botones,
+  prueba social) y barra de avance abajo der.
+- Colores por sección y paso en `index.css` (`[data-escena][data-paso]`), sacados
+  de la historia o de papeles de sus etiquetas. Proceso: rosa jamaica → vino →
+  atardecer → madrugada azul. Negocios: vino hondo → olivo → amarillo tamarindo
+  → tinta. Eventos: rosa fiesta → mango → verde, **con el video del paseo de
+  fondo en gris + multiply al 35%** (no `z-index` en `.escena-fondo`: rompe el
+  multiply).
+- Palabras gigantes en UN renglón ("Esa tarde", "Del día", "Tu gente"): a dos
+  renglones salían chicas.
+- `escenario.js`: inclinación suavizada (`inclVista`) y aviso `alPedirSabor`.
+- **Orden nuevo:** las tres escenas seguidas (Proceso → Negocios → Eventos) y
+  DESPUÉS Formación (la foto real) → Dónde comprar → Pedido. Así la botella nunca
+  pasa encima de una foto.
+- Botón de WhatsApp con aro crema (sobre el vino desaparecía).
+- Quedó CSS viejo de carriles (`.con-botella`, `.acompana*`) sin uso: limpiar.
+
+**Galería, segunda pasada** (mismo día): fondos más antojables con
+`fondoGaleria` por sabor en negocio.js (maracuyá morado de cáscara, mango rosa
+"con chile", naranja verde azulado, piña verde de corona, jamaica rosa de flor —en el vino
+de la marca sus flores y la botella oscura se perdían—); frutas en TRES planos con `--p` (atrás desenfocadas, en
+medio nítidas, una de primer plano `f` encima de la botella), parallax con
+mouse y scroll (`--mx/--my/--sy` desde Galeria.jsx) y sombra teñida del color
+del sabor (la gris las hacía ver pegadas). Rehechas con ChatGPT las débiles:
+`mango-2` (entero con hoja), `melon-2` (medio cantaloupe), `pina-2` (entera con
+corona), `guanabana-2` (entera). webp con `cwebp` (el ffmpeg de Homebrew no
+trae libwebp).
+
+**Revisión final de ChatGPT** (1 hallazgo, real y arreglado): en pantallas
+bajitas (teléfono acostado, letra grande) la capa de adelante de la escena no
+cabía y lo que se salía quedaba pegado fuera de la vista. Con `max-height:
+520px` las escenas dejan de ser pegadas y enseñan TODOS los pasos en lista
+(la `.solo-lector`, ahora visible), sin palabra gigante. Limpieza: 58 reglas
+de CSS sin uso (carriles, pasos, ventajas, retrato, franja, banda) y
+`Banda.jsx` borrados.
+
+**Revisión de ChatGPT de las escenas** (2 hallazgos, ambos reales y
+arreglados): todos los pasos van en una lista `.solo-lector` para lectores de
+pantalla, y `prefers-reduced-motion` apaga la entrada del paso (la regla va al
+FINAL del CSS para ganar por orden).
+
+**Teléfono** (mismo día, pedido de Zahir: "mejor distribución del texto"):
+bloque al FINAL de index.css. **La botella en teléfono va GRANDE, cargada a
+la esquina derecha y saliéndose de la orilla, DETRÁS del texto** (Zahir: "no
+simplemente en medio… esquinada detrás del texto, que se vea más grande"); el
+título y el párrafo van angostos (≈65vw) para no pasar sobre ella, los botones
+sí (son sólidos). 🔴 Para eso **cada escena son DOS capas pegadas**:
+`.escena-fija` (color, video, palabra gigante → detrás del lienzo de la
+botella) y `.escena-frente` (texto y botones, z 46 → encima), montada con
+`margin-top: -100svh`. En una sola capa no se puede: lo sticky forma su propio
+grupo de apilamiento y queda entero atrás o adelante del lienzo. Los colores
+del paso van en la `<section>` (`[data-escena][data-paso]`) para que los
+hereden las dos capas. Texto alineado
+a la izquierda y compacto, barra de avance abajo a la izquierda (el WhatsApp va
+a la derecha), "De agua · Sin conservadores…" oculto en la galería, portada a
+la izquierda con botella de 40svh, selector del pedido en un renglón.
+🔴 Dos trampas: (1) **una sola columna explícita** (`minmax(0,1fr)`): la
+palabra gigante no corta renglón y ensanchaba la columna, mandando el título a
+una segunda; (2) `.escena-gigante` TAMBIÉN es `.galeria-gigante`: las reglas
+de teléfono van con selector más específico (`.escena-fija .escena-gigante`,
+`.galeria > .galeria-gigante`) o la de la galería se la lleva.
+**Portada en teléfono** — el acomodo que Zahir eligió es SU CAPTURA del
+18-oct: botella GRANDE en la esquina derecha saliéndose de la orilla (right
+−20vw, 64svh) y el texto a la izquierda POR DELANTE, con los tres botones. Solo
+se depuró el texto: línea corta "Aguas naturales · Zona sur de Puebla"
+(`.hero-quien-largo` oculto), sin párrafo y sin la lista de datos. Luego, con
+otra captura suya: **sin botones**, el texto en el mismo lugar y la botella
+centrada a media altura en la orilla derecha y más grande (74vw × 78svh,
+right −12vw: él la pidió un poco más a la izquierda). 🔴 **Probados y RECHAZADOS en la misma tarde, no
+repetir:** botella arriba chiquita, botella mediana a la derecha, botella al
+centro con la palabra gigante "Natural" detrás, portada sin botones y frutas
+flotando alrededor. Lección: cuando pida "depurar", quitar texto y NO mover el
+acomodo. `escenario.js` (teléfono): la botella entra a su hueco con margen de ¾
+de pantalla (antes ½).
+**Portada SIEMPRE con jamaica**: su hueco lleva `data-sabor="Jamaica"`; aunque
+en la galería elijan otro, al subir vuelve a jamaica.
+Se probó el **título en color invertido** donde la botella lo tapa (copia
+recortada cada cuadro con la silueta del agua) y Zahir prefirió el título en
+sus colores de siempre: se quitó. (También se probó el texto abajo a la izquierda; quedó encima de la base
+oscura de la botella.)
+Probado y RECHAZADO ("se ve HORRIBLE"): botella "como producto" de una idea
+de ChatGPT (etiqueta fija de frente, piso con sombra y reflejo en CSS, halo
+rosa, hielos y flor a sus pies). Con efectos de CSS se ve pegado y flotando.
+Se regresó a la versión que sí le gustó: texto a la izquierda (centrado en
+vertical), botella grande centrada a media altura en la orilla derecha
+(right −12vw, 74vw × 78svh), sin botones, jamaica fija.
+**Cómo verlo en tamaño teléfono** (el Chrome de la extensión no se achica):
+abrir `localhost:5181/robots.txt` (mismo origen), reemplazar el documento por
+un `<iframe>` de 390 px apuntando a `/` y manejar `iframe.contentWindow`.
+
+**La parte de abajo** (mismo día): "Así salen" ahora es la foto ANCHA de la
+fila de botellas (`fotos.formacionAncha`) a pantalla completa, pegada, con
+acercamiento lento al bajar (`--z` 1.14→1) y velo parejo de tinta al 30% (un
+velo solo arriba dejaba orilla dura). Dónde comprar y el pedido son **lienzos de
+color a sangre** (`.lienzo-rosa`, `.lienzo-vino`) con título gigante
+(`.cabeza-gigante`; títulos acortados: "La más cercana.", "Arma tu pedido.").
+Las tiendas van como etiquetas con ↗; el armador en panel hueso sobre el vino y
+cada sabor lleva su **etiqueta real en miniatura** en vez de la gota de color.
+
 ## (Descartado) La portada era el refri (rama `refri`, 2026-10-18)
 
 Zahir no quería tarjetas ni "solo scrollear": quiere **experiencia**. Se armaron
