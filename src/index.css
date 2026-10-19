@@ -1503,7 +1503,10 @@ html:not([data-botella]) .galeria-plana { display: block; }
   .hero .portada-botones, .hero-hechos { justify-content: flex-start; }
   /* la botella de la portada también va esquinada, grande y detrás del
      texto (no en medio); el texto baja a la parte de abajo de la pantalla */
-  .hero { position: relative; }
+  /* el hueco se sale por la derecha a propósito (la botella va esquinada);
+     sin recortarlo, la página se desplazaba de lado en el teléfono y se
+     veía una barra blanca a la derecha */
+  .hero { position: relative; overflow: hidden; overflow: clip; }
   /* Portada en teléfono = el acomodo que Zahir eligió (su captura del
      18-oct): la botella GRANDE en la esquina derecha, saliéndose de la
      orilla, y el texto a la izquierda POR DELANTE. Solo se depuró el texto:
