@@ -264,6 +264,35 @@ huecos: portada → recorrido → Sabores.
 
 **SANDÍA está fuera del sitio** (no tiene etiqueta real).
 
+## REFERENCIAS: cinco versiones para comparar (rama `referencias`, 2026-10-21, sin commit)
+
+Zahir: "no me encanta el diseño actual" → pasó poppi, Recess, Olipop y Ghia para
+ver Natural adaptado a cada una, más una propuesta propia. **main y lo publicado
+NO se tocaron.** Se abren en `/referencias/` (índice) y cada página trae abajo una
+barra para brincar entre versiones. Vanilla JS + CSS, sin React; leen
+`src/datos/negocio.js` y `src/lib/whatsapp.js` (todo en `src/referencias/`).
+
+| Página | Referencia | Idea |
+|---|---|---|
+| `poppi.html` · Pop | drinkpoppi.com | rosa mexicano + amarillo, cinta que corre, tablero de mosaicos, gotita guiñando |
+| `recess.html` · Calma | takearecess.com | degradado que cambia al bajar, nubes, letra ancha (Archivo 125) |
+| `olipop.html` · Fuente de sodas | drinkolipop.com | crema + verde, Caprasimo, estampas de estrella, píldoras por grupo, gotita en el proceso |
+| `ghia.html` · Sobremesa | drinkghia.com | revista, Instrument Serif en mayúsculas, listones, aparador sobre negro, vino y rosa de su etiqueta |
+| `mercado.html` · Mercado | propia | papel picado, rótulos ("SE SURTE A"), pizarra "Hoy hay" que llena un vitrolero |
+
+- **Fotos de botella** (`public/referencias/botellas/<etq>-{frente,tres,ladeada}.webp`,
+  42): salen del MISMO 3D del sitio con `referencias/estudio.html` +
+  `src/referencias/estudio.js`, que las manda a un middleware SOLO de desarrollo en
+  `vite.config.js` (`/__guardar`). Para rehacerlas: abrir esa página con `npm run dev`
+  y pasar los PNG a webp con `cwebp`.
+- **Fotos de ambiente** (`public/referencias/fotos/`, 10): generadas con ChatGPT
+  (`codex exec` con la foto 3D de la botella como referencia, con permiso de Zahir).
+  ⚠️ Son inventadas: si una versión gana, decidir si se quedan o se reemplazan con
+  fotos reales (la regla vieja era "el sitio no lleva nada inventado").
+- `public/mundo/` se trajo de la rama `inicio-nuevo` (gotitas).
+- Textos: se quitaron a propósito las frases que afirmaban ingredientes (siguen sin
+  confirmar con la familia).
+
 ## AHORA: la botella acompaña la página (rama `galeria`, 2026-10-18)
 
 🔴 **El refri se DESCARTÓ**: en el iPhone 16 Pro de Zahir se trababa (14
