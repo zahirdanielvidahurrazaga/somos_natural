@@ -423,6 +423,31 @@ color a sangre** (`.lienzo-rosa`, `.lienzo-vino`) con título gigante
 Las tiendas van como etiquetas con ↗; el armador en panel hueso sobre el vino y
 cada sabor lleva su **etiqueta real en miniatura** en vez de la gota de color.
 
+## (Descartado) Inicio nuevo desde cero — rama `inicio-nuevo` (2026-10-20)
+
+Zahir pidió empezar el diseño desde cero con referencias de Pinterest (Hazelnut
+milk, Organic milk, Tarragon, Drinko, helado de chocolate, ilustración de línea
+OAK / Ted's cake). **Se hicieron tres versiones y NO le gustó ninguna**; se guardó
+todo en la rama `inicio-nuevo` (main y lo publicado NO se tocaron) y se pasó a
+otro proyecto. El código vive en `src/nuevo/` (`main.jsx` de la rama lo carga).
+
+1. **Minimal de producto** (botella 3D al centro, nombre gigante, fruta flotando,
+   píldoras, Bricolage Grotesque + Instrument Serif) con carrito/pedido → "no me gusta".
+2. Igual pero **sin tienda**: aclaró que **el sitio NO es para vender, es VITRINA
+   (ver sabores, proceso)**. Y que **la gotita es la de su logo**, no una dibujada por mí.
+3. Eligió entre tres rumbos **"el mundo de la gotita"** (caricatura/cómic):
+   rótulos con contorno (Baloo 2 + Nunito), trama de puntitos, tarjetas con borde
+   negro y sombra dura, historieta de 4 viñetas para el proceso, botella 3D real
+   como protagonista → "no me gustó".
+
+**Lo que sí quedó y sirve para después:**
+- `public/mundo/`: 10 poses de la gotita + 14 frutas en caricatura, generadas con
+  ChatGPT (`codex exec` con la gotita del logo como referencia, con permiso de
+  Zahir). Le gustaron las imágenes. `arte/gotita-hoja.webp` = hoja de personaje
+  (usarla SIEMPRE como referencia para poses nuevas: así no se deforma).
+- `codex exec` necesita `< /dev/null` o se queda esperando stdin.
+- 🔴 `./pedido` (js) y `./Pedido` (jsx) chocaron otra vez por la Mac sin mayúsculas.
+
 ## (Descartado) La portada era el refri (rama `refri`, 2026-10-18)
 
 Zahir no quería tarjetas ni "solo scrollear": quiere **experiencia**. Se armaron

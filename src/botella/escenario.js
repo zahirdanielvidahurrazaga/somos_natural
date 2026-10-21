@@ -16,7 +16,9 @@ import { ALTO_BOTELLA, armarBotella, crearTexturas, estudioDe } from './modelo'
 // van pegados (sticky), así la botella se queda junto al texto mientras se lee.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export function crearEscenario(canvas, { movil = false, quieto = false, alPedirSabor } = {}) {
+// `esquina: false` (diseño nuevo, rama inicio-nuevo): en teléfono la botella
+// se queda en su hueco como en compu, sin irse a la esquina.
+export function crearEscenario(canvas, { movil = false, quieto = false, alPedirSabor, esquina = true } = {}) {
   // Suavizado siempre y resolución 2× en celular: sin suavizado y a 1.5× la
   // botella se veía pixeleada en un iPhone (pantalla 3×). Si el aparato no
   // alcanza, la resolución baja sola (ver `ajustarCalidad`).
@@ -166,7 +168,7 @@ export function crearEscenario(canvas, { movil = false, quieto = false, alPedirS
     const rs = visibles.map((el) => el.getBoundingClientRect())
     const ultimo = rs[rs.length - 1]
     const primero = rs[0]
-    const movil = innerWidth < 860
+    const movil = esquina && innerWidth < 860
     // fuera de todos los huecos (muy abajo en la página): se duerme. En
     // teléfono se le da más margen: ahí la botella se va de la esquina
     // deslizándose después del último hueco.
