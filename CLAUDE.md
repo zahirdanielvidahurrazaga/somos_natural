@@ -264,7 +264,7 @@ huecos: portada → recorrido → Sabores.
 
 **SANDÍA está fuera del sitio** (no tiene etiqueta real).
 
-## REFERENCIAS: cinco versiones para comparar (rama `referencias`, 2026-10-21, sin commit)
+## REFERENCIAS: cinco versiones para comparar (rama `referencias`, 2026-10-21, commit 9be1b9c, pusheada)
 
 Zahir: "no me encanta el diseño actual" → pasó poppi, Recess, Olipop y Ghia para
 ver Natural adaptado a cada una, más una propuesta propia. **main y lo publicado
