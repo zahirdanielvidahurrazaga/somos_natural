@@ -11,12 +11,14 @@ const guardarFotos = {
   apply: 'serve',
   configureServer(server) {
     server.middlewares.use('/__guardar', (req, res) => {
-      const nombre = new URL(req.url, 'http://x').searchParams.get('nombre') || ''
-      if (req.method !== 'POST' || !/^[a-z0-9-]+$/.test(nombre)) { res.statusCode = 400; return res.end() }
+      const params = new URL(req.url, 'http://x').searchParams
+      const nombre = params.get('nombre') || ''
+      const carpeta = params.get('carpeta') || 'botellas'
+      if (req.method !== 'POST' || !/^[a-z0-9-]+$/.test(nombre) || !/^[a-z-]+$/.test(carpeta)) { res.statusCode = 400; return res.end() }
       const partes = []
       req.on('data', (p) => partes.push(p))
       req.on('end', () => {
-        const dir = resolve('public/referencias/botellas')
+        const dir = resolve('public/referencias', carpeta)
         mkdirSync(dir, { recursive: true })
         writeFileSync(resolve(dir, `${nombre}.png`), Buffer.concat(partes))
         res.end('ok')

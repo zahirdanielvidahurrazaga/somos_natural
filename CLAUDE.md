@@ -5,6 +5,398 @@
 Sitio de marketing del negocio de aguas naturales. **No es el ERP**: ese vive aparte en
 `~/Developer/natural-erp` y tiene su propio CLAUDE.md.
 
+## 🟢 AHORA (12-nov noche): IDENTIDAD primero → luego web a la manera de Mana
+
+Referencias de Zahir: Fizzly, Matcha Meleon, Juicy Joy, Lemon Chill, Pure
+Froot, Giddy Grapes (+ en.manayerbamate.com). Plan acordado en 3 pasos:
+(1) identidad, (2) web con esa identidad, (3) opcional, etiquetas. Ilustración
+por el camino **MIXTO** (lo eligió él): boceto de IA a tintas planas →
+`herramientas/vectorizar.py` (cubeta para el fondo + paleta EXACTA de marca +
+vtracer) → SVG. Requiere `brew install potrace` y `pip3 install --user vtracer`
+(ya instalados).
+
+**Hoja de marca**: `/referencias/marca.html` (`src/referencias/marca/`):
+logotipo (la palabra NATURAL de su etiqueta de jamaica trazada con potrace →
+`public/marca/natural-{tinta,crema,lavanda,jamaica}.svg`), combinaciones con la
+gotita y el sello, paleta base (lavanda #8C66BB, crema, aqua, tinta #2A1A40,
+acentos jamaica #C8243E y maracuyá #F2C230), un MUNDO (fondo + tinta) por sabor
+(`mundos` en pagina.js), tipografía (Fraunces suave para títulos + Rubik),
+recursos (ondas, estallido, borde a cuadros, timbre) y las 2 primeras
+ilustraciones vectoriales (`public/marca/ilu-{jamaica,tamarindo}.svg`: la
+gotita abrazando la flor / cargando vainas). Las ilustraciones van sobre el
+tono CLARO del sabor (sobre el fuerte la fruta se perdía).
+**v2 (aprobado todo menos colores):** `mundos` rehechos con la regla "el fondo
+CONTRASTA con el agua" (como guanábana) y tonos de sus paletas de referencia
+(periwinkle, vino, lavanda rosa, lima pálido, cereza, mandarina, escarcha,
+rosa, mora, mezclilla, lila, cinabrio, pistache); "frutos rojos en claro" lo
+pidió él. **Gotita OFICIAL nueva en vector plano** (`public/marca/gotita.svg`,
+misma cara/guantes/amor y paz del sello) — él dijo "si consideras cambiar la
+gotita, hazlo". El sello (`img/logo.png`) todavía trae la gotita vieja.
+**v3:** botellas de las cartas giradas a +0.07 rad (con 0.16 asomaba la orilla
+oscura de la etiqueta de un solo lado); café fondo MANTEQUILLA #F6E3A1,
+horchata FIRE #BF3604, piña FROST #E6F1FA (igual que chocolate) — pedidos suyos.
+Botellas de las cartas en −0.02 rad (todavía asomaba la orilla con 0.07).
+**Sello nuevo** en SVG en línea (`sello()` en marca/pagina.js): A clásico (anillo
++ SOMOS NATURAL / AGUAS DE SABOR + gotita oficial) y B con logotipo (gotita +
+NATURAL + AGUAS DE SABOR · PUEBLA). Para archivo final: texto a curvas.
+**Ilustraciones**: 10 de 14 vectorizadas en `public/marca/ilu-<etq>.svg`
+(escenas y paletas en el scratchpad `escenas.tsv`); mango, piña, melón y
+guanábana fallaron por el LÍMITE de ChatGPT Plus (se renueva 9:24 pm).
+Zahir eligió el sello **A**, pero duda de usar un SELLO como logo principal →
+en la hoja hay 4 opciones de logo principal: 1 solo la palabra (+ gotita como
+ícono), 2 gotita sentada sobre la L, 3 insignia con forma de GOTA, 4 timbre.
+✅ **DECIDIDO:** firma = opción 2 (gotita sentada sobre la L) para hero, redes y
+publicidad; SOLO LAS LETRAS cuando haga falta sobrio; gotita sola = ícono; sello
+A = stickers/tapas. Falta dibujar la pose SENTADA (`lanzar-sentada.sh` en el
+scratchpad, programado para cuando se renueve la cuota de ChatGPT).
+
+**VIDEO 4K (12-nov):** Real-ESRGAN x4plus (240 cuadros, ~2.7 h) → maestro
+`~/Desktop/natural-video-4k/natural-4k.mp4` (3840×2160, con audio, grano fino).
+En la web: `public/video/hero-{720,1080,1440}.mp4` ya salen del 4K (1440 solo en
+pantallas ≥1600 px) + cartel `hero-final.jpg` del 1440.
+
+**Vista de producción de Mundos**: `npx vite build --config <scratchpad>/vite.mundos.mjs`
+(input `referencias/mundos.html`) + renombrar a `index.html` + `vite preview` en
+:5190. Pulido del 12-nov: botella más grande (0.8 H) e inclinada (−0.13),
+sticker "Hecha hoy" girando, píldoras en barra, cabeza editorial en proceso,
+sello A en el pie.
+
+**Mundos — 13º:** la fruta/elemento por sabor RECHAZADO ("rompe con toda la
+estética") — quitado, no volver. `botanica.js` ahora es un GENERADOR con semilla por
+sabor (`componer(i+1)`): reparte flores, destellos, hojas (3 tallos a la derecha, 2
+a la izquierda), ventana con nubes o círculo, estallido, y decide DÓNDE va la gotita
+(5 lugares, izquierda o derecha; `.gotita-caja` con sus hojas de enfrente). Mismo
+sabor = misma composición. ANIMACIONES: al entrar (`.brota`) los tallos se DIBUJAN
+(pathLength 1 + dashoffset), las hojas BROTAN, las flores FLORECEN girando con
+rebote, destellos y estallido aparecen, la gotita llega de un brinco; en reposo las
+flores giran, las hojas se mecen, las nubes viajan, el sol late y gira, la gotita
+baila.
+
+**Mundos — 12º:** giro de 42° (con 26° lo de la derecha se quedaba abajo a la
+izquierda y se cortaba de golpe) + la copia se desvanece al final. El elemento del
+sabor ya NO flota ni va enorme: `.elem-caja` (≈36svh) abajo a la derecha, SENTADO
+sobre su propio estallido girando (`.elem-sol`), con la botánica completa alrededor.
+
+**Mundos — 11º:** disco ENORME (`transform-origin: 50% 520%`, 26°) y giro CONTINUO:
+lo viejo es una copia `.fantasma` (conserva sus colores con variables en línea) que
+se va rodando mientras lo nuevo entra detrás, al mismo tiempo; todo pasa POR DETRÁS
+de la botella (lienzo z 3 > hero z 2). Lado izquierdo más alto (`.bota-izq` 128%).
+**ELEMENTO PROPIO POR SABOR** (estilo póster: contorno + SOMBRA PLANA desplazada +
+brillos): prueba de frutos rojos aprobable en `public/marca/elem-frutos-rojos.svg`;
+si existe `elem-<etq>.svg` va grande a la derecha (`.elem`, `.con-elem` aligera la
+botánica). 🔴 `vectorizar.py` ahora usa `hierarchical='cutout'`: con 'stacked' la
+capa base del tamaño del cuadro salía del color del contorno (cuadro oscuro).
+
+**Mundos — 9º/10º (cambio de sabor como Mana):** Zahir: "como si fuera un DISCO y
+girara hacia donde gira". Los dos lados (`.lado-izq` = botánica + gotita + hojas
+de enfrente; `.lado-der`) son UN DISCO con centro en la botella (transform-origin
+50% 52%): al cambiar gira 80° hacia la dirección de la flecha (`--dir` ±1) y se va
+(`.sale`, 420 ms), el fondo cambia de GOLPE, y lo nuevo entra rodando desde −80°
+en la MISMA dirección (`.entra-desde` → `.entra`); la botella gira hacia el mismo
+lado (`ir.dir`) y cambia de espaldas. (El 9º, encoger hacia el centro, NO era.) Cada
+sabor con su acomodo: `data-variante` a (ventana con nubes) / b (ramillete de
+flores) alternado, y la fruta del sabor regada en 3 tamaños (`.b-fruta`).
+
+**Mundos — 8º:** horchata SIN el vaso (borrado en el boceto con PIL y re-vectorizado;
+el original quedó como `ilu-horchata-con-vaso.png` en el scratchpad); maracuyá se
+rehace en el lote de las 9:27 (salía distinta: gotita con piernas oscuras) con un
+prompt más estricto ("IDÉNTICA"); ANIMACIONES suaves en la botánica: estallido
+gira (48 s), destellos titilan, nubes se mueven en la ventana, flores se mecen,
+hojas de enfrente con viento, la fruta flota (todo se apaga con movimiento
+reducido).
+
+**Mundos — 7º ("me parece muy fea la gotita" a mano → "hazlo como las otras"):**
+la gotita del hero vuelve a ser la ILUSTRACIÓN vectorizada de cada sabor, con SUS
+colores (sin teñir). Para integrarla, la BOTÁNICA lleva ahora el MISMO contorno
+morado oscuro (#2A1A40) que las ilustraciones (hojas, pétalos, ventana, nubes,
+estallido, destellos; tallos con un trazo oscuro debajo `.b-tallo-borde`). La firma
+usa `/marca/gotita.svg`. `gotita.js` (la dibujada a mano) quedó sin usar: NO volver
+a ella. Lote de ChatGPT de las 9:27 REACTIVADO (frutas con contorno ya combinan).
+
+**Mundos — 6º ("la gota entera cambia de color"; "rehazla sin pedírselo a ChatGPT";
+"que la botella siga interactuando con la web"):** GOTITA DIBUJADA A MANO en
+`src/referencias/mundos/gotita.js` (estilo plano de la botánica: sin contorno,
+degradado aqua, ojos con brillo, cachetes rosas, brazos de manguera, guantes
+blancos, zapatos lavanda; colores FIJOS) en el hero y en la firma del pie. LA
+BOTELLA ACOMPAÑA LA PÁGINA: lienzo fijo (z 3, entre fondos y textos) y paradas
+`data-botella` = hero (inclinación de Mana) → "Así le hacemos" (ahora va justo
+después de los stickers, 2 columnas: pasos a la izquierda que se encienden, hueco
+STICKY a la derecha donde la botella da vueltas) → se desvanece antes del texto →
+aterriza en el pie junto a la firma (`.pie-arriba`). Mando del hero en
+`.capa-frente` (sticky encima del lienzo). 🔴 `.proceso` usa `overflow: clip`:
+con `hidden` el hueco sticky no pegaba. En teléfono la botella solo vive en el
+hero. Lote de ChatGPT de las 9:27 CANCELADO: lo de ChatGPT trae contorno grueso
+y ya no combina con la gotita plana (pendiente decidir frutas a mano).
+
+**Mundos — 5º pulido ("me encantó"; gotita más integrada + movimiento de Mana al bajar):**
+REVISADO EN VIVO en en.manayerbamate.com: el hero se queda pegado un buen tramo y
+la lata se va inclinando HACIA LA CÁMARA (enseña la tapa) y acostando, mientras
+las ilustraciones se mueven despacio. Aquí: `.viaje` (230svh) con el hero sticky;
+`viajeP()` 0→1 → la botella: cabeceo hasta 0.78, ladeo hasta −0.75, crece un poco
+(más acostada se veía medio vacía por la física del agua). 🔴 En
+`lavanda/escena.js` el grupo usa `rotation.order = 'ZXY'` (giro → cabeceo →
+ladeo); con XYZ el cabeceo solo la giraba sobre su eje. Plantas e ilustración con
+parallax por `--p`. GOTITA: la ilustración se inserta EN LÍNEA (fetch del SVG, se le
+pone viewBox porque vtracer no lo trae) y el contorno #2A1A40 pasa a
+`.ilu-linea` = tinta del mundo; va más chica y abajo, con hojas DELANTE
+(`frente` en botanica.js) y un balanceo suave.
+
+**Mundos — 4º pulido ("no me encantaron los elementos gráficos, gotitas muy grandes"):**
+la composición en código se cambió por BOTÁNICA dibujada a mano en
+`src/referencias/mundos/botanica.js` (a la Mana: tallos que trepan, hojas con
+nervadura curva, flores de 5 pétalos con degradado, ventana con nubes, estallido,
+destellos), con colores por sabor (`base` + `botanica` en pagina.js → variables
+--h --hl --p1 --p2 --v --s). Gotita más chica (50svh) entre las plantas de la
+izquierda. Sobre el estallido de la derecha va LA FRUTA DEL SABOR
+(`/marca/fruta-<etq>.svg`, lote `lanzar-frutas.sh` en el scratchpad, camino
+mixto; si no existe, no se ve).
+
+**Mundos — 3er pulido ("mucho texto", referencia: hero de Mana):** HERO SIN TEXTO:
+fuera título, nombre gigante, ficha y las 14 píldoras; la ilustración del sabor
+ENORME a la izquierda saliéndose, a la derecha una COMPOSICIÓN vector en código
+(`deco`: ventana con nubes, flor, estallido, hojas, destellos) que toma los
+colores del mundo + `acentos`/`azules` por sabor; abajo al centro el MANDO:
+flecha blanca · píldora con el nombre (tinta) · "+" (agregar al pedido) · flecha.
+Menú en píldoras crema. Franja de STICKERS (las 14 ilustraciones corriendo).
+Nosotros y proceso con menos texto (proceso solo títulos). h1 solo para lector.
+
+**Mundos — 2º pulido (minimalismo + lo que faltaba):** ritmo único `--espacio`;
+proceso solo texto (números grandes, sin ilustraciones de sabores que no tenían
+que ver); negocios/eventos solo con los TÍTULOS de cada punto; secciones nuevas:
+**Nosotros** (foto real `formacion.jpg` + 2 líneas), **Dudas** (acordeón con
+facts confirmados: mínimo, zona, sin azúcar, eventos, tamaños, envases — NO la
+duración de 5–7 días ni el anticipo, siguen sin confirmar), **Mi pedido** (panel
+lateral: contador por sabor + tamaño + dulzura + aviso de mínimo → WhatsApp;
+"Agregar a mi pedido" en la ficha), ficha con tamaños y DULZURA, pie completo
+(firma, sello, navegación, contacto, reparto, ©), favicon = gotita, meta
+description y og.
+
+**WEB NUEVA "Mundos"** (`/referencias/mundos.html`, `src/referencias/mundos/`),
+arrancada el 12-nov noche con la identidad: barra con SOLO LAS LETRAS (máscara
+CSS: toma la tinta del mundo en pantalla). 🔴 **SIN VIDEO** (Zahir: "ya no me
+gusta el video, las referencias no tenían video"): el hero ES el mundo de los
+sabores, con "Se hacen hoy. Te llegan mañana." arriba a la izquierda. SABORES a la
+Mana: toda la pantalla toma el mundo (`marca/datos.js`, fuente única de los
+colores), botella 3D al centro (escena de `lavanda/escena.js`), nombre gigante
+TONO SOBRE TONO (24% de la tinta sobre el fondo: en tinta pura competía con la
+botella), su ilustración abajo a la izquierda, ficha a la derecha; se cambia
+con flechas/píldoras/teclado/deslizar — NO con scroll — y la botella da una
+vuelta y cambia de sabor de espaldas. Proceso sobre lavanda con ondas y 4
+ilustraciones; negocios/eventos en tarjetas de mundo con estallido "¡Desde 10!"
+y timbre "¡Salud!"; dónde; pie con la FIRMA (por ahora gotita parada sobre la
+L, falta la pose sentada).
+
+## (2026-11-12, tarde) el sitio Mana NO le gustó → hero con VIDEO realista
+
+Zahir: "no me gustó nada como se ve". Nueva dirección: **hero = video de alguien
+tomando la botella**, más realista. No tiene fotos buenas de referencia, así que:
+
+- **Modelo 3D mejorado con `foto: true`** (`armarBotella({ foto: true })`, solo
+  para fotos fijas, el sitio NO lo usa): el agua deja pasar la luz
+  (transmission + attenuation) y el grosor depende del ángulo de la vista
+  (`transmission_fragment` parchado: `thickness * |n·v|`), así lo grueso queda
+  oscuro y las orillas rubí. Color de la luz por sabor: `luz` en la receta
+  (jamaica `0xc4123a`), absorción `absorcion` (default 0.2). 256 caras.
+- **Estudio de foto**: `referencias/foto.html?sabor=jamaica` → guarda
+  `public/referencias/botellas/foto-<etq>-{frente,tres}.png` (papel crema,
+  sombra suave, reflejo rubí en el piso).
+- Con esos renders + el arte de la etiqueta, ChatGPT (`codex exec`) generó
+  `producto-jamaica.png` (foto de producto, etiqueta muy fiel) y
+  `hero-persona-jamaica.png` (16:9, mujer en patio poblano con la botella,
+  aire a la derecha para texto) — en el scratchpad de esa sesión. Siguiente
+  paso: pasar la del hero a una herramienta de imagen→video.
+
+- **Versión "Lotería Natural"** — ✅ GUARDADA como propuesta (12-nov) en
+  `propuestas/loteria-natural-2026-11-12/` (build de producción listo; ver su
+  LEEME.md). Zahir quiere probar OTRO diseño antes de decidir. (`/referencias/natural.html`,
+  `src/referencias/natural/`) — la que se armó con su visto bueno tras
+  rechazar Lavanda ("no me gustó nada": la transición video→botella se veía
+  extraña y era feo obligar a pasar por los 14 sabores) y Lotería ("se ve hecho
+  por IA"). Estilo lotería (papel picado, cartas con número y nombre, rótulos
+  Alfa Slab One, frijolitos, gritón con versos) en los colores del SELLO
+  (lavanda, crema, aqua, morado tinta; rojo jamaica y amarillo maracuyá del
+  logo) + Rubik. **Las cartas llevan la botella REAL** (render del 3D,
+  `public/referencias/cartas/<etq>.webp`, se rehacen con
+  `referencias/cartas.html`) sobre el `fondoGaleria` del sabor; La Gotita usa
+  `img/gotita.png` (la del sello) y El Garrafón es tipográfico. **Tocar una
+  carta: la botella se sale de la carta en 3D** (visor con la escena de
+  `lavanda/escena.js`, arrastrar = girar con inercia, sacudir mueve el agua),
+  con verso, "Ponerle frijolito" y "Pedir este". El video es la carta "0 · La
+  Antojada" del hero (se reproduce una vez + "↻ Otra vez"). Nada de
+  transiciones de scroll.
+  **Pulido (12-nov):** botellas giradas a la derecha (+0.16 rad, la etiqueta
+  miraba a la izquierda) en cartas y visor; **minimalismo** a pedido ("aunque
+  sea lotería, mantengamos el minimalismo"): sin tablero oscuro, fondos de
+  carta al 32% del color del sabor sobre crema, bordes de 1px y sombras
+  suaves, papel picado en 2 tonos, gritón y cuenta como píldoras, títulos sin
+  sombra. Hero rehecho: solo la carta del video grande + La Jamaica asomando,
+  título en minúsculas, liga a WhatsApp y una línea de datos abajo.
+  **2º pulido:** barra con SOLO la gotita (`img/gotita.png`); **intro**: al
+  abrir, el video va a pantalla completa ("Saltar ↓") y al terminar se ENCOGE
+  (WAAPI top/left/width/height) hasta su carta, ahora HORIZONTAL y sola (se
+  quitó La Jamaica de al lado); sale CADA vez que se abre o recarga (Zahir lo pidió así; antes era una vez
+  por sesión); sin autoplay o con movimiento reducido no hay intro. 🔴 La
+  carta va girada -1.5°: mientras dura la intro lleva `rotate: none` (cualquier
+  rotate, aun 0deg, vuelve al video `fixed` relativo a la carta). Flecha "Baja
+  para ver los sabores".
+  **Contexto en la intro** (`.intro-capa`, solo a pantalla completa): gotita +
+  "Somos Natural" arriba, dos frases abajo según el segundo del video
+  (`data-de`/`data-a`: 1–4.2 s "Hechas en Puebla por una familia", 5–9.3 s "Se
+  hacen hoy. Te llegan mañana."), línea de avance y degradado solo abajo; se
+  desvanece al encogerse (`.encogiendo`).
+  **3º: EL VIDEO ES EL FONDO DEL HERO** (Zahir: "que el hero esté integrado
+  con el video, que se quede de fondo en lugar del morado"). Ya NO se encoge a
+  una carta (la carta "La Antojada" se quitó): la intro corre a pantalla
+  completa sin barra; al terminar/Saltar se queda en el último cuadro (ella
+  con la botella a la derecha) y aparecen el velo morado del lado izquierdo,
+  título, botones, datos, flecha y "↻ Ver el video" (repite la intro). La
+  cabecera (papel picado + barra) es `fixed` y transparente sobre el video;
+  con scroll > 40 px el picado se recoge y la barra toma el lavanda (`.bajo`).
+  **4º:** velo NEUTRO oscuro (rgb 12 8 6), sin morado ("como la primera
+  versión"). **El hero aparece DE UNA** con el último cuadro como cartel
+  (`public/video/hero-final.jpg` / `-720.jpg`, sacados con ffmpeg -sseof) y el
+  video con `preload="none"`: solo se baja y corre (intro a pantalla completa
+  con títulos) si tocan "↻ Ver el video".
+- **Botella: silueta MEDIDA** de la imagen de referencia que mandó Zahir
+  (botella 500 ml en rojo): `MEDIDA` en modelo.js, forma por defecto. Él la
+  aprobó ("súper bien la botella") con la etiqueta subida a 1.3. La "nueva"
+  (hombro 0.6 R) se veía CHATA.
+
+- **Versión "Lavanda"** (RECHAZADA) (`/referencias/lavanda.html`, `src/referencias/lavanda/`)
+  — la dirección que pidió Zahir tras rechazar Lotería ("se ve hecho por IA"):
+  la experiencia son **el video + la botella 3D en sintonía**, con los colores
+  del SELLO (lavanda #8C66BB, crema #FFFDF2, aqua #E0F2F6, morado tinta) y
+  Rubik. Sin ilustraciones generadas. Coreografía (`pagina.js` → `cuadro()`):
+  hero pegado 320vh → al bajar, la botella 3D aparece EXACTAMENTE encima de la
+  del último cuadro del video (`VIDEO = {x:882,y:412,ancho:222}` en px del
+  video, mapeado con object-fit cover; en teléfono object-position 69%), el
+  video se funde a lavanda y la 3D viaja a la derecha junto a "Catorce
+  sabores…" → Sabores pegado (75vh por sabor): botella al centro, nombre
+  gigante crema detrás, gira al final de cada tramo y cambia de sabor de
+  espaldas, lista a la derecha → Proceso: botella ladeada a la derecha,
+  pasos se encienden → se desvanece antes de Negocios/Eventos, Dónde, pie.
+- **Botella: forma nueva por defecto** (`forma: 'nueva'` en `armarBotella`):
+  medida contra `formacion.jpg` — hombro corto (~0.6 R) en curva que se cierra
+  al cuello, agua casi al anillo (nivel 1.915), etiqueta más arriba (1.3).
+  `forma: 'antes'` conserva la vieja. Ojo: el sitio Mana y el de main también
+  usan modelo.js → ya ven la forma nueva. Opción `realce: true` (orilla del agua
+  del color `luz/brillo` del sabor + grosor del PET por fresnel, barata).
+  HDRI CC0 de Poly Haven en `public/hdri/` (estudio de foto y Lavanda).
+
+- **Versión "Lotería"** (RECHAZADA: "se ve hecho por IA") (`/referencias/loteria.html`, código en
+  `src/referencias/loteria/`), pedida tras Antojo: "retro, lotería, mexicano,
+  como Mercado". Cada sabor es una CARTA DE LOTERÍA (número, ilustración,
+  nombre con artículo: "La Jamaica", "El Tamarindo") + La Gotita (15, no se
+  marca) y El Garrafón (16) = tabla de 4×4. **El pedido se arma poniéndole
+  frijolito a las cartas** y "¡Lotería!" abre WhatsApp con la lista y el
+  tamaño. El gritón (franja pegada) canta el verso de cada carta; los versos
+  son nuestros y NO afirman ingredientes (la horchata NO dice canela). Hero:
+  rótulo + abanico de 3 cartas, la del centro es "La Antojada" (0) con el
+  video adentro. Papel picado, rótulos Alfa Slab One, Courier Prime para
+  lo de máquina. Ilustraciones: ChatGPT en estilo litografía de lotería
+  antigua, `jamaica.png` como referencia de estilo para las demás
+  (`public/referencias/loteria/<id>.webp`); sin texto en la imagen, el marco
+  y el nombre van en HTML. Si falta una, cae a `public/mundo/fruta-*`.
+
+- **Versión "Antojo"** (`/referencias/antojo.html`, código en
+  `src/referencias/antojo/`), con referencias de Olipop, Cure, The Crumb
+  Culture, Oh Belly y Gulp: cinta que corre, video de hero con el título
+  encima (se reproduce una vez y se queda en la botella), orillas onduladas,
+  ¿Por qué Natural? en nubes de color sobre vino, franja a cuadros, mano
+  destapando la botella con notas punteadas (`public/referencias/antojo/
+  mano-jamaica.webp`, generada con ChatGPT y limpiada de manchas), carril
+  "Encuentra tu sabor" (botella sobre su fruta y su color), ¿Para quién? en
+  tarjetas con la gotita, "Así de sencillo" con las 4 poses, dónde comprar y
+  un pie con "Natural" gigante. Letra: Shrikhand + Jost. Falta su veredicto.
+- **Video del hero**: `public/video/hero-{1080,720}.mp4` + `hero-cartel.jpg`
+  (Gemini, 720p → mejora con ffmpeg). Real-ESRGAN x4plus escalando a 4K en
+  el scratchpad (~40 s por cuadro, 240 cuadros).
+
+## (Rechazado 2026-11-12) sitio nuevo a la manera de Mana (rama `mana`, 2026-11-12, SIN commit)
+
+Zahir: *"ya tengo una identidad que me gustaría que siguiéramos o replicáramos"*.
+Referencias: yaas-energy.com, agrumeafarm.it/en y **la directa, en.manayerbamate.com**.
+Se rehízo el sitio entero en `src/sitio/` siguiendo el SISTEMA de Mana con el
+material de Natural. **main y lo publicado NO se tocaron**; el sitio anterior
+sigue en `src/App.jsx` + `src/index.css` + `src/componentes/`, sin cargar
+(`src/main.jsx` ahora carga `sitio/Sitio.jsx` + `sitio/sitio.css`).
+
+**Falta que Zahir lo vea y diga si va por ahí.** No se ha subido ni revisado con
+Codex (toca `/codex:review` antes del commit).
+
+Qué se tomó de la referencia y qué es propio:
+
+| De Mana (el sistema) | De Natural (el contenido) |
+|---|---|
+| Color plano a toda la pantalla que ES el sabor | 14 pares de color en `sitio/tonos.js` (`fondo` claro + `boton` oscuro) |
+| Producto 3D al centro, que cae y se queda asomado abajo | La botella 3D de siempre (`botella/modelo.js`) |
+| Dibujos grandes a los lados que se salen de la orilla | La fruta en caricatura (`public/mundo/fruta-*`) + **14 ramas nuevas** (`public/mundo/rama-*`) |
+| Flechas + píldora con el nombre del sabor | Además 14 puntos, teclado ← → y deslizar con el dedo |
+| Rueda de tarjetas que gira al bajar | Los 4 pasos de `proceso` con las 4 poses de la gotita que ya existían |
+| Dos fotos a media pantalla, palabra gigante, carril de bloques de color | `formacion.jpg` (real) + fotos generadas; "SABORES"; botellas del 3D |
+| Texto en curva + calcomanía de flor | "¿Para tu negocio, tu fiesta o para ti?" → los tres caminos a WhatsApp |
+| Pie con personaje y "press space to jump" | La gotita del logo brinca frutas (espacio o toque) |
+| Neue Montreal delgada en mayúsculas | **Host Grotesk** 300 (Google Fonts). Ya NO se cargan Yeseva/Jost/Bagel |
+
+Orden: `Portada → Rueda (#proceso) → Dos fotos → Sabores (#sabores) → Caminos
+(#caminos) → Dónde comprar (#tiendas) → Instagram → Pie`.
+
+| Archivo (`src/sitio/`) | Qué hace |
+|---|---|
+| `tonos.js` | Los dos colores de cada sabor y `SABORES` (orden del menú + rutas de imágenes) |
+| `sabor.js` | El sabor de la portada (almacén chiquito; lo oyen la portada y el 3D) |
+| `escenario.js` | La botella 3D con la coreografía nueva (ver abajo) |
+| `Lienzo.jsx` | El lienzo fijo; carga el 3D aparte; sin WebGL pone `html[data-botella=no]` y la portada enseña la foto |
+| `Techo.jsx` | Franja del aviso (lo que la portada no dice con letras) + píldoras; en teléfono, "Menú" a pantalla completa |
+| `Portada.jsx` | Color que entra en círculo, dibujos que salen/entran por su lado, flechas, nombre, puntos |
+| `Rueda.jsx` | La rueda del proceso; publica `--q` (0→1) y el CSS gira el disco |
+| `Vitrina.jsx` | SABORES + carril de 14 bloques, píldoras por grupo, tamaños y dulzura |
+| `Caminos.jsx` | Texto en curva (SVG `textPath`), calcomanía y las tres tarjetas |
+| `Tiendas.jsx` | Lista de puntos de venta + el My Maps (barra recortada, igual que antes) |
+| `Suelo.jsx` | Pie y el juego del brinco |
+| `sitio.css` | Todo el estilo. Sigue la regla: cero estilos a mano en el JSX (solo datos: `--f`, `--b`, `--q`, `--mx/--my`) |
+
+**La botella (`sitio/escenario.js`)**: el motor viejo (`botella/escenario.js`)
+supone que cada hueco cruza el centro de la pantalla; aquí el segundo vive
+pegado ABAJO y nunca lo cruza, así que el avance se mide con la sección:
+`p` = lo que falta para que la rueda llegue arriba (la caída, con maroma) y
+`q` = lo recorrido dentro de la rueda (gira dos vueltas). Dos huecos:
+`data-botella="portada"` y `data-botella="rueda"`; la sección larga lleva
+`data-rueda`. **El giro solo no va parejo**: se entretiene con la etiqueta al
+frente y pasa rápido la espalda (a paso parejo se veía de espaldas la mitad del
+tiempo). Sigue siendo UNA botella, UN lienzo, ligera en celular.
+
+**Capas (no cambiarlas a la ligera):** portada 0-2 → `.lienzo` 3 → controles de
+la portada 6 → `.tapa` 5 (toda sección de las fotos para abajo: opaca, tapa el
+lienzo) → `.techo` 50. La escena de la rueda es sticky (forma su propio grupo)
+y queda ENTERA detrás del lienzo: por eso las tarjetas pasan detrás de la botella.
+
+**La rueda en CSS:** `.rueda-disco` es un punto (el centro de un círculo de
+`--radio: 250vw`); cada `.rueda-pieza` cuelga a un radio de distancia, girada
+`--i × --pasito`, y el disco gira `--q × --giro × --pasito`. Si se agrega o
+quita una pieza hay que tocar los `nth-child` y `--giro` (= el `--i` de la
+última). En pantallas de menos de 460 px de alto la rueda se suelta y los
+pasos se leen en fila.
+
+**Imágenes generadas con ChatGPT** (`codex exec`, con permiso de Zahir: "si
+necesitas fotos pídeselas a codex"): las 14 `public/mundo/rama-<etq>.webp`
+(900 px, fondo transparente), con `fruta-mango` como referencia de estilo. El
+guion y la lista quedaron en el scratchpad de esa sesión; la receta: una
+llamada por imagen, 4 a la vez, `-i referencia.png < /dev/null`, y pedir "fondo
+TRANSPARENTE (PNG con canal alfa)". Las fotos de ambiente siguen siendo las
+generadas de `public/referencias/fotos/` (⚠️ inventadas: decidir si se quedan).
+
+**Pendiente / por decidir con Zahir:**
+- Que lo vea en compu y en su iPhone (`http://192.168.3.202:5181`) — el 3D en
+  teléfono no se ha probado en aparato real.
+- Las frutas (`fruta-*.webp`) son de 520 px: en pantallas grandes se ven
+  suaves. Si se queda este rumbo, pedirlas de nuevo a 1200 px.
+- Tipografía: se cambió a Host Grotesk por la referencia. Si quiere conservar
+  Yeseva/Jost, es una variable (`--letra`) más los títulos.
+- Antes de publicar: `/codex:review`, borrar lo viejo que ya no se cargue
+  (`App.jsx`, `index.css`, `componentes/`, `botella/escenario.js`, `referencias/`)
+  y mover las botellas de `public/referencias/botellas/` a su carpeta propia.
+
 ## Qué es y para quién
 
 Sitio de una sola página con **tres caminos**, decididos con el negocio el 2026-09-04:
@@ -1069,3 +1461,13 @@ Regla del usuario: se trabaja en local y se despliega cuando él lo aprueba.
 
 **Las pruebas las hace Zahir**, no el modelo. Al terminar un cambio: dejar `npm run dev`
 corriendo y entregarle la lista de qué revisar, agrupada por sección.
+
+## Mundos — sesión 2026-11-12/13 (pulido)
+- Flores del color de cada sabor (`botanica` en mundos/pagina.js: p1/p2 por sabor).
+- Barra: liquid glass al bajar (ya no morada), logo sin encogerse; en celular, botón de menú con panel de vidrio.
+- Botella: maroma completa hacia la cámara (eje inclinado con `voltea` en escena.js, nunca de frente) que dura TODO el viaje hero → "Así le hacemos" y termina parada ahí. Líquido conserva volumen (muestras de volumen en modelo.js). El pie YA NO lleva botella (Zahir).
+- "Así le hacemos": fondo del sabor, ventana con nubes + jardín que crece con el scroll (`escenario()`), sello con palabra por paso; en celular, escena estática con la botella plana.
+- Resto de secciones con el lenguaje del hero (`ramito()`, `ventanita()`): Nosotros foto en arco + gotita ASOMA, tarjetas tipo estampa, Dudas con gotita DUDANDO, seto en Dónde comprar. Poses nuevas en public/marca (gotita-asoma, gotita-dudando; ChatGPT + vectorizar.py).
+- Estallido del hero → MARGARITA del color del sabor.
+- Firma del pie al centro + "¿Se te antojó? / Armar mi pedido". Pantalla de carga con la gotita brincando.
+- RECHAZADO: condensación procedural (se veía como burbujas pegadas); el código quedó apagado (`rocio` en modelo.js).

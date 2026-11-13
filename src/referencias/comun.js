@@ -30,7 +30,9 @@ export function revelar(selector = '[data-revela]') {
 
 // Barra para saltar entre prototipos (arriba a la derecha, discreta)
 export function barraReferencias(actual) {
-  const nombres = { poppi: 'Pop', recess: 'Calma', olipop: 'Fuente de sodas', ghia: 'Sobremesa', mercado: 'Mercado' }
+  // Solo en desarrollo: es para comparar versiones, no va en lo publicado
+  if (!import.meta.env.DEV) return
+  const nombres = { mundos: 'Mundos', natural: 'Lotería Natural', lavanda: 'Lavanda', loteria: 'Lotería', antojo: 'Antojo', poppi: 'Pop', recess: 'Calma', olipop: 'Fuente de sodas', ghia: 'Sobremesa', mercado: 'Mercado' }
   const nav = document.createElement('nav')
   nav.className = 'ref-barra'
   nav.innerHTML = `<a href="/referencias/">◀ Versiones</a>` + Object.entries(nombres)

@@ -13,6 +13,13 @@ export const ALTO_BOTELLA = 2.16   // de la base a la tapa, en unidades
 // La forma de la botella. Boston round de 500 ml.
 const FORMA = { R: 0.32, HOMBRO: 1.5, CUELLO: 0.142, DOMO: 0.4, NIVEL: 1.83 }
 
+// La silueta MEDIDA (12-nov-2026) de la foto de referencia que mandó Zahir
+// (botella de 500 ml en rojo sobre gris): ancho renglón por renglón, escalado
+// a R = 0.32. [radio, alto] de la base al cuello. Base bien redondeada
+// (~0.35 R), cuerpo recto, hombro de ~0.84 R que se abocina rápido al cuello.
+// La "nueva" de ese mismo día (hombro de 0.6 R) se veía CHATA: no regresar.
+const MEDIDA = [[0.0848, 0.002], [0.1324, 0.0075], [0.174, 0.0149], [0.212, 0.0224], [0.2399, 0.0298], [0.2623, 0.0373], [0.2772, 0.0448], [0.2884, 0.0522], [0.2965, 0.0597], [0.3027, 0.0671], [0.3089, 0.0746], [0.3127, 0.082], [0.3145, 0.0895], [0.3158, 0.097], [0.3182, 0.1044], [0.32, 0.1119], [0.32, 1.6037], [0.32, 1.6671], [0.32, 1.6783], [0.32, 1.6895], [0.3195, 1.7006], [0.3182, 1.7118], [0.3164, 1.723], [0.3139, 1.7342], [0.3108, 1.7454], [0.3071, 1.7566], [0.3033, 1.7678], [0.2984, 1.779], [0.294, 1.7901], [0.289, 1.8013], [0.2834, 1.8125], [0.2766, 1.8237], [0.2685, 1.8349], [0.2598, 1.8461], [0.2517, 1.8573], [0.2406, 1.8685], [0.23, 1.8797], [0.2176, 1.8908], [0.2033, 1.902], [0.1877, 1.9132], [0.1691, 1.9244], [0.1504, 1.9356]]
+
 
 export function estudioDe(renderer) {
   const pmrem = new THREE.PMREMGenerator(renderer)
@@ -68,8 +75,14 @@ const blancoTapa = 0xf3f1ed
 // `botella` queda con la base en y = 0. Para colocarla, mételo a otro grupo.
 // `ligera`: menos caras en la geometría, para celulares (en el refri, con 14
 // botellas, un iPhone 16 Pro se trababa; ahora es una sola, pero se cuida).
-export function armarBotella({ texturaDe, ligera = false }) {
-  const VUELTAS = ligera ? 56 : 128
+// `foto`: calidad de estudio para fotos fijas (referencias/foto.html). El agua
+// deja pasar la luz de verdad (transmisión + absorción): la jamaica se ve
+// casi negra en el centro y rubí en las orillas, como a contraluz. Es caro;
+// el sitio NO lo usa.
+// `realce`: versión barata de lo del modo foto para tiempo real (orilla del
+// agua luminosa del color del sabor + grosor del PET). Sin transmisión.
+export function armarBotella({ texturaDe, ligera = false, foto = false, realce = false, forma = 'medida', rocio = false }) {
+  const VUELTAS = ligera ? 56 : foto ? 256 : 128
   // ── La botella ───────────────────────────────────────────────────────────
   // Boston round de 500 ml: cuerpo recto y liso, hombro en domo, cuello corto
   // con su anillo y tapa de 28 mm. Medidas de catálogo (proporciones sacadas de sus
@@ -79,19 +92,41 @@ export function armarBotella({ texturaDe, ligera = false }) {
   // y suave)
   const { R, HOMBRO, CUELLO, DOMO } = FORMA
   const perfil = [new THREE.Vector2(0, 0.004)]
-  // fondo con un redondeo chico
-  for (let k = 0; k <= 6; k++) {
-    const t = (k / 6) * (Math.PI / 2)
-    perfil.push(new THREE.Vector2(R - 0.04 + 0.04 * Math.sin(t), 0.04 - 0.04 * Math.cos(t)))
+  if (forma !== 'medida') {
+    // fondo con un redondeo chico
+    for (let k = 0; k <= 6; k++) {
+      const t = (k / 6) * (Math.PI / 2)
+      perfil.push(new THREE.Vector2(R - 0.04 + 0.04 * Math.sin(t), 0.04 - 0.04 * Math.cos(t)))
+    }
   }
-  // el domo del hombro: un cuarto de elipse
-  for (let k = 0; k <= 24; k++) {
-    const t = (k / 24) * (Math.PI / 2)
-    perfil.push(new THREE.Vector2(CUELLO + (R - CUELLO) * Math.cos(t), HOMBRO + DOMO * Math.sin(t)))
+  if (forma === 'medida') {
+    for (const [r, y] of MEDIDA) perfil.push(new THREE.Vector2(r, y))
+    perfil.push(new THREE.Vector2(0.137, 1.95))
+  } else if (forma === 'antes') {
+    // Silueta hasta el 12-nov-2026: hombro en cuarto de elipse, largo (1.25 R)
+    for (let k = 0; k <= 24; k++) {
+      const t = (k / 24) * (Math.PI / 2)
+      perfil.push(new THREE.Vector2(CUELLO + (R - CUELLO) * Math.cos(t), HOMBRO + DOMO * Math.sin(t)))
+    }
+    perfil.push(new THREE.Vector2(0.138, 1.92), new THREE.Vector2(0.136, 1.94))
+  } else {
+    // Silueta medida contra sus fotos (12-nov-2026): hombro más corto (~R) y
+    // redondo que se cierra al cuello en S (convexo abajo, cóncavo arriba),
+    // no un cuarto de elipse que llegaba plano al cuello como mesita.
+    // Medido en formacion.jpg: del cuerpo completo al anillo ≈ 0.6 R.
+    const H0 = 1.745, H1 = 1.94, RC = 0.137
+    const p0 = [R, H0], p1 = [R, H0 + 0.115], p2 = [RC + 0.075, H1], p3 = [RC, H1]
+    const N = 32
+    for (let k = 0; k <= N; k++) {
+      const t = k / N, u = 1 - t
+      const x = u * u * u * p0[0] + 3 * u * u * t * p1[0] + 3 * u * t * t * p2[0] + t * t * t * p3[0]
+      const y = u * u * u * p0[1] + 3 * u * u * t * p1[1] + 3 * u * t * t * p2[1] + t * t * t * p3[1]
+      perfil.push(new THREE.Vector2(x, y))
+    }
+    perfil.push(new THREE.Vector2(0.136, 1.952))
   }
   perfil.push(
-    // el cuello: un tramo recto entre el domo y el anillo, como en sus fotos
-    new THREE.Vector2(0.138, 1.92), new THREE.Vector2(0.136, 1.94),
+    // el cuello: un tramo recto corto hasta el anillo
     new THREE.Vector2(0.136, 1.975),
     new THREE.Vector2(0.136, 1.979), new THREE.Vector2(0.166, 1.983),
     new THREE.Vector2(0.166, 1.997), new THREE.Vector2(0.136, 2.001),
@@ -120,8 +155,16 @@ export function armarBotella({ texturaDe, ligera = false }) {
     sh.fragmentShader = sh.fragmentShader
       .replace('void main() {', 'varying float vAltoBotella;\nvoid main() {')
       .replace('#include <dithering_fragment>', `#include <dithering_fragment>
-        float vacio = smoothstep(1.8, 1.87, vAltoBotella);
-        gl_FragColor.a = mix(gl_FragColor.a, 0.34, vacio);
+        float vacio = smoothstep(${(nivel - 0.03).toFixed(3)}, ${(nivel + 0.04).toFixed(3)}, vAltoBotella);
+        gl_FragColor.a = mix(gl_FragColor.a, 0.34, vacio);${foto ? `
+        // Grosor del PET: de frente casi no se ve; de canto la luz cruza más
+        // plástico y la orilla se ve blanca y espesa (fresnel).
+        float canto = pow(1.0 - abs(dot(normalize(vNormal), normalize(vViewPosition))), 2.6);
+        gl_FragColor.a = max(gl_FragColor.a, canto * 0.55);
+        gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.96), canto * 0.35);` : realce ? `
+        float canto = pow(1.0 - abs(dot(normalize(vNormal), normalize(vViewPosition))), 2.6);
+        gl_FragColor.a = max(gl_FragColor.a, canto * 0.45);
+        gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.97), canto * 0.3);` : ''}
         gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.93, 0.94, 0.95), vacio * 0.55);`)
   }
   botella.add(new THREE.Mesh(new THREE.LatheGeometry(perfil, VUELTAS), plastico))
@@ -133,12 +176,13 @@ export function armarBotella({ texturaDe, ligera = false }) {
   // botella acelera o frena, y lleva una ola que crece con el movimiento. La
   // cara de arriba del agua son las caras de atrás de la malla, pintadas de un
   // tono más claro: el truco de siempre para "rellenar" un corte.
-  const nivel = FORMA.NIVEL  // casi hasta el cuello, como en sus fotos
+  const nivel = forma === 'antes' ? FORMA.NIVEL : forma === 'medida' ? 1.9 : 1.915  // casi hasta el anillo, como en sus fotos
   const perfilAgua = perfil
     .filter((p) => p.y <= 1.96)
     .map((p) => new THREE.Vector2(Math.max(0, p.x - 0.01), Math.max(0.012, p.y)))
   perfilAgua.push(new THREE.Vector2(0, 1.96))
   const uSuperficie = { value: new THREE.Color(0x5a1a2a) }
+  const uBrillo = { value: new THREE.Color(0xc4123a) }
   const uNormal = { value: new THREE.Vector3(0, 1, 0) }
   const uCentro = { value: new THREE.Vector3() }
   const uOla = { value: new THREE.Vector3(0, 22, 0) }     // alto, frecuencia, fase
@@ -159,13 +203,33 @@ export function armarBotella({ texturaDe, ligera = false }) {
   const uDeriva = { value: new THREE.Vector3() }
   const uNivelLocal = { value: nivel }
   const uRadioL = { value: R - 0.01 }
+  // Puntos repartidos parejo dentro del líquido posible (hasta 1.96) para medir
+  // volumen: `llenado` = fracción que queda bajo el nivel con la botella parada.
+  const radioEn = (y) => {
+    let r = 0
+    for (let k = 1; k < perfilAgua.length; k++) {
+      const a = perfilAgua[k - 1], b = perfilAgua[k]
+      if ((y - a.y) * (y - b.y) <= 0 && a.y !== b.y) r = Math.max(r, a.x + (b.x - a.x) * (y - a.y) / (b.y - a.y))
+    }
+    return r
+  }
+  const NMUESTRAS = 1600, muestras = new Float32Array(NMUESTRAS * 3), altos = new Float32Array(NMUESTRAS)
+  let rnd = 7, bajo = 0
+  const RM = Math.max(...perfilAgua.map((p) => p.x))
+  const azar = () => ((rnd = (rnd * 16807) % 2147483647) / 2147483647)
+  for (let k = 0; k < NMUESTRAS;) {
+    const x = (azar() * 2 - 1) * RM, z = (azar() * 2 - 1) * RM, y = 0.012 + azar() * (1.96 - 0.012)
+    if (Math.hypot(x, z) > radioEn(y)) continue
+    muestras.set([x, y, z], k * 3); if (y < nivel) bajo++; k++
+  }
+  const llenado = bajo / NMUESTRAS
   const agua = new THREE.MeshPhysicalMaterial({
     color: 0x2e030e, roughness: 0.14, metalness: 0,
     transparent: true, opacity: 1, side: THREE.DoubleSide,
     clearcoat: 1, clearcoatRoughness: 0.03,
   })
   agua.onBeforeCompile = (sh) => {
-    Object.assign(sh.uniforms, { uSuperficie, uNormal, uCentro, uOla, uRumbo,
+    Object.assign(sh.uniforms, { uBrillo, uSuperficie, uNormal, uCentro, uOla, uRumbo,
       uPulpa, uPulpaColor, uPulpaColor2, uAguaSRGB, uFondo, uForma, uCamLocal, uDeriva, uNivelLocal, uRadioL })
     sh.vertexShader = sh.vertexShader
       .replace('void main() {', 'varying vec3 vMundo;\nvarying vec3 vLocal;\nvoid main() {')
@@ -173,7 +237,7 @@ export function armarBotella({ texturaDe, ligera = false }) {
     sh.fragmentShader = sh.fragmentShader
       .replace('void main() {', `varying vec3 vMundo;
         varying vec3 vLocal;
-        uniform vec3 uSuperficie, uNormal, uCentro, uOla, uRumbo;
+        uniform vec3 uBrillo, uSuperficie, uNormal, uCentro, uOla, uRumbo;
         uniform vec4 uPulpa;
         uniform vec3 uPulpaColor, uPulpaColor2, uAguaSRGB, uCamLocal, uDeriva;
         uniform float uFondo, uForma, uNivelLocal, uRadioL;
@@ -238,13 +302,24 @@ export function armarBotella({ texturaDe, ligera = false }) {
           float lado = dot(rel, uRumbo);
           float ola = uOla.x * (sin(uOla.y * lado + uOla.z) + 0.45 * sin(uOla.y * 2.3 * lado - uOla.z * 1.7));
           if (alto > ola) discard;`)
+      .replace('#include <transmission_fragment>', foto
+        // El grosor que atraviesa la luz depende de por dónde mires: al centro
+        // es el diámetro entero (oscuro), en las orillas casi nada (rubí).
+        ? THREE.ShaderChunk.transmission_fragment.replace('material.thickness = thickness;',
+          'material.thickness = thickness * clamp(abs(dot(normal, normalize(vViewPosition))), 0.05, 1.0);')
+        : '#include <transmission_fragment>')
       .replace('#include <dithering_fragment>', `#include <dithering_fragment>
         if (gl_FrontFacing && uPulpa.x > 0.0) {
           vec4 pp = pulpa();
           gl_FragColor.rgb = gl_FragColor.rgb * (1.0 - pp.a) + pp.rgb;
           gl_FragColor.a = max(gl_FragColor.a, pp.a);
         }
-        if (!gl_FrontFacing) gl_FragColor.rgb = uSuperficie;`)
+        if (!gl_FrontFacing) gl_FragColor.rgb = uSuperficie;${realce ? `
+        else {
+          // La luz que cruza poca agua en las orillas: se ve del color vivo del sabor
+          float orilla = pow(1.0 - abs(dot(normalize(vNormal), normalize(vViewPosition))), 1.7);
+          gl_FragColor.rgb = mix(gl_FragColor.rgb, uBrillo, orilla * 0.8);
+        }` : ''}`)
   }
   botella.add(new THREE.Mesh(new THREE.LatheGeometry(perfilAgua, VUELTAS), agua))
 
@@ -281,7 +356,14 @@ export function armarBotella({ texturaDe, ligera = false }) {
     fis.ladeo.clampLength(0, 0.28)
     // la superficie
     uNormal.value.set(fis.ladeo.x, 1, fis.ladeo.y).normalize()
-    botella.localToWorld(uCentro.value.set(0, nivel, 0))
+    // el agua conserva su volumen: la superficie va a la altura (del mundo) que
+    // deja abajo la misma fracción de líquido que parada. Antes se anclaba al
+    // nivel del cuello y al acostarla o voltearla se quedaba medio vacía.
+    const m = botella.matrixWorld.elements
+    for (let k = 0; k < NMUESTRAS; k++) altos[k] = m[1] * muestras[k * 3] + m[5] * muestras[k * 3 + 1] + m[9] * muestras[k * 3 + 2] + m[13]
+    altos.sort()
+    botella.localToWorld(uCentro.value.set(0, 1, 0))
+    uCentro.value.y = altos[Math.min(NMUESTRAS - 1, Math.floor(llenado * NMUESTRAS))]
     const energia = Math.min(1, fis.vel.length() * 0.6 + fis.ladeo.length() * 1.5)
     fis.fase += dt * (5 + energia * 4)
     uOla.value.set(0.0015 + energia * 0.007, 22, fis.fase)
@@ -363,12 +445,12 @@ export function armarBotella({ texturaDe, ligera = false }) {
   const etiqueta = new THREE.Mesh(
     new THREE.CylinderGeometry(R + 0.003, R + 0.003, altoEtq, ligera ? 72 : 160, 1, true, -arcoEtq / 2, arcoEtq),
     new THREE.MeshPhysicalMaterial({
-      map: null, roughness: 0.42, clearcoat: 0.5, clearcoatRoughness: 0.2,
+      map: null, roughness: foto ? 0.5 : 0.42, clearcoat: foto ? 0.7 : 0.5, clearcoatRoughness: foto ? 0.12 : 0.2,
     }),
   )
   // Justo debajo del hombro, como en sus fotos: el filo de arriba queda a un
   // dedo de donde empieza el domo.
-  etiqueta.position.y = 1.18
+  etiqueta.position.y = forma === 'antes' ? 1.18 : forma === 'medida' ? 1.3 : 1.3
   botella.add(etiqueta)
   // El reverso del papel: visto desde dentro, a través del agua transparente,
   // la etiqueta se ve blanca como en la de verdad. Sin esto, al girar la botella
@@ -392,6 +474,31 @@ export function armarBotella({ texturaDe, ligera = false }) {
   etiqueta.material.transparent = true
   etiqueta.renderOrder = 3
 
+  // ── Condensación (2026-11-13) ────────────────────────────────────────────
+  // Recién sacada del refri: una piel apenas más grande que la botella (pasa
+  // ENCIMA de la etiqueta, como en la vida real) con vaho fino y gotas. Las
+  // gotas son lentes: el mapa de normales les da el brillo del estudio en el
+  // borde; el vaho es blanco mate y casi transparente. Unas cuantas gotas
+  // grandes ya escurrieron y dejaron su caminito limpio. Solo hay frío donde
+  // hay agua: se apaga arriba del nivel.
+  if (rocio) {
+    const t = crearRocio(ligera ? 1024 : 2048, nivel)
+    const perfilRocio = perfil.filter((q) => q.y <= nivel + 0.02).map((q) => new THREE.Vector2(q.x + 0.0065, q.y))
+    const geo = new THREE.LatheGeometry(perfilRocio, VUELTAS)
+    // UV por altura real (no por índice del perfil) para que las gotas no se estiren
+    const pos = geo.attributes.position, uv = geo.attributes.uv
+    for (let k = 0; k < pos.count; k++) uv.setY(k, pos.getY(k) / 2)
+    const piel = new THREE.Mesh(geo, new THREE.MeshPhysicalMaterial({
+      color: 0xffffff, transparent: true, depthWrite: false, map: t.mapa,
+      emissive: 0xffffff, emissiveMap: t.brillo, emissiveIntensity: 0.9,
+      normalMap: t.normal, normalScale: new THREE.Vector2(1.6, 1.6),
+      roughnessMap: t.rugosidad, roughness: 1, metalness: 0, envMapIntensity: 1.8,
+      clearcoat: ligera ? 0 : 0.6, clearcoatRoughness: 0.08,
+    }))
+    piel.renderOrder = 4
+    botella.add(piel)
+  }
+
   // Pone un sabor. `vigente()` permite a quien llama cancelar un pedido viejo
   // si mientras bajaba la etiqueta llegó otro (devuelve false si no se puso).
   async function aplicar(b, vigente = () => true) {
@@ -401,6 +508,7 @@ export function armarBotella({ texturaDe, ligera = false }) {
     etiqueta.material.map = mapa
     etiqueta.material.needsUpdate = true
     agua.color.setHex(b.agua)
+    uBrillo.value.setHex(b.luz ?? b.brillo ?? b.agua)
     blanco.color.setHex(b.tapa ?? blancoTapa)
     sombraTapa.color.setHex(b.tapa ?? blancoTapa).multiplyScalar(0.82)
     // la superficie: el mismo color, un poco más claro
@@ -414,6 +522,22 @@ export function armarBotella({ texturaDe, ligera = false }) {
     // teñido, con la mancha y los dibujos de atrás nítidos.
     agua.opacity = b.opacidad ?? 1
     agua.depthWrite = !b.opacidad
+    if (foto && !b.lechosa) {
+      // Luz que atraviesa: blanco + absorción del color del sabor. Lo grueso
+      // (el centro) se ve oscuro; lo delgado (orillas, hombro) brilla.
+      agua.transparent = false
+      agua.opacity = 1
+      agua.depthWrite = true
+      agua.color.setHex(0xffffff)
+      agua.transmission = 1
+      agua.ior = 1.34
+      agua.thickness = 0.62
+      agua.roughness = 0.04
+      agua.clearcoat = 0
+      agua.attenuationColor.setHex(b.luz ?? b.brillo ?? b.agua)
+      agua.attenuationDistance = b.absorcion ?? 0.2
+      agua.specularIntensity = 0.3
+    }
     agua.needsUpdate = true
     receta = b
     ponerPulpa()
@@ -464,4 +588,93 @@ export function armarBotella({ texturaDe, ligera = false }) {
     // Tocar una botella le da un empujón al agua (para sacudirla)
     empujar(x, z = 0) { fis.vel.x += x; fis.vel.y += z },
   }
+}
+
+
+// Texturas de la condensación, hechas a mano en un canvas (sin imágenes).
+// Altura de cada gota = media esfera; de ahí salen las normales. Canal verde =
+// lo que lee three en alphaMap y roughnessMap.
+function crearRocio(N, nivel) {
+  let semilla = 91
+  const r = () => ((semilla = (semilla * 16807) % 2147483647) / 2147483647)
+  const alto = new Float32Array(N * N)     // altura de las gotas
+  const limpio = new Float32Array(N * N)   // 1 = caminito sin vaho
+  const s = N / 2048
+  const gota = (cx, cy, rad, estira = 1) => {
+    const rx = rad, ry = rad * estira
+    for (let y = Math.max(0, Math.floor(cy - ry)); y <= Math.min(N - 1, Math.ceil(cy + ry)); y++) {
+      for (let x = Math.floor(cx - rx); x <= Math.ceil(cx + rx); x++) {
+        const dx = (x - cx) / rx, dy = (y - cy) / ry
+        // más panzona abajo, como gota que cuelga
+        const d = dx * dx * (dy > 0 ? 0.85 : 1.1) + dy * dy
+        if (d >= 1) continue
+        const i = y * N + ((x % N) + N) % N
+        const h = Math.sqrt(1 - d) * rad
+        if (h > alto[i]) alto[i] = h
+      }
+    }
+  }
+  // escurridos: bajan zigzagueando, limpian el vaho y acaban en una gota gorda
+  for (let k = 0; k < 14; k++) {
+    let x = r() * N, y = r() * N * 0.5
+    const largo = (0.15 + r() * 0.35) * N, ancho = (3 + r() * 3) * s
+    for (let paso = 0; paso < largo && y < N - 2; paso++) {
+      x += (r() - 0.5) * 1.6; y += 1
+      for (let dx = -ancho; dx <= ancho; dx++) limpio[Math.floor(y) * N + (((Math.floor(x + dx)) % N) + N) % N] = 1
+    }
+    gota(x, y, (9 + r() * 7) * s, 1.35)
+  }
+  for (let k = 0; k < 190; k++) gota(r() * N, r() * N, (9 + r() * 11) * s, 1.15 + r() * 0.25)  // grandes
+  for (let k = 0; k < 1800; k++) gota(r() * N, r() * N, (3 + r() * 4) * s)                      // medianas
+  for (let k = 0; k < 5000; k++) gota(r() * N, r() * N, (1.2 + r() * 1.4) * s)                  // gotitas finas
+  const lienzo = (f) => {
+    const c = document.createElement('canvas'); c.width = c.height = N
+    const g = c.getContext('2d'), img = g.createImageData(N, N)
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) f(x, y, img.data, (y * N + x) * 4)
+    g.putImageData(img, 0, 0)
+    const tex = new THREE.CanvasTexture(c)
+    tex.wrapS = THREE.RepeatWrapping; tex.anisotropy = 4
+    return tex
+  }
+  // y del canvas → altura en la botella (fila 0 = arriba = 2.0)
+  const frio = (y) => { const h = 2 * (1 - y / N); return Math.min(1, Math.max(0, (nivel - 0.04 - h) / 0.12)) }
+  // normales una vez; de ellas salen el brillo y el borde de cada gota
+  const NX = new Float32Array(N * N), NY = new Float32Array(N * N), NZ = new Float32Array(N * N)
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    const i = y * N + x
+    const hx = alto[y * N + (x + 1) % N] - alto[y * N + (x - 1 + N) % N]
+    const hy = alto[Math.min(N - 1, y + 1) * N + x] - alto[Math.max(0, y - 1) * N + x]
+    let nx = -hx * 0.7, ny = hy * 0.7, nz = 1
+    const l = Math.hypot(nx, ny, nz); NX[i] = nx / l; NY[i] = ny / l; NZ[i] = nz / l
+  }
+  const L = [-0.45, 0.55, 0.7]   // luz arriba a la izquierda, hacia la cámara
+  const normal = lienzo((x, y, d, o) => {
+    const i = y * N + x
+    d[o] = (NX[i] * 0.5 + 0.5) * 255; d[o + 1] = (NY[i] * 0.5 + 0.5) * 255; d[o + 2] = (NZ[i] * 0.5 + 0.5) * 255; d[o + 3] = 255
+  })
+  // color + transparencia: vaho blanco parejo y fino; en la gota el centro es
+  // clarito (deja ver el agua), el borde oscurece (refracta) y el brillo es blanco
+  const mapa = lienzo((x, y, d, o) => {
+    const i = y * N + x, f = frio(y)
+    let c = 255, a
+    if (alto[i] > 0) {
+      const borde = 1 - NZ[i]                          // 0 centro → ~1 orilla
+      const brillo = Math.pow(Math.max(0, NX[i] * L[0] + NY[i] * L[1] + NZ[i] * L[2]), 60)
+      // la luz que atraviesa la gota se junta abajo, del lado contrario al brillo
+      const cauce = Math.pow(Math.max(0, -NX[i] * L[0] - NY[i] * L[1] + NZ[i] * 0.55), 18) * 0.55
+      c = 255 * Math.min(1, 0.12 + cauce + brillo * 2.2)
+      a = Math.min(0.95, 0.22 + borde * 0.38 + cauce * 0.5 + brillo)
+    } else a = limpio[i] ? 0.02 : 0.1
+    d[o] = d[o + 1] = d[o + 2] = c; d[o + 3] = a * f * 255
+  })
+  const brillo = lienzo((x, y, d, o) => {
+    const i = y * N + x
+    const b = alto[i] > 0 ? Math.pow(Math.max(0, NX[i] * L[0] + NY[i] * L[1] + NZ[i] * L[2]), 80) * frio(y) : 0
+    d[o] = d[o + 1] = d[o + 2] = Math.min(255, b * 255); d[o + 3] = 255
+  })
+  const rugosidad = lienzo((x, y, d, o) => {
+    const v = alto[y * N + x] > 0 ? 0.03 : 0.7
+    d[o] = d[o + 1] = d[o + 2] = v * 255; d[o + 3] = 255
+  })
+  return { normal, mapa, brillo, rugosidad }
 }

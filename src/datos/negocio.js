@@ -76,7 +76,7 @@ export const sabores = [
     nombre: 'Jamaica', grupo: 'clasicos', color: '#9B2247', fondoGaleria: '#E58AA5', tipo: 'agua',
     ingredientes: ['Agua', 'Azúcar', 'Flor de jamaica'],
     etiqueta: { real: true, trazo: 'centro', fondo: '#FAEDE9', tinta: '#9B2247', letra: 'groovy', motivo: 'jamaica', rincones: 'jamaica-rama' },
-    botella: { etq: 'jamaica',      agua: 0x2e030e, brillo: 0x9b2247 },
+    botella: { etq: 'jamaica',      agua: 0x2e030e, brillo: 0x9b2247, luz: 0xc4123a },
   },
   {
     nombre: 'Horchata', grupo: 'clasicos', color: '#2C4A6E', fondoGaleria: '#A9592C', tipo: 'agua',

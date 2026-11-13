@@ -1,0 +1,684 @@
+/* MUNDOS — la web con la identidad de la hoja de marca. Ver pagina.js */
+:root { --espacio: clamp(5rem, 10vw, 8.5rem); --lavanda: #8C66BB; --crema: #FFFDF2; --aqua: #E0F2F6; --tinta: #2A1A40;
+  --titulo: 'Fraunces', Georgia, serif; --texto: 'Rubik', system-ui, sans-serif; --borde: clamp(16px, 5vw, 72px) }
+* { box-sizing: border-box; margin: 0; padding: 0 }
+html { scroll-behavior: smooth }
+html { background: var(--f) }
+body { background: var(--crema); color: var(--tinta); font: 400 17px/1.5 var(--texto); overflow-x: hidden }
+img, video { display: block; max-width: 100% }
+a { color: inherit }
+h1, h2, h3 { font-family: var(--titulo); font-variation-settings: 'SOFT' 100, 'WONK' 1; font-weight: 800; line-height: 1 }
+h2 { font-size: clamp(2.2rem, 4.6vw, 4rem) }
+.sobre { font-weight: 700; font-size: .78rem; letter-spacing: .2em; text-transform: uppercase; margin-bottom: .9rem }
+section[id] { scroll-margin-top: 70px }
+
+.pildora { display: inline-block; padding: .85rem 1.5rem; border-radius: 99px; font-weight: 700; font-size: .92rem; text-decoration: none; transition: transform .2s }
+.pildora:hover { transform: translateY(-2px) }
+.pildora.clara { background: var(--crema); color: var(--tinta) }
+.pildora.oscura { background: var(--t, var(--tinta)); color: var(--f, var(--crema)) }
+
+/* ── Barra: solo las letras ── */
+.barra { position: fixed; z-index: 40; top: 0; left: 0; right: 0; display: flex; align-items: center; gap: 2rem; padding: 14px var(--borde); color: var(--t, var(--tinta)); transition: background .3s, color .7s }
+.barra:not(.bajo) .pildora.clara { background: var(--t); color: var(--f) }
+.barra.bajo { color: var(--crema) }
+.barra.bajo { background: color-mix(in srgb, var(--lavanda) 95%, transparent); backdrop-filter: blur(8px) }
+.barra-logo span { display: block; height: 30px; aspect-ratio: 4560 / 900; background: currentColor; -webkit-mask: url(/marca/natural-tinta.svg) center / contain no-repeat; mask: url(/marca/natural-tinta.svg) center / contain no-repeat }
+.barra nav { flex: 1; display: flex; gap: 1.8rem; font-weight: 500; font-size: .95rem }
+.barra nav a { text-decoration: none; opacity: .92 }
+.barra nav a:hover { opacity: 1; text-decoration: underline; text-underline-offset: 4px }
+.barra .pildora { padding: .6rem 1.1rem; font-size: .85rem }
+
+/* ── Sabores: un mundo a la vez — y es la portada ── */
+:root { --f: #C0D6FF; --t: #6D0101 }
+.portada { position: absolute; z-index: 4; left: var(--borde); top: 96px; max-width: 30rem }
+.portada h1 { font-size: clamp(2rem, min(3.6vw, 7svh), 3.4rem) }
+.sabores { position: relative; height: 100svh; min-height: 620px; overflow: hidden; background: var(--f); color: var(--t);
+  transition: background .7s ease, color .7s ease; touch-action: pan-y; user-select: none }
+.gigante { position: absolute; z-index: 1; left: 0; right: 0; top: 46%; translate: 0 -50%; text-align: center; white-space: nowrap;
+  font-family: var(--titulo); font-variation-settings: 'SOFT' 100, 'WONK' 1; font-weight: 900; font-size: 23vw; line-height: 1; letter-spacing: -.03em;
+  color: color-mix(in srgb, var(--t) 24%, var(--f)); transition: color .7s }
+.gigante[data-largo='si'] { font-size: 15vw }
+.sabores.cambia .gigante { animation: nombre .7s ease }
+@keyframes nombre { 0% { opacity: 1 } 35% { opacity: 0; transform: translateY(20px) } 60% { opacity: 0; transform: translateY(-14px) } }
+.ilu { position: absolute; z-index: 2; left: 2vw; bottom: 92px; width: min(32vw, 46svh); height: auto; opacity: 0; transform: translateY(30px) rotate(-6deg); transition: opacity .5s, transform .6s cubic-bezier(.3, 1.4, .5, 1) }
+.ilu.ver { opacity: 1; transform: none }
+.lienzo { position: absolute; z-index: 3; inset: 0; width: 100%; height: 100%; pointer-events: none }
+.botella-plana { position: absolute; z-index: 3; left: 50%; top: 44%; translate: -50% -50%; height: 74%; width: auto; filter: drop-shadow(0 14px 18px #0003) }
+.sabores.con-3d .botella-plana { display: none }
+.ficha { position: absolute; z-index: 4; right: var(--borde); bottom: 120px; width: min(22rem, 30vw); text-align: right }
+.ficha h2 { font-size: clamp(2rem, 3.2vw, 3rem); margin-bottom: .6rem }
+.tamanos { font-size: .9rem; margin-bottom: 1.4rem; opacity: .85 }
+.flechita { position: absolute; z-index: 5; top: 46%; translate: 0 -50%; width: 58px; height: 58px; border-radius: 50%; border: 2px solid var(--t); background: transparent; color: var(--t);
+  font: 500 1.4rem var(--texto); cursor: pointer; transition: background .2s, color .2s }
+.flechita:hover { background: var(--t); color: var(--f) }
+.flechita.izq { left: var(--borde) } .flechita.der { right: var(--borde) }
+.pildoras { position: absolute; z-index: 5; left: 0; right: 0; bottom: 34px; display: flex; gap: 8px; justify-content: center; overflow-x: auto; padding: 4px var(--borde); scrollbar-width: none }
+.pildoras::-webkit-scrollbar { display: none }
+.pildoras button { flex: none; padding: .45rem .95rem; border-radius: 99px; border: 1.5px solid color-mix(in srgb, var(--t) 45%, transparent); background: transparent; color: var(--t);
+  font: 500 .85rem var(--texto); cursor: pointer; transition: background .3s, color .3s }
+.pildoras button[aria-current] { background: var(--t); color: var(--f); border-color: var(--t) }
+
+/* ── Proceso: sobre ondas, cada paso con su ilustración ── */
+.proceso { position: relative; overflow: clip; background: var(--lavanda); color: var(--crema); padding: var(--espacio) var(--borde) }
+.ondas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .14 }
+.ondas path { fill: none; stroke: var(--crema); stroke-width: 7 }
+.proceso-cabeza { position: relative; margin-bottom: 3rem }
+.proceso ol { position: relative; list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.4rem }
+.proceso li { border-top: 1.5px solid #fffdf259; padding-top: 1.4rem }
+.proceso li span { font-family: var(--titulo); font-weight: 900; font-size: 2.6rem; line-height: 1; opacity: .5 }
+.proceso li h3 { font-size: 1.45rem; margin: 1rem 0 .6rem }
+.proceso li p { font-size: .98rem; opacity: .9; max-width: 22rem }
+
+/* ── Negocios y eventos ── */
+.negocios { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; padding: var(--espacio) var(--borde) calc(var(--espacio) / 2) }
+.tarjeta { position: relative; background: var(--f); color: var(--t); border-radius: 28px; padding: 3rem 2.6rem 2.8rem }
+.tarjeta h2 { font-size: clamp(1.9rem, 3vw, 2.8rem); margin-bottom: 1.4rem; max-width: 16ch }
+.tarjeta ul { list-style: none; margin-bottom: 2rem }
+.tarjeta li { padding: .7rem 0 .7rem 1.6rem; border-top: 1.5px solid color-mix(in srgb, var(--t) 16%, transparent); font-weight: 500; position: relative }
+.tarjeta li::before { content: '✦'; position: absolute; left: 0; opacity: .7 }
+.estallido { position: absolute; top: -26px; right: 26px; width: 130px; display: grid; place-items: center; rotate: 8deg }
+.estallido svg { width: 100%; fill: #C8243E }
+.estallido em { position: absolute; font-family: var(--titulo); font-weight: 900; font-style: normal; color: var(--crema); font-size: 1.05rem; rotate: -8deg }
+.timbre { --d: 6px; position: absolute; top: -30px; right: 30px; width: 112px; height: 138px; padding: var(--d); rotate: -6deg; background: var(--f); color: var(--t); display: grid; place-items: center; align-content: center; gap: 4px;
+  -webkit-mask: radial-gradient(circle var(--d) at center, #0000 96%, #000) 50% / calc(2.6 * var(--d)) calc(2.6 * var(--d)) round, linear-gradient(#000 0 0) content-box; -webkit-mask-composite: source-over;
+  mask: radial-gradient(circle var(--d) at center, #0000 96%, #000) 50% / calc(2.6 * var(--d)) calc(2.6 * var(--d)) round, linear-gradient(#000 0 0) content-box; mask-composite: add }
+.timbre img { height: 70px; width: auto }
+.timbre b { font-family: var(--titulo); font-weight: 900 }
+
+/* ── Dónde ── */
+.donde { background: var(--crema); display: grid; grid-template-columns: 1fr 1.3fr; gap: 3rem; padding: calc(var(--espacio) / 2) var(--borde) var(--espacio) }
+.donde ul { list-style: none; columns: 2; column-gap: 2rem }
+.donde a { display: flex; justify-content: space-between; padding: .8rem 0; border-bottom: 1.5px solid #2a1a401f; text-decoration: none; font-weight: 500; break-inside: avoid }
+.donde a:hover { color: var(--lavanda) }
+
+/* ── Pie: la firma ── */
+.pie { background: var(--lavanda); color: var(--crema); padding: var(--espacio) var(--borde) 2.4rem; display: grid; gap: 4rem }
+.firma { position: relative; width: min(560px, 58vw); padding-top: 9%; }
+.firma-letras { width: 100%; height: auto }
+.firma-gotita { position: absolute; right: -2%; top: -14%; width: 17%; aspect-ratio: 300 / 380; height: auto }
+.pie-datos p { margin-top: 1rem; opacity: .9 }
+
+/* ── Aparecer ── */
+[data-revela] { opacity: 0; transform: translateY(26px); transition: opacity .7s, transform .7s }
+[data-revela].ver { opacity: 1; transform: none }
+
+/* ── Teléfono ── */
+@media (max-width: 900px) {
+  .portada { top: 70px; left: 18px; right: 18px } .portada h1 { font-size: 1.7rem }
+  .barra { gap: 1rem; padding: 12px 16px } .barra nav { display: none } .barra-logo { flex: 1 } .barra-logo span { height: 24px }
+  .gigante { top: 36%; font-size: 30vw } .gigante[data-largo='si'] { font-size: 19vw }
+  .ilu { width: 42vw; left: -2vw; bottom: 150px }
+  .ficha { right: 18px; left: 46vw; bottom: 96px; width: auto } .ficha h2 { font-size: 1.7rem }
+  .flechita { top: 40%; width: 44px; height: 44px; font-size: 1.1rem } .flechita.izq { left: 10px } .flechita.der { right: 10px }
+  .pildoras { justify-content: flex-start; bottom: 24px }
+  .proceso ol { grid-template-columns: 1fr 1fr } .negocios, .donde { grid-template-columns: 1fr } .donde ul { columns: 1 }
+  .tarjeta { padding: 3rem 1.6rem 2rem }
+}
+@media (prefers-reduced-motion: reduce) { .sabores.cambia .gigante { animation: none } [data-revela] { opacity: 1; transform: none } }
+
+/* ── Pulido (12-nov noche) ── */
+.portada h1 { letter-spacing: -.01em }
+.portada-datos { margin-top: 1rem; font-size: .9rem; font-weight: 500; opacity: .8 }
+.sticker { position: absolute; z-index: 4; left: calc(50% + min(15vw, 22svh)); top: 17%; width: clamp(84px, 9vw, 120px); display: grid; place-items: center; animation: gira 18s linear infinite }
+.sticker svg { width: 100%; fill: var(--t); transition: fill .7s }
+.sticker span { position: absolute; text-align: center; font-family: var(--titulo); font-weight: 900; font-size: clamp(.8rem, 1vw, 1rem); line-height: 1; color: var(--f); transition: color .7s; animation: gira 18s linear infinite reverse }
+@keyframes gira { to { rotate: 360deg } }
+.sabores.cambia .sticker { animation: gira 18s linear infinite, salta .6s ease }
+@keyframes salta { 40% { scale: 1.15 } }
+.flechita { backdrop-filter: blur(4px) }
+.pildoras { left: var(--borde); right: var(--borde); translate: none; justify-content: flex-start; padding: 6px; gap: 2px; border-radius: 99px;
+  background: color-mix(in srgb, var(--t) 9%, transparent); border: 1px solid color-mix(in srgb, var(--t) 14%, transparent); align-items: center }
+.pildoras-txt { flex: none; padding: 0 .6rem 0 .8rem; font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .7 }
+.pildoras button { border: 0; padding: .42rem .85rem; font-size: .82rem }
+.pildoras button:not([aria-current]):hover { background: color-mix(in srgb, var(--t) 12%, transparent) }
+.ficha .sobre { opacity: .85 }
+.proceso-cabeza { margin-bottom: 4rem }
+.tarjeta { transition: transform .3s } .tarjeta:hover { transform: translateY(-4px) }
+.donde-txt { margin-top: 1rem; max-width: 26rem; opacity: .8 }
+.pie { position: relative; overflow: hidden }
+.pie-sello { width: 128px }
+.pie-sello svg { width: 100%; height: auto }
+.sello-txt { font: 800 25px var(--texto); letter-spacing: .14em }
+.sello-estrella { font-size: 18px }
+@media (max-width: 900px) {
+  .sticker { left: auto; right: 14px; top: 26%; width: 74px }
+  .pildoras-txt { display: none }
+}
+@media (prefers-reduced-motion: reduce) { .sticker, .sticker span { animation: none } }
+
+/* ── Ficha: tamaños y dulzura ── */
+.ficha .detalle { font-size: .88rem; opacity: .85; margin-bottom: .2rem }
+.ficha .pildora { margin-top: 1.2rem; border: 0; cursor: pointer; font-family: var(--texto) }
+
+/* ── Barra: botón del pedido ── */
+.abre-pedido { border: 0; cursor: pointer; font-family: var(--texto); display: inline-flex; align-items: center; gap: .5rem }
+.cuenta-pedido { display: inline-grid; place-items: center; min-width: 1.5em; height: 1.5em; padding: 0 .35em; border-radius: 99px; background: var(--f); color: var(--t); font-size: .78rem }
+.barra.bajo .cuenta-pedido { background: var(--lavanda); color: var(--crema) }
+.abre-pedido.brinca { animation: salta .5s ease }
+
+/* ── Nosotros: una foto real y pocas palabras ── */
+.nosotros { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(2rem, 6vw, 6rem); align-items: center; padding: var(--espacio) var(--borde) }
+.nosotros-foto img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 28px }
+.nosotros-txt h2 { margin-bottom: 1.4rem; max-width: 14ch }
+.nosotros-txt > p:last-child { font-size: 1.12rem; max-width: 32rem; opacity: .85 }
+
+/* ── Dudas: acordeón limpio ── */
+.dudas { display: grid; grid-template-columns: 1fr 1.3fr; gap: 3rem; padding: var(--espacio) var(--borde) calc(var(--espacio) / 2) }
+.acordeon details { border-top: 1.5px solid #2a1a401f }
+.acordeon details:last-child { border-bottom: 1.5px solid #2a1a401f }
+.acordeon summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 1rem; padding: 1.2rem 0; font-weight: 500; font-size: 1.08rem }
+.acordeon summary::-webkit-details-marker { display: none }
+.acordeon summary::after { content: '+'; font-size: 1.4rem; line-height: 1; color: var(--lavanda); transition: rotate .25s }
+.acordeon details[open] summary::after { rotate: 45deg }
+.acordeon details p { padding: 0 0 1.3rem; max-width: 36rem; opacity: .8 }
+
+/* ── Pie completo ── */
+.pie .firma { justify-self: center }
+.pie-cols { display: grid; grid-template-columns: auto 1fr 1fr 1fr; gap: 2rem 3rem; align-items: start; padding-top: 3rem; border-top: 1px solid #fffdf240 }
+.pie-cols > nav, .pie-cols > div:not(.pie-sello) { display: grid; gap: .5rem; font-size: .95rem }
+.pie-cols b { font-size: .75rem; letter-spacing: .18em; text-transform: uppercase; opacity: .7; margin-bottom: .3rem }
+.pie-cols a { text-decoration: none } .pie-cols a:hover { text-decoration: underline; text-underline-offset: 3px }
+.pie-sello { width: 120px }
+.pie-legal { font-size: .8rem; opacity: .65 }
+
+/* ── Mi pedido (panel lateral) ── */
+html.con-pedido { overflow: hidden }
+.pedido { position: fixed; inset: 0; z-index: 100 }
+.pedido-fondo { position: absolute; inset: 0; background: #2a1a4066; opacity: 0; transition: opacity .35s }
+.pedido-panel { position: absolute; top: 0; right: 0; bottom: 0; width: min(440px, 100vw); background: var(--crema); color: var(--tinta); display: grid; grid-template-rows: auto 1fr auto auto auto;
+  padding: 1.4rem 1.6rem 1.6rem; transform: translateX(100%); transition: transform .35s cubic-bezier(.3, .8, .3, 1); box-shadow: -20px 0 50px #2a1a4026 }
+.pedido.abierto .pedido-fondo { opacity: 1 } .pedido.abierto .pedido-panel { transform: none }
+.pedido-panel header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem }
+.pedido-panel h2 { font-size: 2rem }
+.pedido-cerrar { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid #2a1a4033; background: none; font-size: 1.4rem; cursor: pointer; color: var(--tinta) }
+.pedido-lista { list-style: none; overflow-y: auto; margin: 0 -.4rem; padding: 0 .4rem }
+.pedido-lista li { display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: .8rem; padding: .45rem 0; border-bottom: 1px solid #2a1a4012 }
+.pedido-lista img { width: 44px; height: 54px; object-fit: contain; background: var(--f); border-radius: 10px; padding: 3px }
+.pedido-lista li.con span { font-weight: 700 }
+.contador { display: flex; align-items: center; gap: .4rem }
+.contador button { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid #2a1a4033; background: none; color: var(--tinta); font-size: 1rem; cursor: pointer }
+.contador button:hover { background: var(--tinta); color: var(--crema) }
+.contador output { min-width: 1.6em; text-align: center; font-weight: 700 }
+.pedido-opciones { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin: 1rem 0 .6rem }
+.pedido-opciones label { display: grid; gap: .3rem; font-size: .8rem; font-weight: 700 }
+.pedido-opciones select { font: 500 .95rem var(--texto); padding: .55rem .6rem; border-radius: 10px; border: 1.5px solid #2a1a4026; background: #fff; color: var(--tinta) }
+.pedido-aviso { font-size: .9rem; opacity: .75; margin-bottom: .8rem }
+.pedido-enviar { text-align: center; --t: var(--tinta); --f: var(--crema) }
+
+@media (max-width: 900px) {
+  .nosotros, .dudas { grid-template-columns: 1fr } .nosotros-foto img { aspect-ratio: 4 / 3 }
+  .proceso ol { grid-template-columns: 1fr 1fr; gap: 2rem 1.4rem }
+  .pie-cols { grid-template-columns: 1fr 1fr } .pie-sello { grid-column: 1 / -1 }
+  .barra .abre-pedido { padding: .55rem .9rem }
+}
+
+/* ═══ Hero gráfico, casi sin texto (3er pulido: "mucho texto", referencia Mana) ═══ */
+.solo-lector { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%) }
+:root { --h: #3F7A3C; --hl: #A6D67F; --p1: #EF6A3A; --p2: #F7C65A; --v: #F7B2C8; --s: #F7C65A }
+.sabores { min-height: 640px }
+.ilu { left: 5vw; bottom: 9svh; width: auto; height: min(50svh, 30vw); max-width: none; z-index: 2; transform: translateY(24px) rotate(-4deg) }
+/* botánica (botanica.js) */
+.bota { position: absolute; z-index: 1; pointer-events: none }
+.bota-der { right: -2vw; top: -6%; height: 112%; width: auto; max-width: 54vw }
+.bota-izq { left: -2vw; bottom: -4%; height: 104%; width: auto; max-width: 44vw }
+.bota * { transition: fill .7s, stroke .7s, stop-color .7s }
+.b-hoja { fill: var(--h) } .b-vena { fill: none; stroke: var(--hl); stroke-width: 5; stroke-linecap: round }
+.b-tallo { fill: none; stroke: var(--h); stroke-width: 22; stroke-linecap: round } .b-tallo.fino { stroke-width: 14 }
+.b-p1 { stop-color: var(--p1) } .b-p2 { stop-color: var(--p2) }
+.b-crema { fill: var(--crema) } .b-ventana { fill: var(--v) } .b-sol { fill: var(--s) }
+@keyframes crece { 35% { opacity: .35; transform: scale(.97) translateY(10px) } }
+.ilu.ver { transform: none }
+.lienzo { z-index: 3 }
+
+/* mando: flecha · nombre · + · flecha, abajo al centro */
+.mando { position: absolute; z-index: 5; left: 50%; bottom: 4.5svh; translate: -50% 0; display: flex; align-items: center; gap: 14px }
+.nombre-pildora { min-width: 230px; padding: .95rem 2.2rem; border-radius: 99px; background: var(--t); color: var(--f); text-align: center;
+  font-family: var(--texto); font-weight: 500; font-size: clamp(1.2rem, 1.8vw, 1.7rem); box-shadow: 0 6px 0 color-mix(in srgb, var(--t) 70%, #000); transition: background .7s, color .7s }
+.mando .flechita { position: static; translate: none; width: 64px; height: 64px; border: 0; background: var(--crema); color: var(--tinta); font-size: 1.5rem; box-shadow: 0 6px 18px #0000001f }
+.mando .flechita:hover { background: #fff; color: var(--tinta); transform: scale(1.06) }
+.mas { width: 46px; height: 46px; border-radius: 50%; border: 2px solid var(--t); background: transparent; color: var(--t); font: 500 1.6rem/1 var(--texto); cursor: pointer; transition: background .2s, color .2s }
+.mas:hover { background: var(--t); color: var(--f) }
+.mas.hecho { animation: salta .5s ease; background: var(--t); color: var(--f) }
+
+/* barra: menú en píldoras crema (como Mana) */
+.barra nav { justify-content: flex-end; gap: 10px }
+.barra nav a { padding: .6rem 1.1rem; border-radius: 99px; background: var(--crema); color: var(--tinta); opacity: 1; font-size: .92rem }
+.barra nav a:hover { text-decoration: none; background: #fff }
+.barra .abre-pedido { background: var(--crema); color: var(--tinta) }
+.barra:not(.bajo) .pildora.clara { background: var(--crema); color: var(--tinta) }
+.barra-logo span { height: 44px }
+.barra:not(.bajo) .barra-logo { color: var(--crema) }
+.barra.bajo .barra-logo span { height: 30px }
+
+/* franja de stickers: las 14 ilustraciones corriendo */
+.stickers { overflow: hidden; background: var(--crema); padding: 2.6rem 0; border-bottom: 1px solid #2a1a4012 }
+.stickers-pista { display: flex; gap: 22px; width: max-content; animation: corre 70s linear infinite }
+.stickers:hover .stickers-pista { animation-play-state: paused }
+.stickers span { width: 170px; height: 170px; flex: none; border-radius: 26px; background: var(--f); display: grid; place-items: center; rotate: -2deg }
+.stickers span:nth-child(even) { rotate: 2.5deg; border-radius: 50% }
+.stickers img { width: 84%; height: 84% }
+@keyframes corre { to { transform: translateX(-50%) } }
+
+/* menos texto abajo */
+.proceso li h3 { font-size: clamp(1.4rem, 2vw, 1.8rem) }
+
+@media (max-width: 900px) {
+  .ilu { height: 30svh; left: 2vw; bottom: 14svh }
+  .bota-der { max-width: 70vw; right: -22vw; height: 80% } .bota-izq { max-width: 60vw; height: 70% }
+  .mando { bottom: 22px; gap: 8px } .nombre-pildora { min-width: 0; padding: .8rem 1.4rem; font-size: 1.05rem }
+  .mando .flechita { width: 48px; height: 48px; font-size: 1.1rem } .mas { width: 40px; height: 40px }
+  .barra-logo span { height: 32px }
+  .stickers span { width: 120px; height: 120px }
+}
+@media (prefers-reduced-motion: reduce) { .stickers-pista, .sabores.cambia .bota { animation: none } }
+
+/* ═══ 5º: gotita integrada + viaje con el scroll (referencia: Mana) ═══ */
+.viaje { height: 230svh; position: relative }
+.viaje > .sabores { position: sticky; top: 0 }
+.ilu { position: absolute; z-index: 2; left: 8vw; bottom: 6svh; height: min(46svh, 28vw); width: auto; aspect-ratio: 1;
+  opacity: 0; transform: translateY(24px) rotate(-4deg); transition: opacity .5s, transform .6s cubic-bezier(.3, 1.4, .5, 1) }
+.ilu.ver { opacity: 1; transform: none; animation: mece 4.5s ease-in-out infinite }
+.ilu svg { width: 100%; height: 100% }
+.ilu .ilu-linea { fill: var(--t); transition: fill .7s }
+@keyframes mece { 50% { rotate: -2.5deg } }
+.bota-frente { position: absolute; z-index: 3; left: 3vw; bottom: -3svh; width: min(34vw, 52svh); height: auto }
+/* las plantas se mueven despacito al bajar (profundidad) */
+.bota-der { transform: translate(calc(var(--p, 0) * 3vw), calc(var(--p, 0) * -7svh)) }
+.bota-izq { transform: translate(calc(var(--p, 0) * -2vw), calc(var(--p, 0) * -5svh)) }
+.ilu.ver { translate: calc(var(--p, 0) * -2vw) calc(var(--p, 0) * -9svh) }
+.bota-frente { transform: translateY(calc(var(--p, 0) * -4svh)) }
+@media (max-width: 900px) {
+  .viaje { height: 180svh }
+  .ilu { left: 2vw; bottom: 17svh; height: 28svh } .bota-frente { width: 50vw; left: -4vw; bottom: 9svh }
+}
+@media (prefers-reduced-motion: reduce) { .ilu.ver { animation: none } }
+
+/* ═══ 6º: gotita a mano + la botella acompaña la página ═══ */
+.gotita-svg { width: 100%; height: 100% }
+.g-brazo { fill: none; stroke: #8FD0EC; stroke-width: 15; stroke-linecap: round }
+.ilu { left: 9vw; bottom: 10svh; height: min(40svh, 24vw); aspect-ratio: 300 / 380 }
+/* un solo lienzo fijo: arriba de los fondos, debajo de los textos */
+.lienzo { position: fixed; z-index: 3; inset: 0; width: 100%; height: 100lvh; pointer-events: none; transition: opacity .2s }
+.viaje > .sabores { z-index: 2 }
+.capa-frente { position: sticky; top: 0; height: 100svh; margin-top: -100svh; z-index: 4; pointer-events: none }
+.capa-frente .mando { pointer-events: auto }
+.hueco-hero { position: absolute; left: 50%; top: 4%; height: 80%; width: 20%; translate: -50% 0; pointer-events: none }
+html.con-3d .botella-plana { display: none }
+/* "Así le hacemos": pasos a la izquierda, la botella pegada a la derecha */
+.proceso-cols { position: relative; display: grid; grid-template-columns: 1.1fr .9fr; gap: 3rem }
+.proceso-txt { position: relative; z-index: 4 }
+.proceso ol { grid-template-columns: 1fr; gap: 0 }
+.proceso li { min-height: 34svh; display: grid; align-content: start; opacity: .38; transition: opacity .4s }
+.proceso li.activo { opacity: 1 }
+.proceso li h3 { font-size: clamp(1.8rem, 3.4vw, 3rem) }
+.hueco-proceso { position: sticky; top: 12svh; height: 76svh }
+/* el pie: aterriza junto a la firma */
+.pie > *, .pie-arriba > .firma { position: relative; z-index: 4 }
+.pie { padding-top: calc(var(--espacio) / 2) }
+.pie-arriba { display: grid; grid-template-columns: 1fr 16vw; align-items: end; gap: 2rem }
+.hueco-pie { height: min(34vh, 300px) }
+.pie .firma { justify-self: start }
+@media (max-width: 900px) {
+  .proceso-cols { grid-template-columns: 1fr } .hueco-proceso, .hueco-pie { display: none } .pie-arriba { grid-template-columns: 1fr }
+  .proceso li { min-height: 0; opacity: 1; padding-bottom: 1.4rem } .pie .firma { justify-self: center }
+}
+
+/* ═══ 7º: la gotita de las ilustraciones (la a mano se rechazó: "muy fea") y
+   las plantas con el MISMO contorno que ella, para que sean un solo mundo ═══ */
+.ilu { aspect-ratio: 1; height: min(46svh, 28vw); left: 7vw; bottom: 6svh }
+.ilu svg { width: 100%; height: 100% }
+.b-hoja, .bota ellipse, .b-ventana, .b-sol { stroke: var(--tinta); stroke-width: 5; stroke-linejoin: round }
+.b-crema { stroke: var(--tinta); stroke-width: 4 }
+.b-tallo-borde { fill: none; stroke: var(--tinta); stroke-linecap: round }
+.firma-gotita { width: 17%; aspect-ratio: auto }
+
+/* ═══ Elementos animados (suaves: el protagonista es la botella) ═══ */
+.b-sol, .b-flor, .b-destello, .b-viento, .b-fruta { transform-box: fill-box; transform-origin: center }
+.b-sol { animation: gira 48s linear infinite }
+.b-destello { animation: titila 2.8s ease-in-out infinite }
+.b-destello:nth-of-type(2n) { animation-delay: -1.1s; animation-duration: 3.4s }
+.b-destello:nth-of-type(3n) { animation-delay: -2s; animation-duration: 2.3s }
+@keyframes titila { 0%, 100% { scale: 1; opacity: 1 } 50% { scale: .55; opacity: .55 } }
+.b-nube { animation: nube 9s ease-in-out infinite alternate }
+.b-nube:nth-of-type(2) { animation-duration: 12s; animation-delay: -4s }
+.b-nube:nth-of-type(3) { animation-duration: 7s; animation-delay: -2s }
+@keyframes nube { to { translate: 26px 0 } }
+.b-flor { animation: mece-flor 5s ease-in-out infinite alternate }
+.b-flor:nth-of-type(2n) { animation-duration: 6.5s; animation-delay: -2s }
+@keyframes mece-flor { from { rotate: -5deg } to { rotate: 6deg } }
+.b-viento { transform-origin: 30% 100%; animation: viento 4.5s ease-in-out infinite alternate }
+@keyframes viento { from { rotate: -2deg } to { rotate: 2.5deg } }
+.b-fruta { animation: flota 3.6s ease-in-out infinite }
+@keyframes flota { 50% { translate: 0 -8px; rotate: 3deg } }
+@media (prefers-reduced-motion: reduce) { .b-sol, .b-destello, .b-nube, .b-flor, .b-viento, .b-fruta { animation: none } }
+
+/* ═══ Cambio de sabor a la Mana: UN DISCO enorme, centro muy abajo ═══ */
+.sabores { --dir: 1; --giro-disco: 42deg }
+.lado { position: absolute; inset: 0; pointer-events: none; transform-origin: 50% 520% }
+.sabores.entra-desde > .lado { transform: rotate(calc(var(--dir) * var(--giro-disco))); transition: none }
+.sabores.entra > .lado { transform: none; transition: transform .9s cubic-bezier(.45, .05, .25, 1) }
+/* lo viejo: copia que se va rodando hacia el otro lado, al mismo tiempo */
+.fantasma { position: absolute; inset: 0; pointer-events: none; z-index: 0 }
+.fantasma > .lado { transition: transform .9s cubic-bezier(.45, .05, .25, 1), opacity .3s .6s }
+.fantasma.va > .lado { opacity: 0 }
+.fantasma.va > .lado { transform: rotate(calc(var(--dir) * var(--giro-disco) * -1)) }
+.sabores { transition: background 0s }
+/* dos acomodos de botánica */
+[data-variante='a'] .var-b, [data-variante='b'] .var-a { display: none }
+.b-fruta.chica { animation-duration: 4.4s; animation-delay: -1.5s }
+@media (prefers-reduced-motion: reduce) { .sabores.entra-desde > .lado, .fantasma.va > .lado { transform: none } .fantasma { display: none } }
+
+/* ═══ El elemento propio del sabor (estilo póster con sombra desplazada) ═══ */
+.elem-caja { position: absolute; z-index: 2; right: 7vw; bottom: 9svh; width: min(36svh, 22vw); aspect-ratio: 1; opacity: 0 }
+.con-elem .elem-caja { opacity: 1 }
+.elem-sol { position: absolute; inset: -22%; width: 144%; height: 144%; fill: var(--s); stroke: var(--tinta); stroke-width: 1.4; animation: gira 48s linear infinite }
+.elem { position: relative; width: 100%; height: 100% }
+.con-elem .bota-der .b-sol, .con-elem .bota-der .b-fruta { display: none }
+@media (max-width: 900px) { .elem-caja { width: 30vw; right: 4vw; bottom: 16svh } }
+
+/* el lado izquierdo sube y cubre más */
+.bota-izq { height: 128%; bottom: -6% }
+.ilu { bottom: 12svh }
+
+/* ═══ 13º: cada sabor su composición + la gotita se mueve + ANIMACIONES de verdad ═══ */
+/* la gotita va en su caja (cambia de lugar por sabor; hojas delante) */
+.gotita-caja { position: absolute; z-index: 2; aspect-ratio: 1; translate: calc(var(--p, 0) * -2vw) calc(var(--p, 0) * -9svh) }
+.gotita-caja .ilu { position: absolute; inset: 0; left: 0; bottom: 0; width: 100%; height: 100%; translate: none }
+.gotita-caja .bota-frente { position: absolute; left: -22%; bottom: -26%; width: 125%; height: auto; transform: none }
+.gotita-caja.espejo .bota-frente { scale: -1 1 }
+.ilu.ver { animation: gotita-baila 3.2s ease-in-out infinite }
+@keyframes gotita-baila { 0%, 100% { translate: 0 0; rotate: -2deg } 50% { translate: 0 -14px; rotate: 3deg } }
+.elem-caja, .b-fruta { display: none }
+
+/* ENTRADA (clase .brota al llegar cada sabor) */
+.b-brota, .b-flor, .b-destello, .b-sol-caja, .b-ventana-caja { transform-box: fill-box }
+.b-brota { transform-origin: left center } .b-flor, .b-destello, .b-sol-caja, .b-ventana-caja { transform-origin: center }
+.sabores.brota .b-tallo, .sabores.brota .b-tallo-borde { stroke-dasharray: 1; animation: dibuja 1.1s cubic-bezier(.5, 0, .3, 1) both }
+@keyframes dibuja { from { stroke-dashoffset: 1 } to { stroke-dashoffset: 0 } }
+.sabores.brota .b-brota { animation: brota .7s cubic-bezier(.34, 1.56, .64, 1) both; animation-delay: calc(.3s + var(--d, 0s)) }
+@keyframes brota { from { scale: 0; rotate: -25deg } to { scale: 1; rotate: 0deg } }
+.sabores.brota .b-flor { animation: florece .9s cubic-bezier(.34, 1.7, .64, 1) both; animation-delay: calc(.45s + var(--d, 0s)) }
+@keyframes florece { from { scale: 0; rotate: -160deg } to { scale: 1; rotate: 0deg } }
+.sabores.brota .b-destello { animation: aparece .5s cubic-bezier(.34, 2, .64, 1) both; animation-delay: calc(.6s + var(--d, 0s)) }
+@keyframes aparece { 0% { scale: 0; rotate: 90deg } 100% { scale: 1; rotate: 0deg } }
+.sabores.brota .b-sol-caja { animation: florece 1s cubic-bezier(.34, 1.5, .64, 1) both; animation-delay: .2s }
+.sabores.brota .b-ventana-caja { animation: aparece .7s cubic-bezier(.34, 1.4, .64, 1) both }
+.sabores.brota .ilu.ver { animation: gotita-llega .8s cubic-bezier(.34, 1.6, .64, 1) both, gotita-baila 3.2s 0.8s ease-in-out infinite }
+@keyframes gotita-llega { from { scale: .3; translate: 0 120px; rotate: -20deg } to { scale: 1; translate: 0 0; rotate: 0deg } }
+
+/* REPOSO: movimiento notorio pero tranquilo */
+.sabores:not(.brota) .b-flor { animation: none }
+.b-gira { transform-box: fill-box; transform-origin: center; animation: gira var(--g, 18s) linear infinite }
+.sabores:not(.brota) .b-brota { animation: hoja-viento 3.6s ease-in-out infinite alternate; animation-delay: calc(var(--d, 0s) * -6) }
+@keyframes hoja-viento { from { rotate: -5deg } to { rotate: 6deg } }
+.b-nube { animation: nube var(--nv, 9s) ease-in-out infinite alternate }
+@keyframes nube { to { translate: 70px 0 } }
+.sabores:not(.brota) .b-sol-caja { animation: sol-late 4s ease-in-out infinite }
+@keyframes sol-late { 50% { scale: 1.08 } }
+.b-sol { animation: gira 30s linear infinite; transform-box: fill-box; transform-origin: center }
+.sabores:not(.brota) .b-destello { animation: titila 2.4s ease-in-out infinite; animation-delay: calc(var(--d, 0s) * -7) }
+
+@media (prefers-reduced-motion: reduce) {
+  .sabores.brota *, .b-gira, .b-nube, .b-sol, .ilu.ver, .sabores:not(.brota) .b-brota, .sabores:not(.brota) .b-destello, .sabores:not(.brota) .b-sol-caja { animation: none !important }
+}
+/* que nada se corte en línea recta al salirse de la caja de su dibujo */
+.bota, .gotita-caja .bota-frente, .ilu svg { overflow: visible }
+/* la firma: la gotita SENTADA sobre la L */
+.firma-gotita { right: 1%; top: auto; bottom: 38%; width: 21%; height: auto }
+
+/* barra al bajar: liquid glass (2026-11-12). Adiós al morado; el logo ya no se
+   encoge y la barra flota como una cápsula de vidrio sobre la página */
+.barra { transition: background .4s, box-shadow .4s, inset .4s, border-radius .4s, padding .4s, color .5s }
+.barra.bajo {
+  top: 10px; left: 12px; right: 12px; border-radius: 28px; padding-top: 10px; padding-bottom: 10px;
+  background: linear-gradient(135deg, #ffffff59, #ffffff1f 55%, #ffffff40);
+  -webkit-backdrop-filter: blur(18px) saturate(1.8); backdrop-filter: blur(18px) saturate(1.8);
+  box-shadow: inset 0 1px 0 #ffffffb3, inset 0 -1px 0 #ffffff33, inset 0 0 0 1px #ffffff40, 0 10px 30px #2a1a401f;
+}
+.barra.bajo .barra-logo { color: var(--tinta) }
+.barra.bajo .barra-logo span { height: 44px }
+.barra.bajo nav a, .barra.bajo .abre-pedido { background: #ffffffb3; box-shadow: inset 0 1px 0 #fff }
+.barra.bajo nav a:hover, .barra.bajo .abre-pedido:hover { background: #fff }
+@media (max-width: 900px) { .barra.bajo { left: 8px; right: 8px; top: 8px } .barra.bajo .barra-logo span { height: 32px } }
+
+/* ── "Así le hacemos" en el mundo del sabor (2026-11-13) ─────────────────────
+   La sección toma el fondo del sabor que estás viendo: la botella llega de su
+   maroma y sigue en su mundo. Detrás, una ventana con nubes y un jardín que
+   crece con el scroll (tallos dibujados por --avance, hojas y flores brotan por
+   paso). Junto a ella, un sello con la idea de cada paso. */
+.proceso { background: var(--f); color: var(--t); transition: background .6s, color .6s }
+.proceso .ondas path { stroke: var(--t) }
+.proceso .ondas { opacity: .08 }
+.proceso li { border-top-color: color-mix(in srgb, var(--t) 30%, transparent) }
+.proceso li span { color: var(--t) }
+.proceso li p { max-height: 0; overflow: hidden; opacity: 0; font-size: 1.08rem; max-width: 26rem; transition: max-height .5s, opacity .5s, margin .5s; margin: 0 }
+.proceso li.activo p { max-height: 8rem; opacity: .85; margin-top: .2rem }
+.proceso li { position: relative }
+.proceso li::before { content: ''; position: absolute; left: 0; top: -1.5px; height: 3px; width: 0; background: var(--t); border-radius: 3px; transition: width .6s cubic-bezier(.5, 0, .3, 1) }
+.proceso li.activo::before { width: 100% }
+.hueco-proceso { position: sticky }
+.escenario { position: absolute; inset: -4% -6%; width: 112%; height: 108%; overflow: visible }
+.escenario .b-ventana { transition: fill .6s }
+.e-crece .b-tallo, .e-crece .b-tallo-borde { stroke-dasharray: 1; stroke-dashoffset: calc(1 - min(1, var(--avance, 0) * 1.25)) }
+.e-paso { transform-box: fill-box; transform-origin: center bottom; scale: clamp(0, calc(var(--paso, 0) - var(--k)), 1); transition: scale .7s cubic-bezier(.34, 1.56, .64, 1) }
+.proceso-sello { position: absolute; z-index: 5; left: -2%; top: 8%; width: 9.5rem; aspect-ratio: 1; display: grid; place-items: center; rotate: -10deg }
+.proceso-sello::before { content: ''; position: absolute; inset: 0; background: var(--s); border: 0; clip-path: polygon(50% 0%,61% 12%,77% 7%,80% 23%,96% 27%,90% 42%,100% 55%,87% 64%,90% 80%,74% 80%,66% 95%,53% 86%,38% 97%,32% 82%,15% 84%,17% 68%,2% 59%,12% 46%,4% 31%,20% 26%,23% 10%,39% 14%); animation: gira 40s linear infinite }
+.proceso-sello b { position: absolute; max-width: 7rem; text-align: center; font-family: var(--titulo); font-weight: 900; font-size: 1.25rem; line-height: 1.05; color: var(--tinta); opacity: 0; scale: .6; transition: opacity .35s, scale .5s cubic-bezier(.34, 1.7, .64, 1) }
+.proceso-sello b.activo { opacity: 1; scale: 1 }
+.proceso-sello:not(:has(b.activo)) { scale: 0 } .proceso-sello { transition: scale .6s cubic-bezier(.34, 1.56, .64, 1) }
+@media (prefers-reduced-motion: reduce) { .proceso-sello::before { animation: none } }
+@media (max-width: 900px) { .escenario, .proceso-sello { display: none } .proceso li p { max-height: none; opacity: .85 } }
+.escenario { inset: -12% -40%; width: 180%; height: 124% }
+.hueco-proceso { top: 17svh; height: 72svh }
+
+/* ── El pie (2026-11-13): la botella ya no flota sola. Aterriza en su jardín
+   (el mismo de "Así le hacemos", que crece mientras cae) y al lado de la
+   firma una invitación corta para pedir. */
+.pie > .pie-arriba { z-index: auto }   /* el jardín queda DETRÁS de la botella */
+.pie-arriba { grid-template-columns: 1fr 26vw; grid-template-rows: auto auto; align-items: end; column-gap: 3rem; row-gap: 1.6rem }
+.pie-arriba > .firma { grid-column: 1; grid-row: 1 }
+.pie-cta { grid-column: 1; grid-row: 2; position: relative; z-index: 4; display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap }
+.pie-cta p { font-family: var(--titulo); font-variation-settings: 'SOFT' 100, 'WONK' 1; font-weight: 800; font-size: clamp(1.4rem, 2.4vw, 2rem) }
+.pie-cta .pildora { background: var(--crema); color: var(--tinta); border: 0; font-weight: 700; padding: .85rem 1.5rem; font-size: 1rem; cursor: pointer; transition: transform .25s cubic-bezier(.34, 1.56, .64, 1), background .2s }
+.pie-cta .pildora:hover { background: #fff; transform: translateY(-3px) rotate(-2deg) }
+.hueco-pie { grid-column: 2; grid-row: 1 / 3; position: relative; height: min(52vh, 460px); align-self: center }
+.hueco-pie .escenario { inset: -6% -30%; width: 160%; height: 112% }
+@media (max-width: 900px) { .pie-arriba { grid-template-columns: 1fr } .pie-cta { justify-content: center } }
+
+/* ── El resto de la página con el lenguaje del hero (2026-11-13) ─────────────
+   Ramitos, ventanita con nubes y la gotita asomándose. Todo entra animado
+   cuando su bloque aparece (.ver, de revelar()): los tallos se dibujan, las
+   hojas brotan, las flores florecen. Colores = el sabor que estás viendo. */
+.adorno { position: absolute; z-index: 2; pointer-events: none; overflow: visible; height: auto }
+.adorno.espejo { scale: -1 1 }
+[data-revela]:not(.ver) .adorno, [data-revela]:not(.ver) .asoma { visibility: hidden }
+.ver .adorno .b-tallo, .ver .adorno .b-tallo-borde { stroke-dasharray: 1; animation: dibuja 1.1s cubic-bezier(.5, 0, .3, 1) .2s both }
+.ver .adorno .b-brota { animation: brota .7s cubic-bezier(.34, 1.56, .64, 1) both; animation-delay: calc(.6s + var(--d, 0s)) }
+.ver .adorno .b-flor { animation: florece .9s cubic-bezier(.34, 1.7, .64, 1) both, mece-flor 5s 2s ease-in-out infinite alternate; animation-delay: calc(.8s + var(--d, 0s)), 2s }
+.ver .adorno .b-destello { animation: aparece .5s cubic-bezier(.34, 2, .64, 1) both, titila 2.4s 2s ease-in-out infinite; animation-delay: calc(1s + var(--d, 0s)), 2s }
+.ver .adorno .b-ventana-caja { transform-box: fill-box; transform-origin: center; animation: aparece .8s cubic-bezier(.34, 1.4, .64, 1) both }
+
+/* Nosotros: la foto con arco de ventana, un ramito que trepa y la gotita asomándose */
+.nosotros-foto { position: relative }
+.nosotros-foto > img:last-child { border-radius: 999px 999px 28px 28px; outline: 5px solid var(--tinta); outline-offset: -1px }
+.nosotros-foto .ramito { left: -9%; bottom: -6%; width: 38% }
+.asoma { position: absolute; z-index: 1; right: -11%; top: 22%; width: 26%; height: auto; rotate: 16deg; transform-origin: left bottom }
+.ver .asoma { animation: asoma 1s cubic-bezier(.34, 1.56, .64, 1) 1.1s both, asoma-mira 4s 2.2s ease-in-out infinite }
+@keyframes asoma { from { translate: -60% 0; rotate: 0deg } to { translate: 0 0; rotate: 16deg } }
+@keyframes asoma-mira { 50% { rotate: 8deg } }
+
+/* Negocios: tarjetas como estampas (contorno y sombra dura) con su ramito */
+.tarjeta { border: 3px solid var(--tinta); box-shadow: 8px 8px 0 var(--tinta) }
+.tarjeta:hover { transform: translate(-3px, -4px); box-shadow: 11px 12px 0 var(--tinta) }
+.tarjeta .ramito { right: -4%; bottom: -10%; width: 22%; max-width: 150px }
+.tarjeta .ramito.espejo { right: auto; left: auto; right: -4% }
+.tarjeta > .ramito ~ * { position: relative; z-index: 3 }
+
+/* Dudas: la gotita pensando en su ventanita */
+.dudas-ventana { position: relative; width: min(240px, 60%); aspect-ratio: 300 / 420; margin-top: 2.4rem }
+.dudas-ventana .ventanita { inset: 0; width: 100% }
+.gotita-duda { position: absolute; z-index: 3; left: 18%; bottom: 6%; width: 64%; height: auto; transform-origin: center bottom }
+.ver .gotita-duda { animation: gotita-llega .8s cubic-bezier(.34, 1.6, .64, 1) .5s both, gotita-baila 3.4s 1.4s ease-in-out infinite }
+.pregunta { position: absolute; z-index: 3; right: 4%; top: 6%; font-family: var(--titulo); font-weight: 900; font-size: 4.2rem; line-height: 1; color: var(--crema); -webkit-text-stroke: 4px var(--tinta); paint-order: stroke fill; rotate: 12deg }
+.ver .pregunta { animation: aparece .6s cubic-bezier(.34, 2, .64, 1) 1.1s both, mece 2.6s 2s ease-in-out infinite }
+.acordeon summary::after { color: var(--tinta); width: 1.9rem; height: 1.9rem; display: grid; place-items: center; border-radius: 50%; background: var(--v, #F7B2C8); border: 2px solid var(--tinta); font-size: 1.1rem; flex: none }
+.acordeon details[open] summary::after { rotate: 45deg }
+.acordeon details { transition: background .3s }
+.acordeon details[open] { background: color-mix(in srgb, var(--v, #F7B2C8) 18%, transparent) }
+.acordeon summary, .acordeon details p { padding-left: .8rem; padding-right: .8rem }
+
+/* Dónde comprar: un seto que crece hasta el pie */
+.donde { position: relative; padding-bottom: calc(var(--espacio) + 150px) }
+.seto { position: absolute; left: 0; right: 0; bottom: -6px; height: 190px; display: flex; justify-content: space-between; align-items: flex-end; padding: 0 2vw; pointer-events: none; z-index: 1 }
+.seto .ramito { position: relative; width: 120px; height: auto }
+.seto .ramito:nth-child(odd) { width: 150px }
+.seto.ver { opacity: 1; transform: none }
+
+/* barra de vidrio sobre fondos crema: que las píldoras no se pierdan */
+.barra.bajo nav a, .barra.bajo .abre-pedido { border: 1px solid #2a1a401a }
+
+@media (max-width: 900px) {
+  .asoma { right: -6% } .nosotros-foto .ramito { width: 30% }
+  .dudas-ventana { display: none } .seto .ramito:nth-child(n+5) { display: none }
+}
+@media (prefers-reduced-motion: reduce) { .ver .adorno *, .ver .asoma, .ver .gotita-duda, .ver .pregunta { animation: none !important } }
+.nosotros-foto > img:last-child { position: relative; z-index: 2 }
+.nosotros-foto .ramito { z-index: 3 }
+.nosotros-foto .asoma { width: 26%; aspect-ratio: auto; object-fit: contain; border-radius: 0 }
+/* el seto: alturas y tamaños distintos, encimados, para que no sea una cerca */
+.seto { justify-content: space-around; padding: 0 }
+.seto .ramito { margin: 0 -2.4vw }
+.seto .ramito:nth-child(1) { width: 170px; translate: 0 18px }
+.seto .ramito:nth-child(2) { width: 105px }
+.seto .ramito:nth-child(3) { width: 140px; translate: 0 34px }
+.seto .ramito:nth-child(4) { width: 190px; translate: 0 10px }
+.seto .ramito:nth-child(5) { width: 95px; translate: 0 26px }
+.seto .ramito:nth-child(6) { width: 155px; translate: 0 40px }
+.seto .ramito:nth-child(7) { width: 125px; translate: 0 8px }
+
+/* pie sin botella (13-nov): la firma con su gotita AL CENTRO y la invitación debajo */
+.pie-arriba { grid-template-columns: 1fr; grid-template-rows: auto; justify-items: center; text-align: center; row-gap: 2rem; padding-top: 2rem }
+.pie-arriba > .firma { grid-column: 1; grid-row: 1; justify-self: center }
+.pie .firma { justify-self: center }
+.pie-cta { grid-column: 1; grid-row: 2; justify-content: center }
+
+/* Dudas: las preguntas arrancan a la altura del título, no arriba de la etiqueta */
+.dudas .acordeon { margin-top: 2.6rem; align-self: start }
+
+/* poses nuevas (13-nov): la que se ASOMA tiene su lado izquierdo cortado en
+   recto (el 37% del cuadro): ese corte queda justo en la orilla de la foto */
+.nosotros-foto .asoma { width: 34%; left: calc(100% - 34% * .37); right: auto; top: 26%; rotate: 0deg; transform-origin: left center }
+.ver .asoma { animation: asoma 1s cubic-bezier(.34, 1.56, .64, 1) 1.1s both, asoma-mira 4.5s 2.4s ease-in-out infinite }
+@keyframes asoma { from { translate: -55% 0 } to { translate: 0 0 } }
+@keyframes asoma-mira { 0%, 100% { rotate: 0deg } 50% { rotate: 6deg } }
+.gotita-duda { left: 8%; bottom: 2%; width: 84% }
+.gotita-duda { left: -6%; bottom: -2%; width: 112% }
+
+/* ── Celular (13-nov) ─────────────────────────────────────────────────────── */
+.abre-menu, .proceso-movil { display: none }
+@media (max-width: 900px) {
+  /* menú: botón de dos rayitas y panel de vidrio con las píldoras */
+  .abre-menu { display: grid; place-content: center; gap: 6px; width: 46px; height: 46px; border-radius: 50%; border: 1px solid #2a1a401a; background: var(--crema); cursor: pointer; flex: none }
+  .abre-menu i { display: block; width: 18px; height: 2.5px; border-radius: 2px; background: var(--tinta); transition: rotate .3s, translate .3s }
+  .barra.menu-abierto .abre-menu i:first-child { translate: 0 4.25px; rotate: 45deg }
+  .barra.menu-abierto .abre-menu i:last-child { translate: 0 -4.25px; rotate: -45deg }
+  .barra { flex-wrap: wrap }
+  .barra nav { display: none; order: 9; flex-basis: 100%; flex-direction: column; align-items: stretch; gap: 8px; padding: 6px 0 4px }
+  .barra.menu-abierto nav { display: flex; animation: aparece-menu .35s cubic-bezier(.34, 1.4, .64, 1) }
+  .barra.menu-abierto nav a { text-align: center; padding: .9rem 1rem; font-size: 1.05rem; border: 1px solid #2a1a401a }
+  .barra.menu-abierto:not(.bajo) { background: linear-gradient(135deg, #ffffff59, #ffffff1f 55%, #ffffff40); -webkit-backdrop-filter: blur(18px) saturate(1.8); backdrop-filter: blur(18px) saturate(1.8); border-radius: 28px; top: 8px; left: 8px; right: 8px }
+  @keyframes aparece-menu { from { opacity: 0; translate: 0 -10px } }
+
+  /* "Así le hacemos": la ventana con su jardín y la botella del sabor */
+  .proceso-movil { display: block; position: relative; width: 78%; margin: 0 auto 2.4rem; aspect-ratio: 600 / 1000; --paso: 0; --avance: 0 }
+  .proceso-movil.ver { --paso: 4; --avance: 1 }
+  .proceso-movil .escenario { display: block; inset: 0; width: 100%; height: 100% }
+  .proceso-movil .e-crece .b-tallo, .proceso-movil .e-crece .b-tallo-borde { transition: stroke-dashoffset 1.6s cubic-bezier(.5, 0, .3, 1) .2s }
+  .proceso-movil-botella { position: absolute; z-index: 3; left: 50%; top: 50%; height: 78%; width: auto; translate: -50% -50%; rotate: -4deg; filter: drop-shadow(0 14px 18px #0003) }
+  .proceso-movil.ver .proceso-movil-botella { animation: gotita-llega .9s cubic-bezier(.34, 1.5, .64, 1) .3s both }
+  .proceso .ondas { opacity: .05 }
+
+  /* Nosotros: la foto un poco más angosta para que la gotita quepa asomándose */
+  .nosotros-foto { width: 82% }
+  /* Dudas: la gotita dudando junto al título */
+  .dudas-cabeza { position: relative; padding-right: 34% }
+  .dudas-ventana { display: block; position: absolute; right: 0; top: 0; width: 30%; margin: 0 }
+  .dudas .acordeon { margin-top: 0 }
+  /* Dónde comprar: seto más chico y apretado */
+  .donde { padding-bottom: calc(var(--espacio) / 2 + 110px) }
+  .seto { height: 120px }
+  .seto .ramito:nth-child(n) { width: 72px; margin: 0 -10px }
+  .seto .ramito:nth-child(2n) { width: 58px }
+  .seto .ramito:nth-child(n+5) { display: block }
+}
+@media (max-width: 900px) {
+  .barra { gap: .6rem; flex-wrap: wrap } .barra-logo span, .barra.bajo .barra-logo span { height: 26px }
+  .barra .abre-pedido { padding: .5rem .8rem; font-size: .85rem }
+  .proceso-movil-botella { left: 0; right: 0; top: 11%; margin: 0 auto; translate: none }
+}
+
+/* pantalla de carga (13-nov): fondo lavanda, la gotita brincando sobre su
+   sombra y el logotipo. Se abre como cortina hacia arriba al estar lista. */
+.carga { position: fixed; inset: 0; z-index: 100; background: var(--lavanda); display: grid; place-content: center; justify-items: center; gap: 0; transition: clip-path .7s cubic-bezier(.7, 0, .3, 1); clip-path: inset(0 0 0 0) }
+.carga.fuera { clip-path: inset(0 0 100% 0) }
+.carga-gotita { width: 92px; height: auto; animation: carga-brinca .7s cubic-bezier(.3, 0, .7, 1) infinite alternate; transform-origin: center bottom }
+.carga-sombra { width: 62px; height: 10px; border-radius: 50%; background: #2a1a4033; margin: 4px 0 26px; animation: carga-sombra .7s cubic-bezier(.3, 0, .7, 1) infinite alternate }
+.carga-letras { width: 170px; height: auto }
+@keyframes carga-brinca { from { translate: 0 0; scale: 1.06 .94 } 30% { scale: 1 } to { translate: 0 -46px; scale: .97 1.04 } }
+@keyframes carga-sombra { to { scale: .6; opacity: .5 } }
+@media (prefers-reduced-motion: reduce) { .carga-gotita, .carga-sombra { animation: none } }
+/* celular: las plantas más a la orilla para que la botella (más grande) respire */
+@media (max-width: 900px) {
+  .bota-der { right: -40vw; max-width: 80vw }
+  .bota-izq { left: -24vw }
+}
+@media (max-width: 900px) {
+  /* la gotita del sabor arriba de los botones y a la orilla, sin taparse con la botella */
+  .lado-izq .gotita-caja { left: -6vw !important; bottom: 17svh !important }
+  .lado-der .gotita-caja { right: -8vw !important; bottom: 17svh !important }
+  .gotita-caja { height: 30vw !important; max-height: 150px }
+}
+/* celular, 2º intento: en vez de empujar las plantas fuera de la pantalla (se
+   veían cortadas y sueltas) van COMPLETAS y más chicas en dos esquinas:
+   arriba a la derecha y abajo a la izquierda, enmarcando la botella */
+@media (max-width: 900px) {
+  .bota-der { right: -16vw; top: 9%; bottom: auto; height: 52%; max-width: none }
+  .bota-izq { left: -14vw; bottom: -2%; height: 54%; max-width: none }
+  .lado-izq .gotita-caja { left: 1vw !important; bottom: 19svh !important }
+  .lado-der .gotita-caja { right: 1vw !important; bottom: 19svh !important }
+  .gotita-caja { height: 27vw !important }
+}
+
+/* ── Pantalla de carga, 2ª versión (13-nov) ──────────────────────────────────
+   crema · frase gigante letra por letra en colores de los sabores → tinta ·
+   destellos y la gotita sentada sobre la frase · sale con un disco del color
+   del primer sabor que crece desde el centro. */
+.carga { position: fixed; inset: 0; z-index: 100; background: var(--crema); color: var(--tinta); display: grid; place-items: center; overflow: hidden; clip-path: none; transition: none }
+.carga-frase { position: relative; display: grid; justify-items: center; font-family: var(--titulo); font-variation-settings: 'SOFT' 100, 'WONK' 1; font-weight: 900; font-size: clamp(3.2rem, 11.5vw, 10.5rem); line-height: .88; letter-spacing: -.01em; text-align: center }
+.cl { display: flex; justify-content: center }
+.cl .esp { width: .28em }
+.cl b { display: inline-block; font-weight: inherit; color: var(--c); opacity: 0; transform-origin: 50% 90%;
+  animation: letra-entra .55s cubic-bezier(.34, 1.7, .64, 1) calc(var(--i) * 45ms + .1s) forwards, letra-tinta .45s ease calc(1.15s + var(--i) * 18ms) forwards }
+@keyframes letra-entra { from { opacity: 0; translate: 0 .5em; scale: .3; rotate: -14deg } to { opacity: 1; translate: 0 0; scale: 1; rotate: 0deg } }
+@keyframes letra-tinta { to { color: var(--tinta) } }
+.carga-lado { position: absolute; top: 50%; translate: 0 -50%; font: 700 clamp(.7rem, 1.1vw, .95rem) var(--texto); letter-spacing: .3em; text-transform: uppercase; opacity: 0; animation: lado-entra .6s ease 1.2s forwards }
+.carga-lado.izq { left: 4vw } .carga-lado.der { right: 4vw }
+@keyframes lado-entra { from { opacity: 0; letter-spacing: .8em } to { opacity: .8; letter-spacing: .3em } }
+.carga .carga-gotita { position: absolute; right: -.3em; top: -.92em; width: .95em; height: auto; opacity: 0; animation: gotita-cae .7s cubic-bezier(.34, 1.6, .64, 1) 1.45s forwards; transform-origin: 50% 100% }
+@keyframes gotita-cae { from { opacity: 0; translate: 0 -1.2em; rotate: -20deg } 60% { opacity: 1 } to { opacity: 1; translate: 0 0; rotate: 0deg } }
+.cd { position: absolute; width: calc(46px * var(--e)); height: auto; fill: var(--crema); stroke: var(--tinta); stroke-width: 3.5; opacity: 0; scale: 0;
+  animation: aparece .5s cubic-bezier(.34, 2, .64, 1) calc(1.3s + var(--k) * .08s) forwards, titila 1.6s ease-in-out calc(1.8s + var(--k) * .15s) infinite }
+.cd { transform-box: fill-box; transform-origin: center } .cd { animation-fill-mode: forwards, none }
+.carga .cd { opacity: 1 }
+/* la salida: disco del color del sabor desde el centro, la frase se encoge */
+.carga-disco { position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px; border-radius: 50%; background: var(--f, #C0D6FF); scale: 0; z-index: 3 }
+.carga.sale .carga-disco { animation: disco-crece .85s cubic-bezier(.7, 0, .25, 1) forwards }
+@keyframes disco-crece { to { scale: 340 } }
+.carga.sale .carga-frase, .carga.sale .carga-lado, .carga.sale .cd { transition: scale .6s cubic-bezier(.6, 0, .3, 1), opacity .5s; scale: .85; opacity: 0 }
+.carga.sale { animation: carga-fuera .35s ease .8s forwards }
+@keyframes carga-fuera { to { opacity: 0; visibility: hidden } }
+@media (max-width: 900px) { .carga-lado { top: auto; bottom: 14svh; translate: none } .carga-frase { font-size: 15vw } }
+@media (prefers-reduced-motion: reduce) { .cl b, .carga .carga-gotita, .cd, .carga-lado { animation: none; opacity: 1; color: var(--tinta); scale: 1 } .carga.sale .carga-disco { animation: none } }
+.cl { position: relative }
+.carga .carga-gotita { right: -.16em; top: -.62em; width: .62em }
+.carga .carga-gotita { right: -.2em; top: -.4em; width: .66em }
