@@ -682,3 +682,35 @@ html.con-3d .botella-plana { display: none }
 .cl { position: relative }
 .carga .carga-gotita { right: -.16em; top: -.62em; width: .62em }
 .carga .carga-gotita { right: -.2em; top: -.4em; width: .66em }
+
+/* Firma del estudio: lo último de la página (regla de KaiZen en todos los proyectos) */
+.pie-legal { display: flex; justify-content: space-between; align-items: center; gap: .8rem 2rem; flex-wrap: wrap }
+.pie-legal p { margin: 0 }
+.kaizen { display: inline-flex; align-items: center; gap: .55rem; color: inherit; text-decoration: none; letter-spacing: .04em; transition: opacity .2s }
+.kaizen svg { height: .72rem; width: auto }
+.kaizen:hover { opacity: 1 }
+.pie-legal:hover { opacity: .9 }
+@media (max-width: 900px) { .pie-legal { justify-content: center; text-align: center } }
+
+/* Pie, espaciado (13-nov): columnas a su tamaño con huecos IGUALES entre ellas
+   (con 1fr los huecos salían disparejos), la última termina en el margen derecho
+   igual que la firma de KaiZen, y la línea legal va pegada a su propio filete. */
+@media (min-width: 901px) {
+  .pie-cols { grid-template-columns: repeat(4, max-content); justify-content: space-between; padding-top: 3.2rem; padding-bottom: 3.2rem }
+  .pie-sello { width: 112px; margin-top: -.4rem }
+}
+.pie-cols > nav, .pie-cols > div:not(.pie-sello) { gap: .6rem }
+.pie-legal { margin-top: -4rem; padding-top: 1.6rem; border-top: 1px solid #fffdf240; opacity: 1; color: #fffdf2a6 }
+.pie-legal .kaizen { opacity: 1 } .pie-legal .kaizen:hover { color: var(--crema) }
+@media (max-width: 900px) {
+  .pie-cols { padding-bottom: 2.4rem; gap: 2.2rem 1.6rem }
+  .pie-legal { flex-direction: column; gap: .7rem }
+}
+@media (max-width: 900px) {
+  .pie-cols { grid-template-columns: 1fr 1fr; grid-template-areas: "sello sello" "sitio reparto" "pedidos pedidos"; padding-top: 2.4rem; row-gap: 2.4rem }
+  .pie-sello { grid-area: sello; width: 92px; justify-self: center }
+  .pie-cols > nav { grid-area: sitio }
+  .pie-cols > div:nth-child(3) { grid-area: pedidos }
+  .pie-cols > div:nth-child(4) { grid-area: reparto }
+  .pie-cols a, .pie-cols span { white-space: nowrap }
+}

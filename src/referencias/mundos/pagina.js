@@ -154,7 +154,10 @@ document.getElementById('app').innerHTML = html`
     <div><b>Pedidos</b><a href="${wa()}" target="_blank" rel="noopener">WhatsApp 222 442 2840</a><a href="${negocio.instagram}" target="_blank" rel="noopener">Instagram @somos_natural_mx</a></div>
     <div><b>Reparto</b><span>Zona sur de Puebla</span><span>Temprano por la mañana</span><span>Desde ${minimo} aguas</span></div>
   </div>
-  <p class="pie-legal">© ${new Date().getFullYear()} Somos Natural · Aguas de sabor hechas en Puebla</p>
+  <div class="pie-legal">
+    <p>© ${new Date().getFullYear()} Somos Natural · Aguas de sabor hechas en Puebla</p>
+    <a class="kaizen" href="https://kaizenstudiomx.com" target="_blank" rel="noopener" aria-label="Developed by KaiZen">Developed by<svg viewBox="-8 -10 498 120" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="15" stroke-linejoin="miter"><path d="M7 0V100 M66 0 12 54 M30 37 70 100"/><path d="M92 100 132 6 172 100"/><path d="M201 0V100"/><path d="M230 7H300L230 93H300"/><path d="M388 7H322L360 50 322 93H388"/><path d="M417 100V7L473 93V0"/></g></svg></a>
+  </div>
 </footer>
 
 <div class="pedido" id="pedido" hidden>
