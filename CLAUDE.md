@@ -164,7 +164,7 @@ Nosotros y proceso con menos texto (proceso solo títulos). h1 solo para lector.
 proceso solo texto (números grandes, sin ilustraciones de sabores que no tenían
 que ver); negocios/eventos solo con los TÍTULOS de cada punto; secciones nuevas:
 **Nosotros** (foto real `formacion.jpg` + 2 líneas), **Dudas** (acordeón con
-facts confirmados: mínimo, zona, sin azúcar, eventos, tamaños, envases — NO la
+facts confirmados: mínimo, zona, sin azúcar, eventos, tamaños, cambio de botellas echadas a perder (NO hay envases retornables, corregido 13-nov) — NO la
 duración de 5–7 días ni el anticipo, siguen sin confirmar), **Mi pedido** (panel
 lateral: contador por sabor + tamaño + dulzura + aviso de mínimo → WhatsApp;
 "Agregar a mi pedido" en la ficha), ficha con tamaños y DULZURA, pie completo

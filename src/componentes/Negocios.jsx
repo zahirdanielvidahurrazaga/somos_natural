@@ -5,7 +5,7 @@ import Escena from './Escena'
 // Tu negocio como escena: un paso por cada ventaja, con su palabra gigante.
 const PALABRAS = [
   { palabra: [`Desde ${minimo}`], incl: -0.3, sabor: 'Horchata' },
-  { palabra: ['Envases'], incl: 0.34, sabor: 'Maracuyá' },
+  { palabra: ['Cambio'], incl: 0.34, sabor: 'Maracuyá' },
   { palabra: ['Del día'], incl: -0.18, sabor: 'Tamarindo' },
   { palabra: ['Familia'], incl: 0.26, sabor: 'Naranja' },
 ]

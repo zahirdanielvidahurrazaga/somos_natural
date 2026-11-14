@@ -129,7 +129,7 @@ document.getElementById('app').innerHTML = html`
     <details><summary>¿Tienen sin azúcar?</summary><p>Sí. Cada agua puede ir ${dulzura.map((d) => d.toLowerCase()).join(', ').replace(/, ([^,]*)$/, ' o $1')}.</p></details>
     <details><summary>¿Hacen pedidos para eventos?</summary><p>Sí. Nos escribes con la fecha, la apartamos y las hacemos para ese día: llegan frías, no salen de una bodega.</p></details>
     <details><summary>¿Qué tamaños manejan?</summary><p>${tamanos.map((t) => t.nombre).join(', ').replace(/, ([^,]*)$/, ' y $1')}.</p></details>
-    <details><summary>¿Qué hago con las botellas vacías?</summary><p>Si tienes negocio, nos las devuelves y se te descuentan del total.</p></details>
+    <details><summary>¿Y si una botella se echa a perder?</summary><p>Nos avisas y te la cambiamos por una nueva.</p></details>
   </div>
 </section>
 

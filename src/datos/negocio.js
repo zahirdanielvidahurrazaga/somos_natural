@@ -187,7 +187,9 @@ export const proceso = [
 // ── Argumentos para un negocio ───────────────────────────────────────────────
 export const ventajas = [
   { titulo: 'Sin pedido mínimo grande', texto: `Desde ${minimo} aguas. Si se queda corto, la semana que entra pides más.` },
-  { titulo: 'Te recogemos los envases', texto: 'Nos devuelves las botellas vacías y se te descuentan del total.' },
+  // No hay sistema de envases retornables (corregido por Zahir 13-nov-2026):
+  // lo que sí hacen es cambiar las botellas que se echan a perder por nuevas.
+  { titulo: 'Te cambiamos las que se echen a perder', texto: 'Si una botella se te echa a perder, nos avisas y te la reponemos por una nueva.' },
   { titulo: 'Cada botella trae su marca', texto: 'Una clave de producción para saber de qué día es. Nunca te dejamos una de la semana pasada.' },
   { titulo: 'Trato directo con la familia', texto: 'Somos cuatro: no hay call center ni vendedor de paso. Al que te surte lo conoces por su nombre.' },
 ]
