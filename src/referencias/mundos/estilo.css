@@ -714,3 +714,40 @@ html.con-3d .botella-plana { display: none }
   .pie-cols > div:nth-child(4) { grid-area: reparto }
   .pie-cols a, .pie-cols span { white-space: nowrap }
 }
+
+/* ── Nosotros SIN foto (20-nov-2026): la botella 3D cae y se queda enorme a la
+   izquierda, recortada por la sección (zoom a etiqueta y líquido). El hueco
+   conserva el tamaño de la foto. Sin 3D o en celular: la botella plana del
+   sabor, con el mismo acercamiento, recortada en su caja. */
+.nosotros-foto { aspect-ratio: 4 / 5 }
+.nosotros-zoom { position: absolute; inset: 0; overflow: hidden; border-radius: 28px }
+.nosotros-foto .nosotros-botella {
+  position: absolute; left: 46%; top: 52%; height: 150%; width: auto; max-width: none;
+  aspect-ratio: auto; object-fit: contain; border-radius: 0; translate: -50% -40%; rotate: -34deg;
+  filter: drop-shadow(0 18px 24px #0002)
+}
+.nosotros-foto .asoma { z-index: 1 }
+.nosotros-foto .ramito { z-index: 4 }
+@media (min-width: 900px) { .con-3d .nosotros-zoom { display: none } }
+@media (max-width: 899px) { .nosotros-foto { aspect-ratio: 4 / 5 } }
+
+/* ── Nosotros v3 (20-nov-2026, Zahir) ──
+   Fondo colorido: un ARCO tipo amanecer con los colores de fondo de los mundos
+   (al centro el del sabor que se está viendo), la botella encima saliéndose.
+   El ramito se fue al otro lado (junto al texto) y la gotita se SIENTA en la
+   tapa (la mueve cuadro() con la botella). */
+/* v5: el amanecer NO le gustó → el MUNDO del sabor (como "Así le hacemos" y el
+   hero) con sus ondas; la tinta del sabor para el texto. Más alta (zoom: la
+   botella casi del alto de la pantalla, entera). */
+/* v6 (elegida por Zahir entre 4, opción B): igual que arriba "no me gusta" → CREMA con
+   las ondas anchas en el color del sabor; texto en tinta de la marca. */
+.nosotros { position: relative; overflow: clip; background: var(--crema); color: var(--tinta); min-height: 112svh }
+.nosotros .ondas { opacity: .55 }
+.nosotros .ondas path { stroke: var(--f); stroke-width: 12; transition: stroke .6s }
+.nosotros-txt { position: relative; z-index: 4 }
+.nosotros-txt h2, .nosotros-txt p, .nosotros .sobre { color: var(--tinta) }
+.nosotros-foto .ramito { left: auto; right: -10%; bottom: -6% }
+.gotita-tapa { position: absolute; left: 0; top: 0; z-index: 4; pointer-events: none; transform-origin: 52% 66%; opacity: 0; transition: opacity .35s; width: 120px; height: auto }
+.gotita-tapa.ver { opacity: 1 }
+@media (min-width: 900px) { .con-3d .nosotros-foto .asoma { display: none } }
+@media (max-width: 899px) { .gotita-tapa { display: none } }

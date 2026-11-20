@@ -5,6 +5,103 @@
 Sitio de marketing del negocio de aguas naturales. **No es el ERP**: ese vive aparte en
 `~/Developer/natural-erp` y tiene su propio CLAUDE.md.
 
+## 🟢 20-nov (madrugada): GOTAS DE FRÍO v2 — solo en Nosotros (verificado en Chrome)
+
+Tercer intento (los 2 anteriores rechazados: "sucia", "burbujas pegadas"; el `rocio`
+viejo sigue apagado). Diagnóstico: eran gotas BLANCAS + velo blanco + luz plana.
+- Forma: `herramientas/rocio.cjs` (se corre UNA vez; usa el sharp de be-fit-lab) →
+  `public/marca/rocio-{normal,datos}.webp` (1024², ~1.2 MB, se bajan solo al pedir frío).
+  Ley de potencias de tamaños, gotitas intermedias, neblina fina, 9 escurrimientos con
+  caminito limpio; huevo SUAVE (con quiebre salía una raya a la mitad de cada gota).
+- Shader (`armarBotella({ condensa })`, `modelo.frio(k)`): cada gota es una LUPITA del
+  líquido (centro más claro, orilla oscura; brillo de las cajas de luz por el relieve);
+  neblina casi invisible (más velo grisaba la jamaica); en líquidos CLAROS la gota casi no
+  cambia (con la receta de oscuros la horchata salía gris); en la etiqueta al 22%.
+- **v3 (Zahir: "en café se ve muy extraño" + "al no distorsionar la etiqueta se ve
+  extraño"):** la gota ya NO se aclara ×2.3 (dejaba manchas de pintura en los sabores de
+  en medio): toma la LUZ que le llega a ese punto (`totalDiffuse` del material blanco ×
+  color de abajo), un lift chico + luz que junta abajo, orilla algo oscura; en lo muy claro
+  casi solo brillo (y reflejo ×0.35). Sobre la etiqueta la gota muestra su IMPRENTA
+  desplazada por el relieve (`uEtqMapC`, uv cilíndrica de la etiqueta). De canto se
+  desvanecen (borde rasposo). Revisado en Chrome: jamaica, café, horchata, vainilla, maracuyá.
+- **v4 (Zahir: "son muchas bolitas, se ve extraño") — copiada de su FOTO REAL
+  (formacion.jpg):** en PET las gotas son PLANAS e IRREGULARES (unión de 1–4 manchas
+  elípticas, perfil de panqué: meseta plana + orilla empinada → brilla solo la orilla),
+  muchos tamaños, menos gotitas finas; la gota es un pelito MÁS OSCURA que lo de abajo
+  (×0.88; en la jamaica casi negra, como en la foto); la etiqueta MUY mojada (0.95).
+  Revisado en Chrome: jamaica, horchata, café, piña.
+- **v5 (Zahir: "muchas chiquitas o con forma definida"; en las transparentes "se ve
+  raro", aros grises):** la gota es TRANSPARENTE: cuerpo al 12%, orilla al 50%, brillo
+  completo encima (composición a mano: `a = aCuerpo + brillo·(1−aCuerpo)`); sobre la
+  etiqueta sí opaca (imprenta deformada). Generador: 1900 gotas (antes 2600), 2500
+  chiquitas (antes 9000), neblina 15k. Revisado: limón, jamaica, horchata.
+- **Gotas que RESBALAN** (Zahir: "en la vida real las gotas se deslizan"): capa viva
+  en un canvas 1024² (`moverGotas` en modelo.js, se sube como textura cada cuadro): R =
+  gotas bajando (se redibujan), G = caminito limpio (borra neblina y gotas fijas, se
+  vuelve a empañar ~10 s), B = gotitas sueltas en el camino (se secan despacio). La
+  gravedad del MUNDO se pasa a coordenadas de la botella y se proyecta en su superficie
+  (acostada resbalan en diagonal). Nacen ≤14, juntan agua atoradas, arrancan al pesar
+  (r>13), bajan a tirones creciendo; mueren en la base. El relieve se mezcla en
+  `normal_fragment_maps`. Ojo: el canvas redondea a enteros → el secado va por cuadro
+  (254/255), no por segundo. **Revisión de Codex (2 hallazgos, ambos reales y arreglados):**
+  (1) ese desvanecido se atoraba en 127 por el redondeo → ahora el lienzo se REDIBUJA cada
+  cuadro y caminitos/gotitas guardan su EDAD (10 s / 30 s), dibujados con sellos
+  precalculados por canal; (2) en rocio.cjs la fila con decimales hacía índices inválidos
+  (los escurrimientos nunca marcaban) → se redondea. En dev: `window.__gotas`. Piel sin gotas en la base
+  (y<0.16: el mapa se apretaba en la curva del fondo).
+- Solo compu (`condensa: !movil`); en Nosotros aparece mientras llega (`frio((v−0.35)/0.65)`).
+- Prueba: `referencias/prueba-botella.html` (Gotas de frío / Acostada).
+
+## 🟢 20-nov (noche, 2): NOSOTROS SIN FOTO — la botella cae y se queda en zoom (local)
+
+Pedido de Zahir: quitar la foto de Nosotros; "que vuelva a caer la botella pero que se
+quede bastante grande en la esquina, como si le hubiéramos hecho zoom". En compu (fase 4
+de `cuadro()` en mundos/pagina.js): cuando "Así le hacemos" ya apagó su botella
+(Nosotros a 35% de la pantalla), CAE desde arriba dando una vuelta (agita la pulpa) y se
+queda a la izquierda con `alto = 2.2 × el hueco`. **RECHAZADO** ("muy grande, no hace la
+maroma, aparece de repente, muy parada") → **v2:** la botella de "Así le hacemos" NO se
+apaga: VIAJA a Nosotros (desde que su filo entra al 90% de la pantalla) con la MISMA maroma
+del hero (cabeceo 2π + `voltea`), y se queda con `alto = 1.45 × hueco`, ACOSTADA
+(ladeo −0.6 ≈ 34°), meciéndose. `clipPath` solo recorta el filo de ABAJO de la sección.
+**v3 (le gustó; ajustes):** sin recorte (`alto = 1.3 × hueco`, etiqueta al 40% del hueco
+para que no se corte abajo); hueco = ARCO tipo amanecer con los fondos de los mundos
+(centro `var(--f)`); ramito al lado del texto; **gotita SENTADA en la tapa**
+(`.gotita-tapa`, DOM: `escena.tapa()` proyecta la tapa → px + ángulo; asiento del dibujo al
+52%/66%); **agua llena** al acostarla (`modelo.lleno(v)`: sin eso el aire en el hombro
+se veía como agua cortada); **sin temblor**: ya quieta en Nosotros el lienzo pasa de
+`fixed` a `absolute` anclado al scroll de ese momento (`anclaY`) — fijo se redibujaba un
+cuadro tarde y la botella temblaba al scrollear.
+**v4 (verificado en Chrome):** el amanecer de colores va en TODA la sección `.nosotros`
+(no en un arco); botella `alto = min(1.05 × hueco, 0.82 H)` centrada en el hueco; el
+lienzo anclado se centra EN la botella (`anclaY = scrollY + pose.y − H/2`; anclado al
+scroll de ese momento la botella quedaba abajo del lienzo y se cortaba); gotita al 0.8.
+**Sin barra de versiones**: Mundos es la definitiva (20-nov).
+**v5 (verificado en Chrome, jamaica y vainilla):** el amanecer NO le gustó y con la botella
+chica "se perdía el zoom" → `.nosotros` = MUNDO del sabor (`var(--f)` + ondas en `var(--t)`,
+texto en `var(--t)`, igual que "Así le hacemos"), `min-height: 112svh`; botella
+`alto = 0.9 H` centrada al 56% de la sección (entera, gotita libre de la barra).
+**v6 — ELEGIDA (opción B de 4):** "no me gusta que tenga el mismo color que arriba" →
+fondo CREMA con las ondas anchas (trazo 12, 55%) en `var(--f)`, texto en tinta de marca.
+Descartadas: invertido (jamaica se perdía), lavanda de marca, color del sabor aclarado. El hueco `[data-botella="nosotros"]` conserva el 4:5 de la foto;
+ramito DELANTE (z 4), gotita que asoma DETRÁS (z 1). Celular / sin 3D: `.nosotros-zoom`
+con la botella plana del sabor (cartas) al 230%, recortada en su caja.
+
+## 🟢 20-nov (noche): AGUA VIVA + PULPA VIVA (en el sitio local; publicar con "súbelo")
+
+- **La refracción "de verdad" NO sirve aquí**: three solo deforma lo que está DENTRO de la
+  escena y detrás de la botella está la página (HTML). Se simula lo que sí se nota:
+- **Luz que cruza el agua** (`modelo.agua(true)`, `uViva`): Beer-Lambert con el grosor real
+  del rayo dentro del cilindro (σ calibrada para que el CENTRO quede del color de la receta,
+  con 0.3 la jamaica salía negra); orillas teñidas de `modelo.fondo(hex)` = el `--f` del
+  mundo, mezclado 72% a blanco (más fondo ensuciaba: naranja sobre azul salía café). Solo
+  en las NO lechosas; con viva el agua va opaca (opacity 1). Apaga el `realce` de orilla.
+- **Menisco** (`uMenisco`): línea de luz donde el agua toca la pared.
+- **Pulpa**: trozos con luz/sombra + brillito húmedo; **inercia** (`uRemolino`: el líquido
+  no gira con la botella, la alcanza con ~1.8 s de retraso — torsión del cuaternión sobre
+  su Y local); **"agítese"** (`uAgitado`: girar rápido o chapotear la revuelve pareja y se
+  asienta al fondo en ~7 s). En celular la pulpa sigue apagada (`ligera`).
+- `escena.fondo(css)` lo llama `pintar()` en mundos/pagina.js; cartas.js también lo usa.
+
 ## 🟢 20-nov (tarde): BOTELLA MÁS REALISTA — aprobado por Zahir ("sí qué diferencia")
 
 Investigación + página de prueba lado a lado `referencias/prueba-botella.html`

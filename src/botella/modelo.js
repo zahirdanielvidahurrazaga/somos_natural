@@ -174,7 +174,7 @@ const blancoTapa = 0xf3f1ed
 // el sitio NO lo usa.
 // `realce`: versión barata de lo del modo foto para tiempo real (orilla del
 // agua luminosa del color del sabor + grosor del PET). Sin transmisión.
-export function armarBotella({ texturaDe, ligera = false, foto = false, realce = false, forma = 'medida', rocio = false }) {
+export function armarBotella({ texturaDe, ligera = false, foto = false, realce = false, forma = 'medida', rocio = false, condensa = false }) {
   const VUELTAS = ligera ? 56 : foto ? 256 : 128
   // ── La botella ───────────────────────────────────────────────────────────
   // Boston round de 500 ml: cuerpo recto y liso, hombro en domo, cuello corto
@@ -296,6 +296,17 @@ export function armarBotella({ texturaDe, ligera = false, foto = false, realce =
   const uDeriva = { value: new THREE.Vector3() }
   const uNivelLocal = { value: nivel }
   const uRadioL = { value: R - 0.01 }
+  // Agua viva (20-nov-2026, a prueba): la luz que CRUZA el líquido (Beer-Lambert
+  // con el grosor real del rayo dentro del cilindro) y el menisco. Apagado = 0.
+  const uViva = { value: 0 }
+  const uMenisco = { value: 0 }
+  const uAbsorbe = { value: new THREE.Color(0x2e030e) }   // color del agua (lineal)
+  const uLuzAtras = { value: new THREE.Color(1, 1, 1) }   // lo que hay detrás (lineal)
+  let vivaPedida = false, meniscoPedido = false
+  // Pulpa viva (20-nov-2026): el líquido NO gira con la botella (se queda atrás
+  // y la alcanza despacio) y al agitarla la pulpa se revuelve y luego se asienta.
+  const uRemolino = { value: 0 }   // cuánto se quedó atrás el líquido (rad)
+  const uAgitado = { value: 0 }    // 1 = recién agitada (pareja), 0 = asentada
   // Puntos repartidos parejo dentro del líquido posible (hasta 1.96) para medir
   // volumen: `llenado` = fracción que queda bajo el nivel con la botella parada.
   const radioEn = (y) => {
@@ -316,6 +327,9 @@ export function armarBotella({ texturaDe, ligera = false, foto = false, realce =
     muestras.set([x, y, z], k * 3); if (y < nivel) bajo++; k++
   }
   const llenado = bajo / NMUESTRAS
+  // Más llena (0 → 1) para cuando va ACOSTADA en grande (Nosotros): con el nivel
+  // de siempre, el aire se juntaba en el hombro y el agua se veía "cortada".
+  let masLlena = 0
   const agua = new THREE.MeshPhysicalMaterial({
     color: 0x2e030e, roughness: 0.14, metalness: 0,
     transparent: true, opacity: 1, side: THREE.DoubleSide,
@@ -323,7 +337,8 @@ export function armarBotella({ texturaDe, ligera = false, foto = false, realce =
   })
   agua.onBeforeCompile = (sh) => {
     Object.assign(sh.uniforms, { uBrillo, uSuperficie, uNormal, uCentro, uOla, uRumbo,
-      uPulpa, uPulpaColor, uPulpaColor2, uAguaSRGB, uFondo, uForma, uCamLocal, uDeriva, uNivelLocal, uRadioL })
+      uPulpa, uPulpaColor, uPulpaColor2, uAguaSRGB, uFondo, uForma, uCamLocal, uDeriva, uNivelLocal, uRadioL,
+      uViva, uMenisco, uAbsorbe, uLuzAtras, uRemolino, uAgitado })
     sh.vertexShader = sh.vertexShader
       .replace('void main() {', 'varying vec3 vMundo;\nvarying vec3 vLocal;\nvoid main() {')
       .replace('#include <project_vertex>', '#include <project_vertex>\n  vMundo = (modelMatrix * vec4(transformed, 1.0)).xyz;\n  vLocal = transformed;')
@@ -334,11 +349,18 @@ export function armarBotella({ texturaDe, ligera = false, foto = false, realce =
         uniform vec4 uPulpa;
         uniform vec3 uPulpaColor, uPulpaColor2, uAguaSRGB, uCamLocal, uDeriva;
         uniform float uFondo, uForma, uNivelLocal, uRadioL;
+        uniform float uViva, uMenisco, uRemolino, uAgitado;
+        uniform vec3 uAbsorbe, uLuzAtras;
         float hash1(vec3 p) { p = fract(p * 0.3183099 + 0.1); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
         vec3 hash3(vec3 p) { return vec3(hash1(p), hash1(p + 19.19), hash1(p + 47.47)); }
         vec4 pulpa() {
+          // al espacio del LÍQUIDO: girado contra la botella lo que se quedó atrás
+          float cr = cos(uRemolino), sr = sin(uRemolino);
+          mat2 giroL = mat2(cr, -sr, sr, cr);
           vec3 ro = vLocal;
           vec3 rd = normalize(vLocal - uCamLocal);
+          ro.xz = giroL * ro.xz;
+          rd.xz = giroL * rd.xz;
           float a = dot(rd.xz, rd.xz), b = 2.0 * dot(ro.xz, rd.xz), c = dot(ro.xz, ro.xz) - uRadioL * uRadioL;
           float disc = b * b - 4.0 * a * c;
           float tFin = disc > 0.0 ? (-b + sqrt(disc)) / (2.0 * a) : 0.0;
@@ -371,11 +393,18 @@ export function armarBotella({ texturaDe, ligera = false, foto = false, realce =
                 float d = length(v) * mordida;
                 float m = smoothstep(r, r * mix(0.45, 0.2, uForma), d);
                 float alto = clamp(y / uNivelLocal, 0.0, 1.0);
-                float peso = clamp(mix(1.0 + uFondo, 1.0 - uFondo * 0.85, alto), 0.0, 2.0);
+                float asienta = uFondo * (1.0 - uAgitado * 0.9);   // agitada: pareja; quieta: al fondo
+                float peso = clamp(mix(1.0 + asienta, 1.0 - asienta * 0.85, alto), 0.0, 2.0);
                 float prof = tc / uPulpa.y;
                 float atenua = exp(-prof * uPulpa.w);
                 float al = m * atenua * peso * 0.85 * step(0.02, y) * step(y, uNivelLocal);
                 vec3 col = mix(uPulpaColor, uPulpaColor2, h.y);
+                // volumen: luz de arriba a la izquierda (la de las cajas) y un
+                // brillito húmedo en los trozos de enfrente
+                vec3 nT = normalize(punto - centro + vec3(1e-4));
+                vec3 L = normalize(vec3(-0.5, 0.75, 0.55));
+                col *= 0.68 + 0.5 * max(dot(nT, L), 0.0);
+                col += vec3(0.9) * pow(max(dot(reflect(-L, nT), -rd), 0.0), 22.0) * 0.22 * atenua;
                 col = mix(col, uAguaSRGB, (1.0 - atenua) * 0.6);
                 acc.rgb += (1.0 - acc.a) * al * col;
                 acc.a += (1.0 - acc.a) * al;
@@ -401,6 +430,29 @@ export function armarBotella({ texturaDe, ligera = false, foto = false, realce =
         ? THREE.ShaderChunk.transmission_fragment.replace('material.thickness = thickness;',
           'material.thickness = thickness * clamp(abs(dot(normal, normalize(vViewPosition))), 0.05, 1.0);')
         : '#include <transmission_fragment>')
+      .replace('vec3 outgoingLight = totalDiffuse + totalSpecular + totalEmissiveRadiance;', `
+        if (gl_FrontFacing && uViva > 0.0) {
+          // Cuánta agua cruza este rayo: de la cara de enfrente a la salida del
+          // cilindro (en unidades de la botella). Al centro ~el diámetro (oscuro),
+          // en la orilla casi nada (deja pasar lo de atrás teñido del sabor).
+          vec3 ro = vLocal;
+          vec3 rd = normalize(vLocal - uCamLocal);
+          float qa = max(dot(rd.xz, rd.xz), 1e-4), qb = 2.0 * dot(ro.xz, rd.xz), qc = dot(ro.xz, ro.xz) - uRadioL * uRadioL;
+          float qd = max(qb * qb - 4.0 * qa * qc, 0.0);
+          float grosor = clamp((-qb + sqrt(qd)) / (2.0 * qa), 0.035, 2.0 * uRadioL);
+          // el color de la receta es el que se ve al CENTRO (casi el diámetro):
+          // así el cuerpo queda como siempre y solo las orillas se aclaran.
+          // (Con 0.3 = media botella, la jamaica salía casi negra.)
+          vec3 sigma = -log(max(uAbsorbe, vec3(0.004))) / 0.55;
+          vec3 cuerpo = uLuzAtras * exp(-sigma * grosor);
+          totalDiffuse = mix(totalDiffuse, cuerpo, uViva);
+        }
+        if (gl_FrontFacing && uMenisco > 0.0) {
+          // El menisco: el agua trepa un pelito por la pared y agarra la luz
+          float m = smoothstep(-0.022, 0.0, alto - ola);
+          totalSpecular += vec3(0.55) * m * m * uMenisco;
+        }
+        vec3 outgoingLight = totalDiffuse + totalSpecular + totalEmissiveRadiance;`)
       .replace('#include <dithering_fragment>', `#include <dithering_fragment>
         if (gl_FrontFacing && uPulpa.x > 0.0) {
           vec4 pp = pulpa();
@@ -411,7 +463,7 @@ export function armarBotella({ texturaDe, ligera = false, foto = false, realce =
         else {
           // La luz que cruza poca agua en las orillas: se ve del color vivo del sabor
           float orilla = pow(1.0 - abs(dot(normalize(vNormal), normalize(vViewPosition))), 1.7);
-          gl_FragColor.rgb = mix(gl_FragColor.rgb, uBrillo, orilla * 0.8);
+          gl_FragColor.rgb = mix(gl_FragColor.rgb, uBrillo, orilla * 0.8 * (1.0 - uViva));
         }` : ''}`)
   }
   botella.add(new THREE.Mesh(new THREE.LatheGeometry(perfilAgua, VUELTAS), agua))
@@ -456,7 +508,7 @@ export function armarBotella({ texturaDe, ligera = false, foto = false, realce =
     for (let k = 0; k < NMUESTRAS; k++) altos[k] = m[1] * muestras[k * 3] + m[5] * muestras[k * 3 + 1] + m[9] * muestras[k * 3 + 2] + m[13]
     altos.sort()
     botella.localToWorld(uCentro.value.set(0, 1, 0))
-    uCentro.value.y = altos[Math.min(NMUESTRAS - 1, Math.floor(llenado * NMUESTRAS))]
+    uCentro.value.y = altos[Math.min(NMUESTRAS - 1, Math.floor((llenado + (0.999 - llenado) * masLlena) * NMUESTRAS))]
     const energia = Math.min(1, fis.vel.length() * 0.6 + fis.ladeo.length() * 1.5)
     fis.fase += dt * (5 + energia * 4)
     uOla.value.set(0.0015 + energia * 0.007, 22, fis.fase)
@@ -598,6 +650,232 @@ export function armarBotella({ texturaDe, ligera = false, foto = false, realce =
     botella.add(piel)
   }
 
+  // ── Condensación v2 (20-nov-2026) ────────────────────────────────────────
+  // Las dos anteriores se rechazaron ("sucia", "burbujas pegadas"): gotas
+  // BLANCAS + velo blanco. Aquí cada gota es una LUPITA: casi del color de lo que
+  // tiene debajo (el agua o la imprenta de la etiqueta, deformada), con la orilla
+  // un poco más oscura, la luz que junta abajo, y el brillo nítido de las cajas de
+  // luz del estudio sobre su relieve. Nada
+  // de velo blanco: la neblina es apenas un satinado del mismo color. Sobre la
+  // etiqueta, menos. La forma sale de herramientas/rocio.cjs (texturas en
+  // public/marca/rocio-*.webp, se cargan la primera vez que se pide frío).
+  const uFrio = { value: 0 }
+  const uLiqC = { value: new THREE.Color(0x2e030e) }
+  const uEtqC = { value: new THREE.Vector3(etiqueta.position.y, altoEtq / 2, arcoEtq / 2) }
+  const uDatosC = { value: null }
+  const uEtqMapC = { value: null }   // la imprenta de la etiqueta: las gotas encima la deforman como lupa
+  // ── Gotas que RESBALAN (20-nov-2026, Zahir: "en la vida real las gotas se
+  // deslizan hacia abajo") ──
+  // Una capa viva en un canvas con el mismo uv de la piel (u = vuelta, v = alto/2):
+  //   R = altura de las gotas que van bajando (se borra y redibuja cada cuadro)
+  //   G = caminito limpio que dejan (borra la neblina y las gotas fijas; se vuelve
+  //       a empañar en ~10 s)
+  //   B = gotitas sueltas que quedan en el camino (se secan muy despacio)
+  // "Abajo" es el SUELO: la gravedad se pasa a coordenadas de la botella y se
+  // proyecta en su superficie, así acostada resbalan en diagonal. Arrancan cuando
+  // ya pesan y bajan a tirones (se atoran y sueltan), creciendo al recoger agua.
+  const TD = 1024
+  const uDinC = { value: null }
+  let lienzoD = null, ctxD = null, texDin = null
+  const resbalan = []
+  let siguienteGota = 0, tiempoD = 0
+  const rastros = [], sueltas = []
+  // un "sello" suave por canal, hecho una vez (dibujar degradados cada cuadro
+  // costaba demasiado con cientos de caminitos)
+  const sellos = {}
+  function sello(canal) {
+    if (sellos[canal]) return sellos[canal]
+    const c = document.createElement('canvas'); c.width = c.height = 64
+    const x = c.getContext('2d'), gr = x.createRadialGradient(32, 32, 0, 32, 32, 32)
+    const col = (a) => (canal === 'r' ? `rgb(${255 * a | 0},0,0)` : canal === 'g' ? `rgb(0,${255 * a | 0},0)` : `rgb(0,0,${255 * a | 0})`)
+    gr.addColorStop(0, col(1)); gr.addColorStop(0.62, col(0.9)); gr.addColorStop(0.86, col(0.5)); gr.addColorStop(1, col(0))
+    x.fillStyle = gr; x.fillRect(0, 0, 64, 64)
+    return (sellos[canal] = c)
+  }
+  const qInv = new THREE.Quaternion(), gLocal = new THREE.Vector3()
+  function moverGotas(dt) {
+    if (!ctxD) return
+    // gravedad en coordenadas de la botella
+    botella.getWorldQuaternion(qInv).invert()
+    gLocal.set(0, -1, 0).applyQuaternion(qInv)
+    // El lienzo se REDIBUJA entero cada cuadro: los caminitos y las gotitas
+    // sueltas guardan su edad y se apagan hasta cero. (Antes se "desvanecía"
+    // multiplicando por 254/255, pero el canvas redondea a enteros y de 127
+    // para abajo ya no bajaba: el rastro nunca se secaba. Revisión de Codex.)
+    tiempoD += dt
+    ctxD.globalCompositeOperation = 'source-over'
+    ctxD.globalAlpha = 1
+    ctxD.fillStyle = '#000'
+    ctxD.fillRect(0, 0, TD, TD)
+    ctxD.globalCompositeOperation = 'lighten'
+    for (let k = rastros.length - 1; k >= 0; k--) {
+      const q = rastros[k], f = 1 - (tiempoD - q.t) / 10        // se vuelve a empañar en ~10 s
+      if (f <= 0) { rastros.splice(k, 1); continue }
+      dibuja(q.x, q.y, q.rx, q.ry, q.ang, 'g', Math.min(1, f * 1.4))
+    }
+    for (let k = sueltas.length - 1; k >= 0; k--) {
+      const q = sueltas[k], f = 1 - (tiempoD - q.t) / 30       // se secan en ~30 s
+      if (f <= 0) { sueltas.splice(k, 1); continue }
+      dibuja(q.x, q.y, q.rx, q.ry, 0, 'b', 0.85 * Math.min(1, f * 2))
+    }
+    // nace una gota de vez en cuando (máx. 14 a la vez)
+    siguienteGota -= dt
+    if (siguienteGota <= 0 && resbalan.length < 14) {
+      siguienteGota = 0.3 + Math.random() * 0.7
+      resbalan.push({ u: Math.random(), v: 0.2 + Math.random() * 0.7, r: 10 + Math.random() * 6, tiron: Math.random() * 1.5, dejo: 0 })
+    }
+    function dibuja(x, y, rx, ry, ang, canal, alto = 1) {
+      const img = sello(canal)
+      ctxD.globalAlpha = alto
+      for (const dx of [0, -TD, TD]) {
+        const cx = x + dx
+        if (cx < -rx * 2 || cx > TD + rx * 2) continue
+        ctxD.save(); ctxD.translate(cx, y); ctxD.rotate(ang); ctxD.scale(rx, ry)
+        ctxD.drawImage(img, -1, -1, 2, 2)
+        ctxD.restore()
+      }
+      ctxD.globalAlpha = 1
+    }
+    for (let k = resbalan.length - 1; k >= 0; k--) {
+      const g = resbalan[k]
+      const th = g.u * Math.PI * 2
+      // gravedad sobre la superficie en ese punto: (vuelta, alto)
+      const gt = gLocal.x * Math.cos(th) - gLocal.z * Math.sin(th), gy = gLocal.y
+      const fuerza = Math.hypot(gt, gy)
+      // a tirones: se atora un rato y luego suelta (las grandes atoran menos)
+      g.tiron -= dt
+      // mientras está atorada sigue juntando agua; arranca cuando ya pesa
+      if (g.tiron > 0 || g.r <= 13) g.r += dt * 1.6
+      const suelta = g.tiron < 0 && g.r > 13
+      if (g.tiron < -0.4 - Math.random() * 0.8) g.tiron = Math.random() * (g.r > 12 ? 0.25 : 0.9)
+      if (suelta && fuerza > 0.15) {
+        const vel = (0.03 + 0.007 * g.r) * fuerza            // unidades de la botella por segundo
+        const paso = vel * dt
+        const du = (gt / fuerza) * paso / (2 * Math.PI * (R + 0.006)) + (Math.random() - 0.5) * 0.0004
+        const dv = (gy / fuerza) * paso / 2
+        g.u = (g.u + du + 1) % 1; g.v += dv
+        g.r = Math.min(30, g.r + paso * 12)                 // recoge las gotitas del camino
+        g.dejo += paso
+        if (g.dejo > 0.035) { g.dejo = 0; g.r -= 0.4; sueltas.push({ x: g.u * TD + (Math.random() - 0.5) * g.r, y: (1 - g.v) * TD + (dv > 0 ? 1 : -1) * g.r * 1.2, rx: 2 + Math.random() * 2.5, ry: 2.5 + Math.random() * 2.5, t: tiempoD }) }
+      }
+      // en la base la piel se curva hacia adentro: ahí se acaban (no se amontonan)
+      if (g.v < 0.07 || g.v > 0.97) { resbalan.splice(k, 1); continue }
+      const x = g.u * TD, y = (1 - g.v) * TD
+      // hacia dónde va, en el lienzo (y del lienzo crece hacia abajo)
+      const ang = Math.atan2(-gy, gt * (TD / (2 * Math.PI * (R + 0.006))) / (TD / 2)) - Math.PI / 2
+      dibuja(x, y, g.r * 0.95, g.r * 1.25, ang, 'r')        // la gota, alargada hacia donde cae
+      // el caminito: un sello cada ~0.6 radios recorridos (no uno por cuadro)
+      if (suelta && (!g.ultimo || Math.hypot(x - g.ultimo[0], y - g.ultimo[1]) > g.r * 0.6)) { g.ultimo = [x, y]; rastros.push({ x, y, rx: g.r * 1.05, ry: g.r * 1.4, ang, t: tiempoD }) }
+    }
+    texDin.needsUpdate = true
+  }
+  let pielFria = null
+  function armarFrio() {
+    const carga = new THREE.TextureLoader()
+    const tN = carga.load('/marca/rocio-normal.webp'), tD = carga.load('/marca/rocio-datos.webp')
+    for (const t of [tN, tD]) { t.wrapS = THREE.RepeatWrapping; t.anisotropy = 8 }
+    uDatosC.value = tD
+    lienzoD = document.createElement('canvas'); lienzoD.width = lienzoD.height = TD
+    ctxD = lienzoD.getContext('2d')
+    ctxD.fillStyle = '#000'; ctxD.fillRect(0, 0, TD, TD)
+    texDin = new THREE.CanvasTexture(lienzoD)
+    texDin.wrapS = THREE.RepeatWrapping
+    uDinC.value = texDin
+    if (import.meta.env?.DEV) window.__gotas = { lienzoD, resbalan, gLocal }   // para revisar en desarrollo
+    const perfilC = perfil.filter((q) => q.y <= 1.95).map((q) => new THREE.Vector2(q.x + 0.006, q.y))
+    const geo = new THREE.LatheGeometry(perfilC, VUELTAS)
+    // UV por altura real (no por índice del perfil) para que no se estiren
+    const pos = geo.attributes.position, uv = geo.attributes.uv
+    for (let k = 0; k < pos.count; k++) uv.setY(k, pos.getY(k) / 2)
+    const mat = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff, transparent: true, depthWrite: false, metalness: 0, roughness: 0.05,
+      normalMap: tN, normalScale: new THREE.Vector2(1.3, 1.3), specularIntensity: 1, envMapIntensity: 1.5,
+    })
+    mat.onBeforeCompile = (sh) => {
+      Object.assign(sh.uniforms, { uFrio, uLiqC, uEtqC, uDatosC, uEtqMapC, uDinC })
+      sh.vertexShader = sh.vertexShader
+        .replace('void main() {', 'varying vec2 vUvC;\nvarying vec3 vLocC;\nvoid main() {')
+        .replace('#include <project_vertex>', '#include <project_vertex>\n  vUvC = uv;\n  vLocC = position;')
+      sh.fragmentShader = sh.fragmentShader
+        .replace('void main() {', `varying vec2 vUvC;
+          varying vec3 vLocC;
+          uniform float uFrio;
+          uniform vec3 uLiqC, uEtqC;
+          uniform sampler2D uDatosC, uEtqMapC, uDinC;
+          float hDin(vec2 p) { vec3 c = texture2D(uDinC, p).rgb; return max(c.r, c.b); }
+          void main() {`)
+        // el relieve: el de las gotas fijas (borrado donde pasó una que resbaló)
+        // mezclado con el de las que van bajando
+        .replace('#include <normal_fragment_maps>', `
+          vec3 mapN = texture2D( normalMap, vNormalMapUv ).xyz * 2.0 - 1.0;
+          mapN.xy *= normalScale;
+          vec3 dinC = texture2D(uDinC, vUvC).rgb;
+          float limpioC = dinC.g;
+          float hC = max(dinC.r, dinC.b);
+          float e = 1.0 / ${TD}.0;
+          vec2 gD = vec2(hDin(vUvC + vec2(e, 0.0)) - hDin(vUvC - vec2(e, 0.0)), hDin(vUvC + vec2(0.0, e)) - hDin(vUvC - vec2(0.0, e)));
+          vec3 nD = normalize(vec3(-gD * 9.0, 1.0));
+          mapN = normalize(mix(mapN, vec3(0.0, 0.0, 1.0), limpioC));
+          float hayD = smoothstep(0.04, 0.16, hC);
+          mapN = normalize(mix(mapN, nD, hayD));
+          vec3 mapNC = mapN;
+          normal = normalize( tbn * mapN );`)
+        .replace('vec3 outgoingLight = totalDiffuse + totalSpecular + totalEmissiveRadiance;', `
+          vec3 dd = texture2D(uDatosC, vUvC).rgb;
+          // solo donde hay líquido frío (el nivel lo pone quien llama con lleno())
+          // ni en la base (la piel se dobla hacia adentro y el mapa se aprieta)
+          float zona = smoothstep(0.06, 0.16, vLocC.y) * (1.0 - smoothstep(${(nivel - 0.04).toFixed(3)}, ${(nivel + 0.02).toFixed(3)}, vLocC.y));
+          float th = atan(vLocC.x, vLocC.z);
+          float enEtq = step(abs(th), uEtqC.z) * step(abs(vLocC.y - uEtqC.x), uEtqC.y);
+          float kF = uFrio * zona * mix(1.0, 0.95, enEtq);   // en su foto la etiqueta va MUY mojada
+          vec3 nC = mapNC;
+          float borde = clamp(1.0 - nC.z, 0.0, 1.0);
+          // v3 (Zahir: en café "se ve muy extraño"): la gota casi NO cambia de
+          // color (aclararla ×2.3 dejaba manchas de pintura en los sabores de en
+          // medio). La delatan el brillo (lo pone la luz), una orilla un poco más
+          // oscura y la luz que junta abajo, del lado contrario al brillo.
+          // la luz que le llega a este punto (el material es blanco): la gota se
+          // ilumina IGUAL que la botella; sin esto en lo claro salían manchas blancas
+          vec3 luzC = totalDiffuse;
+          vec3 base = uLiqC;
+          if (enEtq > 0.5) {
+            // sobre la etiqueta: su imprenta, desplazada e invertida por la gota
+            float u = (th + uEtqC.z) / (2.0 * uEtqC.z);
+            float v = (vLocC.y - (uEtqC.x - uEtqC.y)) / (2.0 * uEtqC.y);
+            vec2 uvE = vec2(u, v) - nC.xy * 0.035 * (1.0 - borde);
+            base = texture2D(uEtqMapC, uvE * vec2(0.992, 0.988) + vec2(0.004, 0.006)).rgb;
+          }
+          float junta = pow(clamp(dot(-nC.xy, normalize(vec2(-0.6, 0.8))) * 1.8, 0.0, 1.0), 2.0) * (1.0 - borde);
+          // en lo muy claro (horchata, vainilla) aclarar satura a blanco y la
+          // orilla se ve como anillo gris: ahí la gota casi solo es brillo
+          float claro = smoothstep(0.25, 0.7, dot(base, vec3(0.2126, 0.7152, 0.0722)));
+          // v4 (copiando su foto real): la gota plana se ve un pelito MÁS OSCURA que
+          // lo de abajo (en la jamaica, casi negra) con la luz que junta abajo; el
+          // brillo lo pone el reflejo en su orilla empinada
+          vec3 lente = base * luzC * mix(0.88, 0.97, claro) + junta * (base * 0.25 + 0.04) * (1.0 - claro * 0.85);
+          vec3 orilla = base * luzC * mix(0.55, 0.86, claro);
+          // v5 (Zahir: en las transparentes "se ve raro", aros grises): la gota es
+          // TRANSPARENTE. El cuerpo casi no tapa lo de atrás (12%), la orilla un poco
+          // (45%) y el brillo va completo encima. Sobre la etiqueta sí se pinta la
+          // imprenta deformada (ahí sabemos qué hay debajo).
+          float rimF = smoothstep(0.18, 0.6, borde);
+          vec3 cuerpo = mix(lente, orilla, rimF);
+          float aCuerpo = mix(mix(0.12, 0.5, rimF), 0.92, enEtq);
+          // de canto (en la silueta) las gotas hacían un borde rasposo: se desvanecen
+          float deFrente = smoothstep(0.08, 0.4, abs(dot(normalize(vNormal), normalize(vViewPosition))));
+          float fijas = (dd.g * 0.95 + dd.b * 0.07) * (1.0 - limpioC);
+          float cob = max(fijas, hayD * 0.97) * kF * deFrente;
+          float aB = cob * aCuerpo;
+          float sL = clamp(dot(totalSpecular, vec3(0.3333)), 0.0, 1.0) * cob;
+          float aT = clamp(aB + sL * (1.0 - aB), 0.0, 1.0);
+          diffuseColor.a = aT;
+          vec3 outgoingLight = (cuerpo * aB + totalSpecular * cob) / max(aT, 0.001);`)
+    }
+    pielFria = new THREE.Mesh(geo, mat)
+    pielFria.renderOrder = 4
+    botella.add(pielFria)
+  }
+
   // Pone un sabor. `vigente()` permite a quien llama cancelar un pedido viejo
   // si mientras bajaba la etiqueta llegó otro (devuelve false si no se puso).
   async function aplicar(b, vigente = () => true) {
@@ -605,6 +883,7 @@ export function armarBotella({ texturaDe, ligera = false, foto = false, realce =
     try { mapa = await texturaDe(b.etq) } catch { return false }
     if (!vigente()) return false
     etiqueta.material.map = mapa
+    uEtqMapC.value = mapa
     etiqueta.material.needsUpdate = true
     agua.color.setHex(b.agua)
     uBrillo.value.setHex(b.luz ?? b.brillo ?? b.agua)
@@ -637,13 +916,25 @@ export function armarBotella({ texturaDe, ligera = false, foto = false, realce =
       agua.attenuationDistance = b.absorcion ?? 0.2
       agua.specularIntensity = 0.3
     }
+    uAbsorbe.value.setHex(b.agua)
+    uLiqC.value.setHex(b.agua)
     agua.needsUpdate = true
     receta = b
+    ponerViva()
     ponerPulpa()
     return true
   }
   let receta = null
   let conPulpa = true
+  // Las lechosas (horchata, café, mango…) no dejan pasar luz: ahí no aplica
+  function ponerViva() {
+    if (foto) return   // el modo foto ya trae su transmisión de verdad
+    const b = receta
+    uViva.value = vivaPedida && (b ? !b.lechosa : true) ? 1 : 0
+    uMenisco.value = meniscoPedido ? 1 : 0
+    if (uViva.value) { agua.opacity = 1; agua.depthWrite = true }
+    else if (b) { agua.opacity = b.opacidad ?? 1; agua.depthWrite = !b.opacidad }
+  }
   function ponerPulpa() {
     const p = receta?.pulpa
     if (p && conPulpa) {
@@ -661,8 +952,32 @@ export function armarBotella({ texturaDe, ligera = false, foto = false, realce =
   // Cada cuadro: el agua (física) y la pulpa (cámara en coordenadas de la
   // botella y una deriva lenta).
   const camLocal = new THREE.Vector3()
+  const qPrev = new THREE.Quaternion(), qAhora = new THREE.Quaternion(), dq = new THREE.Quaternion()
+  let giroPropio = 0, giroLiquido = 0, tPrev = 0, hayQ = false
+  let tGotas = 0
   function cuadro(t, camera) {
+    if (pielFria?.visible) { const dtG = Math.min(0.05, Math.max(0.001, t - tGotas)); moverGotas(dtG) }
+    tGotas = t
     moverAgua()
+    // Cuánto giró la botella sobre SU eje este cuadro (la torsión del cambio de
+    // orientación alrededor de su Y local)
+    const dt = Math.min(0.05, Math.max(0.001, t - tPrev)); tPrev = t
+    botella.getWorldQuaternion(qAhora)
+    let w = 0
+    if (hayQ) {
+      dq.copy(qPrev).invert().multiply(qAhora)
+      let tw = 2 * Math.atan2(dq.y, dq.w)
+      if (tw > Math.PI) tw -= 2 * Math.PI
+      if (tw < -Math.PI) tw += 2 * Math.PI
+      giroPropio += tw; w = Math.abs(tw) / dt
+    }
+    qPrev.copy(qAhora); hayQ = true
+    // el líquido alcanza a la botella con ~1.8 s de retraso (fricción con la pared)
+    giroLiquido += (giroPropio - giroLiquido) * (1 - Math.exp(-dt / 1.8))
+    uRemolino.value = giroLiquido - giroPropio
+    // agitada: por girar rápido o por chapotear; se asienta en ~7 s
+    const energia = Math.min(1, w * 0.12 + fis.vel.length() * 0.5)
+    uAgitado.value = Math.max(energia, uAgitado.value - dt / 7)
     uCamLocal.value.copy(botella.worldToLocal(camLocal.copy(camera.position)))
     uDeriva.value.set(fis.ladeo.x * 0.04, Math.sin(t * 0.35) * 0.008, fis.ladeo.y * 0.04)
   }
@@ -686,6 +1001,18 @@ export function armarBotella({ texturaDe, ligera = false, foto = false, realce =
     pulpa(si) { conPulpa = si; ponerPulpa() },
     // Tocar una botella le da un empujón al agua (para sacudirla)
     empujar(x, z = 0) { fis.vel.x += x; fis.vel.y += z },
+    // Agua viva (a prueba): luz que cruza el líquido + menisco. `fondo` = el color
+    // de lo que hay detrás de la botella en la página (hex).
+    lleno(k) { masLlena = Math.min(1, Math.max(0, k)) },
+    // Gotas de frío (0 → 1). Las texturas se bajan la primera vez que se piden.
+    frio(k) {
+      if (!condensa) return
+      if (k > 0 && !pielFria) armarFrio()
+      uFrio.value = Math.min(1, Math.max(0, k))
+      if (pielFria) pielFria.visible = uFrio.value > 0.001
+    },
+    agua(viva, menisco = viva) { vivaPedida = viva; meniscoPedido = menisco; ponerViva() },
+    fondo(hex) { uLuzAtras.value.setHex(hex).lerp(new THREE.Color(1, 1, 1), 0.72).multiplyScalar(1.05) },  // más del fondo ensuciaba (naranja sobre azul salía café)
   }
 }
 

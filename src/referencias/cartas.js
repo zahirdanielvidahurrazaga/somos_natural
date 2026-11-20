@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { ALTO_BOTELLA, armarBotella, crearTexturas, colorFiel, estudioProducto } from '../botella/modelo'
 import { sabores } from '../datos/negocio'
+import { mundos } from './marca/datos'
 
 // Las fotos de las cartas de la Lotería Natural: cada sabor con la botella
 // real (forma medida), fondo transparente, a tres cuartos. Solo desarrollo:
@@ -26,6 +27,7 @@ camera.position.set(0, 0.25, 8.6)
 camera.lookAt(0, 0, 0)
 
 const modelo = armarBotella({ texturaDe: (() => { const t = crearTexturas(renderer); return t })(), realce: true })
+modelo.agua(true)   // igual que el sitio (20-nov-2026)
 const giro = new THREE.Group()
 giro.add(modelo.botella)
 modelo.botella.position.y = -ALTO_BOTELLA / 2
@@ -52,6 +54,7 @@ function recortar(origen) {
 
 const lista = []
 for (const s of sabores) {
+  modelo.fondo(parseInt((mundos[s.botella.etq]?.[0] ?? '#FFFFFF').slice(1), 16))
   await modelo.aplicar(s.botella)
   for (let k = 0; k < 4; k++) modelo.cuadro(1, camera)
   renderer.render(scene, camera)

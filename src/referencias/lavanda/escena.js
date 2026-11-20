@@ -30,8 +30,11 @@ export function crearEscena(canvas, { movil = false } = {}) {
   camera.position.set(0, 0, 9)
 
   const texturaDe = crearTexturas(renderer)
-  const modelo = armarBotella({ texturaDe, ligera: movil, realce: true })
+  // condensa: gotas de frío (solo compu; en celular Nosotros usa la foto plana)
+  const modelo = armarBotella({ texturaDe, ligera: movil, realce: true, condensa: !movil })
   if (movil) modelo.pulpa(false)
+  // Agua viva (20-nov-2026): la luz cruza el líquido + menisco
+  modelo.agua(true)
   const giro = new THREE.Group()
   // Orden: primero gira sobre su eje (Y), luego se inclina hacia la cámara (X),
   // al final se ladea (Z). Con el orden normal, al acostarla el cabeceo solo la
@@ -97,5 +100,19 @@ export function crearEscena(canvas, { movil = false } = {}) {
   // en blanco o con la luz inventada)
   const listo = (etq) => Promise.all([hdrListo, texturaDe(etq).catch(() => {})])
 
-  return { poner, sabor, dibujar, medir, precargar, listo, empujar: modelo.empujar }
+  // fondo: el color de la página detrás de la botella (#RRGGBB), lo que se ve
+  // a través del agua en las orillas
+  // Dónde cae la TAPA en el lienzo (px) y hacia dónde apunta la botella
+  // (ángulo en pantalla desde la vertical): para sentar a la gotita en ella.
+  const vTapa = new THREE.Vector3(), vAbajo = new THREE.Vector3()
+  function tapa() {
+    modelo.botella.updateWorldMatrix(true, false)
+    modelo.botella.localToWorld(vTapa.set(0, 2.145, 0)).project(camera)
+    modelo.botella.localToWorld(vAbajo.set(0, 1.6, 0)).project(camera)
+    const px = (v) => [(v.x + 1) / 2 * vw, (1 - v.y) / 2 * vh]
+    const [x, y] = px(vTapa), [x2, y2] = px(vAbajo)
+    return { x, y, ang: Math.atan2(x - x2, y2 - y), escala: lugar.scale.x / mundoPorPx }
+  }
+  const fondo = (css) => modelo.fondo(parseInt(String(css).replace('#', ''), 16))
+  return { poner, sabor, dibujar, medir, precargar, listo, fondo, tapa, lleno: modelo.lleno, frio: modelo.frio, empujar: modelo.empujar }
 }

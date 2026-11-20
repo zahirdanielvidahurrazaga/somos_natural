@@ -1,4 +1,4 @@
-import { lista, negocio, proceso, ventajas, eventos, puntosDeVenta, minimo, tamanos, dulzura, wa, html, revelar, barraReferencias } from '../comun'
+import { lista, negocio, proceso, ventajas, eventos, puntosDeVenta, minimo, tamanos, dulzura, wa, html, revelar } from '../comun'
 import { mundos } from '../marca/datos'
 import { sello } from '../marca/sello'
 import { componer, frente, escenario, ramito, ventanita } from './botanica'
@@ -59,6 +59,7 @@ document.getElementById('app').innerHTML = html`
 </header>
 
 <canvas class="lienzo" aria-hidden="true"></canvas>
+<img class="gotita-tapa" src="/marca/gotita-sentada.svg" alt="" aria-hidden="true" />
 <div class="viaje">
 <section class="sabores" id="sabores" aria-roledescription="carrusel" aria-label="Sabores">
   <h1 class="solo-lector">Somos Natural · Aguas de sabor hechas en Puebla. Se hacen hoy, te llegan mañana.</h1>
@@ -96,7 +97,8 @@ document.getElementById('app').innerHTML = html`
 </section>
 
 <section class="nosotros" id="nosotros">
-  <figure class="nosotros-foto" data-revela>${ramito(3)}<img class="asoma" src="/marca/gotita-asoma.svg" alt="" /><img src="/img/fotos/formacion.jpg" alt="Un agua de jamaica y una de horchata, frías y recién puestas, junto a una maceta de talavera" loading="lazy" /></figure>
+  ${ondas}
+  <figure class="nosotros-foto" data-botella="nosotros" data-revela>${ramito(3)}<img class="asoma" src="/marca/gotita-asoma.svg" alt="" /><div class="nosotros-zoom"><img class="nosotros-botella" alt="Una botella de agua Natural, de cerca" /></div></figure>
   <div class="nosotros-txt" data-revela>
     <p class="sobre">Nosotros</p>
     <h2>Somos una familia poblana que hace aguas de verdad.</h2>
@@ -185,6 +187,8 @@ addEventListener('scroll', alBajar, { passive: true }); alBajar()
 const sec = document.querySelector('.sabores')
 const $s = (c) => sec.querySelector(c)
 const lienzo = document.querySelector('.lienzo')
+const gotitaTapa = document.querySelector('.gotita-tapa')
+let anclaY = null   // con la botella ya en Nosotros, el lienzo se ancla a la página (ver cuadro)
 const plana = $s('.botella-plana')
 let actual = 0, escena = null, giro = null
 
@@ -192,6 +196,7 @@ function pintar(i) {
   const s = lista[i], [f, t] = mundos[s.etq]
   const raiz = document.documentElement.style
   raiz.setProperty('--f', f); raiz.setProperty('--t', t)
+  escena?.fondo(f)
   const b = { ...base, ...botanica[s.etq] }
   for (const k in b) raiz.setProperty(`--${k}`, b[k])
   // su composición: flores, destellos, hojas, ventana y DÓNDE va la gotita
@@ -222,6 +227,7 @@ function pintar(i) {
   }).catch(() => { ilu.innerHTML = '' })
   plana.src = `/referencias/cartas/${s.etq}.webp`
   const pm = document.querySelector(".proceso-movil-botella"); if (pm) pm.src = plana.src
+  const nb = document.querySelector('.nosotros-botella'); if (nb) nb.src = plana.src
 }
 function ir(i, dir = 1) {
   i = (i + lista.length) % lista.length
@@ -281,6 +287,8 @@ const secProc = document.querySelector('.proceso')
 const pasosProc = [...secProc.querySelectorAll('li')]
 const selloProc = [...secProc.querySelectorAll('.proceso-sello b')]
 const esMovil = () => innerWidth < 900
+const secNos = document.querySelector('.nosotros')
+const hNos = document.querySelector('[data-botella="nosotros"]')
 
 function poseHueco(el, extra = {}) {
   const r = el.getBoundingClientRect()
@@ -345,6 +353,7 @@ function cuadro() {
   // (enseña la tapa, se acuesta, queda de cabeza) que TERMINA, ya parada, justo
   // al llegar a su lugar en la sección. Antes giraba quieta en el hero.
   const e = suave(viajeP())
+  let enNosotros = false
   let opacidad = 1
   let pose = { x: W / 2 + e * W * 0.02, y: H * (0.42 + e * 0.08) + Math.sin(ahora / 900) * 4 * (1 - e), alto: H * (0.74 + e * 0.06),
     giroY: respira, ladeo: -0.13, cabeceo: 0 }
@@ -374,18 +383,70 @@ function cuadro() {
     secProc.style.setProperty('--paso', String(c >= 1 ? paso + 1 : 0))
     // 3 · se va antes del contenido de texto
     if (rs.top < H) opacidad = lim((rs.bottom - H * 0.35) / (H * 0.35))
+    // 4 · NOSOTROS (20-nov-2026, en lugar de la foto): en vez de apagarse, la
+    // botella de "Así le hacemos" VIAJA a Nosotros con la MISMA maroma del
+    // hero (cabeceo completo en diagonal) y se queda grande y ACOSTADA a la
+    // izquierda, como zoom a la etiqueta y al líquido. Se recorta solo en el
+    // filo de abajo de la sección. La maroma agita la pulpa (se ve asentarse).
+    // (1ª versión: caía desde arriba recortada → "aparece de repente", muy
+    // grande y muy parada.)
+    const rn = secNos.getBoundingClientRect()
+    if (rn.top < H * 0.9 && rn.bottom > 0) {
+      const v = suave(lim((H * 0.9 - rn.top) / (H * 0.85)))   // 0 → 1 mientras sube Nosotros
+      const rf = hNos.getBoundingClientRect()
+      // v3 (Zahir): un poco más arriba y más chica para que no se corte abajo
+      const fin = {
+        // ZOOM: casi del alto de la pantalla, centrada en la sección (que es más
+        // alta para que quepa entera, sin recortes)
+        x: rf.left + rf.width * 0.46, y: rn.top + rn.height * 0.56, alto: H * 0.9,
+        giroY: Math.PI * 4 + 0.35 + Math.sin(ahora / 2400) * 0.14, ladeo: -0.6,
+      }
+      pose = {
+        x: mezcla(pose.x, fin.x, v), y: mezcla(pose.y, fin.y, v), alto: mezcla(pose.alto, fin.alto, v),
+        giroY: mezcla(pose.giroY, fin.giroY, v),
+        ladeo: mezcla(pose.ladeo, fin.ladeo, v),
+        cabeceo: pose.cabeceo + v * Math.PI * 2,
+        voltea: 0.95 * Math.pow(Math.sin(v * Math.PI), 0.35),
+      }
+      opacidad = 1
+      // acostada, el aire se juntaba en el hombro y el agua se veía cortada
+      escena.lleno(v)
+      // gotas de frío: aparecen mientras llega, como recién sacada del refri
+      escena.frio(lim((v - 0.35) / 0.65))
+      enNosotros = v >= 1
+    } else { escena.lleno(0); escena.frio(0) }
     // (el pie ya no lleva botella: 13-nov Zahir prefirió la firma sola, al centro)
   } else {
     opacidad = lim((viaje.getBoundingClientRect().bottom - H * 0.3) / (H * 0.4))
   }
   lienzo.style.opacity = opacidad
+  // TEMBLOR al hacer scroll (Zahir, 20-nov): el lienzo es fijo y se redibuja en
+  // el siguiente cuadro, así que al scrollear la botella iba un cuadro atrás de
+  // la página. Ya quieta en Nosotros, el lienzo se ANCLA a la página (absolute
+  // en el scroll de ese momento) y se mueve con ella sin esperar al dibujo.
+  if (enNosotros) {
+    // centrado en la botella: anclado en el scroll de ese momento, la botella
+    // quedaba abajo del lienzo y se cortaba (20-nov)
+    if (anclaY === null) { anclaY = Math.round(scrollY + pose.y - H / 2); lienzo.style.position = 'absolute'; lienzo.style.top = `${anclaY}px` }
+    pose.y += scrollY - anclaY
+  } else if (anclaY !== null) { anclaY = null; lienzo.style.position = ''; lienzo.style.top = '' }
   if (opacidad > 0.01) { escena.poner(pose); escena.dibujar() }
+  // La gotita SENTADA en la tapa (solo ya en Nosotros): su asiento está al 52%
+  // de ancho y 66% de alto de su dibujo; el cuerpo mide ~45% del ancho
+  if (enNosotros && opacidad > 0.01) {
+    const tp = escena.tapa()
+    const w = (0.304 * tp.escala / 0.45) * 0.8
+    gotitaTapa.style.width = `${w.toFixed(1)}px`
+    gotitaTapa.style.transform = `translate(${(tp.x - w * 0.52).toFixed(1)}px, ${(anclaY + tp.y - w * 0.66).toFixed(1)}px) rotate(${tp.ang.toFixed(3)}rad)`
+    gotitaTapa.classList.add('ver')
+  } else gotitaTapa.classList.remove('ver')
   requestAnimationFrame(cuadro)
 }
 import('../../botella/webgl').then(({ hayWebGL }) => hayWebGL() ? import('../lavanda/escena') : null).then((m) => {
   if (!m) return
   escena = m.crearEscena(lienzo, { movil: matchMedia('(max-width: 900px)').matches })
   escena.precargar(lista.map((s) => s.botella))
+  escena.fondo(mundos[lista[actual].etq][0])
   escena.sabor(lista[actual].botella)
   sec.classList.add('con-3d')
   document.documentElement.classList.add('con-3d')
@@ -434,4 +495,4 @@ document.querySelector('.mando .agregar').addEventListener('click', () => {
 actualizarPedido()
 
 revelar()
-barraReferencias('mundos')
+// (20-nov-2026) Sin barra de versiones: Mundos es la versión definitiva
