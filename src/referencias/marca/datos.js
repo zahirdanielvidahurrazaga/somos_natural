@@ -9,4 +9,5 @@ export const mundos = {
   chocolate: ['#E6F1FA', '#5A2616'], 'frutos-rojos': ['#FFD5FB', '#5F0032'], vainilla: ['#5F0032', '#FCE9D2'],
   naranja: ['#5798D7', '#FCF4F0'], mango: ['#F3C8F3', '#B0125F'], pina: ['#E6F1FA', '#2B4C7E'],
   melon: ['#B9C255', '#2E3A12'], guanabana: ['#2F6E4E', '#E8F5D8'],
+  sandia: ['#D9F2B6', '#B0123F'], guayaba: ['#7E7F1E', '#FFF3D6'],
 }

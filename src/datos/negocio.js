@@ -155,11 +155,18 @@ export const sabores = [
     etiqueta: { real: true, trazo: 'sello', fondo: '#9FC4B4', tinta: '#2C5340', papel: '#FFFFFF', acento: '#A9713C', letra: 'redonda', motivo: 'guanabana' },
     botella: { etq: 'guanabana',    agua: 0xece8d8, lechosa: true, pulpa: { dens: 0.26, frec: 9, forma: 1, tam: 0.36, absor: 32, fondo: 0.6, color: 0xf1ecdc, color2: 0xd8d0b6 } },
   },
-  // SANDÍA se quitó del sitio el 2026-10-17 a pedido de Zahir: nunca ha tenido
-  // etiqueta real. Cuando la diseñen, se devuelve con esta receta (y su arte
-  // va a la botella 3D):
-  //   { nombre: 'Sandía', grupo: 'temporada', color: '#C33B52', tipo: null, ingredientes: [],
-  //     etiqueta: { real: false, trazo: 'casa', fondo: '#FCEEF0', tinta: '#C33B52', letra: 'serif', motivo: 'sandia' } },
+  // SANDÍA y GUAYABA entraron el 2026-11-20 con sus etiquetas reales (las de
+  // nov-2026 hechas en Canva). Ingredientes sin confirmar con la familia.
+  {
+    nombre: 'Sandía', grupo: 'temporada', color: '#D41F4D', fondoGaleria: '#3E8E4E', tipo: null, ingredientes: [],
+    etiqueta: { real: true, trazo: 'arco', fondo: '#FFF3F0', tinta: '#D41F4D', letra: 'serif', motivo: 'sandia' },
+    botella: { etq: 'sandia',       agua: 0xa8142c, brillo: 0xe0485a, opacidad: 0.9, pulpa: { dens: 0.02, frec: 55, tam: 0.3, absor: 5, fondo: 0.25, color: 0x1c1414, color2: 0x3a2a28 } },
+  },
+  {
+    nombre: 'Guayaba', grupo: 'temporada', color: '#7E7F1E', fondoGaleria: '#E3C94A', tipo: null, ingredientes: [],
+    etiqueta: { real: true, trazo: 'arco', fondo: '#7E7F1E', tinta: '#F6EFC4', letra: 'serif', motivo: 'guayaba' },
+    botella: { etq: 'guayaba',      agua: 0xeed37a, lechosa: true, pulpa: { dens: 0.2, frec: 9, forma: 1, tam: 0.3, absor: 28, fondo: 0.6, color: 0xf6e4a6, color2: 0xcfae4a } },  // guayaba AMARILLA
+  },
 ]
 
 // ── Tamaños y dulzura ────────────────────────────────────────────────────────

@@ -33,6 +33,8 @@ const botanica = {
   pina: { p1: '#E0A000', p2: '#FFE36E' },
   melon: { h: '#24452A', hl: '#D9E39A', p1: '#E8713A', p2: '#FFB98A' },
   guanabana: { h: '#173A2A', hl: '#6FA36A', p1: '#D6EBC0', p2: '#FFFFFF' },
+  sandia: { h: '#2E6B32', hl: '#8FCB6A', p1: '#C8173F', p2: '#FF7A8C', v: '#F7B2C8' },
+  guayaba: { h: '#3E4A12', hl: '#C9D36A', p1: '#D9A912', p2: '#FFE98A', v: '#F6EFC4', s: '#FFE98A' },
 }
 
 function estallido(n = 12, r1 = 50, r2 = 32) {
@@ -228,7 +230,7 @@ function ir(i, dir = 1) {
   if (i === actual) return
   const de = actual
   actual = i
-  if (escena) giro = { inicio: performance.now(), dura: 900, cambio: false, de, a: i }
+  if (escena) giro = { inicio: performance.now(), dura: 1300, cambio: false, de, a: i } // 1.3 s (antes 0.9): Zahir lo quiso más despacio
   // Como Mana: los dos lados van pegados a UN DISCO enorme con el centro muy
   // abajo (fuera de la pantalla). Gira hacia donde va la flecha: lo viejo se va
   // rodando y pasa POR DETRÁS de la botella, y lo nuevo viene justo detrás, en la
@@ -330,7 +332,8 @@ document.querySelector('.barra-logo').addEventListener('click', (ev) => {
 function cuadro() {
   if (!escena) return
   const W = innerWidth, H = innerHeight, ahora = performance.now()
-  let respira = Math.sin(ahora / 1600) * 0.22
+  // vaivén en reposo: 0.38 rad (antes 0.22) para que enseñe más de la etiqueta
+  let respira = Math.sin(ahora / 1600) * 0.38
   if (giro) {
     const t = Math.min(1, (ahora - giro.inicio) / giro.dura)
     respira += suave(t) * Math.PI * 2 * (ir.dir || 1)

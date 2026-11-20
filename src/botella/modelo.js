@@ -59,9 +59,10 @@ export function crearTexturas(renderer) {
       texturas[etq] = cargador.loadAsync(`/etiquetas/${etq}.webp`).then((t) => {
         t.colorSpace = THREE.SRGBColorSpace
         t.anisotropy = renderer.capabilities.getMaxAnisotropy()
-        // Recorta el filo negro que traen varios artes
-        t.offset.set(0.012, 0.02)
-        t.repeat.set(0.976, 0.96)
+        // Las etiquetas de nov-2026 (3:1) vienen a sangre, sin filo negro:
+        // apenas un recorte mínimo para que no asome la orilla del PNG.
+        t.offset.set(0.004, 0.006)
+        t.repeat.set(0.992, 0.988)
         return t
       })
     }
@@ -440,8 +441,11 @@ export function armarBotella({ texturaDe, ligera = false, foto = false, realce =
   tapa.add(fondoTapa)
   botella.add(tapa)
 
-  const arcoEtq = (196 * Math.PI) / 180
-  const altoEtq = (R * arcoEtq) / 2.0
+  // La etiqueta mide 3:1 (las de nov-2026; antes eran 2:1 a 196°). Con el
+  // mismo arco quedaba muy delgadita (Zahir): ahora da más vuelta (270°) para
+  // ganar altura sin estirar el arte. 300° = "otro poquitito más ancha".
+  const arcoEtq = (300 * Math.PI) / 180
+  const altoEtq = (R * arcoEtq) / 3.0
   const etiqueta = new THREE.Mesh(
     new THREE.CylinderGeometry(R + 0.003, R + 0.003, altoEtq, ligera ? 72 : 160, 1, true, -arcoEtq / 2, arcoEtq),
     new THREE.MeshPhysicalMaterial({

@@ -5,6 +5,25 @@
 Sitio de marketing del negocio de aguas naturales. **No es el ERP**: ese vive aparte en
 `~/Developer/natural-erp` y tiene su propio CLAUDE.md.
 
+## 🟢 20-nov: ETIQUETAS NUEVAS (Canva) + Sandía y Guayaba (SIN commit)
+
+- Las 16 etiquetas nuevas de `~/Downloads/Etiquetas Natural/` (1772×591, **3:1**) →
+  `public/etiquetas/<etq>.webp` (cwebp q90). La #15 (morada, genérica "AGUA") NO se usa:
+  es para cuando no haya etiqueta. Mapeo: 1 vainilla · 2 guanábana · 3 melón ·
+  4 chocolate · 5 frutos rojos · 6 mango · 7 piña · 8 tamarindo · 9 jamaica · 10 café ·
+  11 horchata · 12 limón (pepino, limón y chía) · 13 sandía · 14 guayaba · 16 naranja ·
+  17 maracuyá. Las viejas (2:1) quedaron solo en el scratchpad de esa sesión.
+- `botella/modelo.js`: etiqueta a **3:1** (`altoEtq = R*arco/3`) y arco de **300°** (con
+  196° quedaba "muy delgadita", Zahir; 270° todavía poquito); vaivén del hero 0.22→0.38 rad;
+  vuelta al cambiar de sabor 0.9→1.3 s (más despacio); recorte mínimo de la textura (sin filo negro).
+  Sandía con agua más oscura (`0xa8142c`); **guayaba AMARILLA** (agua `0xeed37a`, flores
+  amarillas), pedido de Zahir.
+- **SANDÍA y GUAYABA dadas de alta** (temporada) en `negocio.js`, `mundos` (marca/datos.js)
+  y `botanica` (mundos/pagina.js). Sin ilustración `ilu-*.svg` todavía (la página lo aguanta).
+  Ya son 16 sabores (og:description actualizado).
+- Cartas (`public/referencias/cartas/`, la botella plana del hero sin 3D) rehechas con
+  `referencias/cartas.html`.
+
 ## 🟢 AHORA (12-nov noche): IDENTIDAD primero → luego web a la manera de Mana
 
 Referencias de Zahir: Fizzly, Matcha Meleon, Juicy Joy, Lemon Chill, Pure
@@ -997,7 +1016,7 @@ los 7 siguientes los mandó Zahir el 2026-09-04 desde Canva.
 | Melón | salmón | negro | **fina** | arco |
 | Guanábana | verde salvia | verde hondo | redonda | **sello** |
 
-**SANDÍA está FUERA del sitio desde el 2026-10-17** (pedido de Zahir): nunca tuvo etiqueta real y él no la tiene. Su receta quedó comentada al final de `sabores` en `negocio.js`; se devuelve cuando la diseñen. El sitio queda en 14 sabores.
+**(Viejo — desde el 20-nov Sandía YA está, con etiqueta real)** SANDÍA estuvo FUERA del sitio desde el 2026-10-17 (pedido de Zahir): nunca tuvo etiqueta real y él no la tiene. Su receta quedó comentada al final de `sabores` en `negocio.js`; se devuelve cuando la diseñen. El sitio queda en 14 sabores.
 
 **Pulido del 2026-09-04**, después de comparar contra el arte real:
 la jamaica pasó de arco a nombre recto con **ramas finas en las cuatro esquinas** y el centro
