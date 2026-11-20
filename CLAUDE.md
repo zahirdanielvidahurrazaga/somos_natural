@@ -2,6 +2,19 @@
 
 > **Este archivo es la FUENTE DE VERDAD del proyecto.** Léelo completo al retomar.
 
+## ⏭️ PRÓXIMA SESIÓN (dejado el 20-nov-2026, todo publicado en `6846ab4`)
+
+- En vivo: etiquetas nuevas (16 sabores con Sandía y Guayaba), botella realista (color fiel,
+  luz de estudio, vinil), agua y pulpa vivas, Nosotros con botella en zoom + gotita en la
+  tapa + gotas de frío que resbalan, sin barra de versiones.
+- Pendientes que quedaron sobre la mesa:
+  - Ilustración de la gotita (`public/marca/ilu-*.svg`) para **Sandía** y **Guayaba**.
+  - Zahir no ha visto las gotas en: tamarindo, mango, melón, guanábana, naranja, sandía, guayaba.
+  - Gotas de frío solo en compu (en celular Nosotros es la foto plana de `cartas/`).
+  - Confirmar en su iPhone que todo va fluido (agua viva, menisco).
+- Página de pruebas lado a lado: `/referencias/prueba-botella.html` (`?captura` guarda PNG).
+- Regla de trabajo: revisar YO en su Chrome (capturas) antes de enseñarle; no a ciegas.
+
 Sitio de marketing del negocio de aguas naturales. **No es el ERP**: ese vive aparte en
 `~/Developer/natural-erp` y tiene su propio CLAUDE.md.
 
