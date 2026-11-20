@@ -5,6 +5,21 @@
 Sitio de marketing del negocio de aguas naturales. **No es el ERP**: ese vive aparte en
 `~/Developer/natural-erp` y tiene su propio CLAUDE.md.
 
+## 🟢 20-nov (tarde): BOTELLA MÁS REALISTA — aprobado por Zahir ("sí qué diferencia")
+
+Investigación + página de prueba lado a lado `referencias/prueba-botella.html`
+(`?captura` guarda PNG por el middleware). Se aplicaron las 3 mejoras baratas, todas
+en `botella/modelo.js` y usadas por `lavanda/escena.js` (el sitio) y `cartas.js`:
+1. **Color fiel**: `colorFiel(renderer)` = Khronos PBR Neutral como CustomToneMapping
+   (three r160 no lo trae; parcha el chunk una vez). Antes ACES: lavaba el papel a gris.
+2. **Luz de foto de producto**: `estudioProducto(renderer)` (cajas de luz en código).
+   Ya NO se descarga `studio_small_09.hdr` en el sitio. Luz direccional 0.7 → 0.35.
+3. **Etiqueta de vinil**: barniz (clearcoat 1, 0.07), roughnessMap + normalMap hechos en
+   canvas (grano + filo arriba/abajo). En celular (`ligera`) el clearcoat se apaga como antes.
+Descartado por la investigación: Gaussian splats (fallan con transparentes), secuencia
+de imágenes estilo Apple (pierde la interacción), path tracing en vivo (pesado).
+Siguiente si se quiere: agua con refracción real solo en compu (probar en iPhone).
+
 ## 🟢 20-nov: ETIQUETAS NUEVAS (Canva) + Sandía y Guayaba (SIN commit)
 
 - Las 16 etiquetas nuevas de `~/Downloads/Etiquetas Natural/` (1772×591, **3:1**) →

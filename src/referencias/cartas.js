@@ -1,6 +1,5 @@
 import * as THREE from 'three'
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js'
-import { ALTO_BOTELLA, armarBotella, crearTexturas } from '../botella/modelo'
+import { ALTO_BOTELLA, armarBotella, crearTexturas, colorFiel, estudioProducto } from '../botella/modelo'
 import { sabores } from '../datos/negocio'
 
 // Las fotos de las cartas de la Lotería Natural: cada sabor con la botella
@@ -13,16 +12,13 @@ document.body.append(canvas)
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true })
 renderer.setPixelRatio(1.6)
 renderer.setSize(ANCHO, ALTO, false)
-renderer.toneMapping = THREE.ACESFilmicToneMapping
-renderer.toneMappingExposure = 1
+colorFiel(renderer) // igual que el sitio desde el 20-nov-2026
 renderer.outputColorSpace = THREE.SRGBColorSpace
 renderer.setClearColor(0x000000, 0)
 
 const scene = new THREE.Scene()
-const pmrem = new THREE.PMREMGenerator(renderer)
-const hdr = await new RGBELoader().loadAsync('/hdri/studio_small_09.hdr')
-scene.environment = pmrem.fromEquirectangular(hdr).texture
-const luz = new THREE.DirectionalLight(0xfff4ec, 0.7)
+scene.environment = estudioProducto(renderer)
+const luz = new THREE.DirectionalLight(0xfff4ec, 0.35)
 luz.position.set(-3, 5, 4)
 scene.add(luz)
 const camera = new THREE.PerspectiveCamera(22, ANCHO / ALTO, 0.1, 50)

@@ -1,6 +1,5 @@
 import * as THREE from 'three'
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js'
-import { ALTO_BOTELLA, armarBotella, crearTexturas, estudioDe } from '../../botella/modelo'
+import { ALTO_BOTELLA, armarBotella, crearTexturas, colorFiel, estudioProducto } from '../../botella/modelo'
 
 // La botella de la versión Lavanda: UNA botella en UN lienzo fijo y
 // transparente. La página le dice cada cuadro dónde va EN PIXELES (centro de la
@@ -13,20 +12,17 @@ export function crearEscena(canvas, { movil = false } = {}) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' })
   let dpr = Math.min(devicePixelRatio, movil ? 2 : 1.75)
   renderer.setPixelRatio(dpr)
-  renderer.toneMapping = THREE.ACESFilmicToneMapping
-  renderer.toneMappingExposure = 1
+  // Color fiel (Khronos PBR Neutral) desde el 20-nov-2026; antes ACES
+  colorFiel(renderer)
   renderer.outputColorSpace = THREE.SRGBColorSpace
 
   const scene = new THREE.Scene()
-  scene.environment = estudioDe(renderer)
-  // Luz de un estudio real (Poly Haven, CC0); mientras carga, la inventada
-  const hdrListo = new RGBELoader().loadAsync('/hdri/studio_small_09.hdr').then((hdr) => {
-    const pmrem = new THREE.PMREMGenerator(renderer)
-    scene.environment = pmrem.fromEquirectangular(hdr).texture
-    hdr.dispose(); pmrem.dispose()
-  }).catch(() => {})
-  scene.environmentIntensity = 0.95
-  const luz = new THREE.DirectionalLight(0xfff4ec, 0.7)
+  // Luz de foto de producto (cajas de luz en código, 20-nov-2026). Antes: la
+  // foto 360° studio_small_09.hdr de Poly Haven, que ya no se descarga.
+  scene.environment = estudioProducto(renderer)
+  scene.environmentIntensity = 1
+  const hdrListo = Promise.resolve()
+  const luz = new THREE.DirectionalLight(0xfff4ec, 0.35) // la luz fuerte la dan las cajas
   luz.position.set(-3, 5, 4)
   scene.add(luz)
 

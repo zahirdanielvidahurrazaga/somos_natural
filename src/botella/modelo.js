@@ -50,6 +50,98 @@ function estudio() {
   return env
 }
 
+// ── Color fiel (20-nov-2026, aprobado por Zahir en referencias/prueba-botella) ──
+// Khronos PBR Neutral: el tone mapping hecho para comercio en línea, respeta el
+// color de la etiqueta y del agua (ACES lavaba el papel a gris y corría los
+// rojos). three r160 no lo trae: va como CustomToneMapping con la fórmula de la
+// spec. Se parcha el chunk UNA vez, antes de compilar cualquier material.
+let neutralListo = false
+export function colorFiel(renderer) {
+  if (!neutralListo) {
+    THREE.ShaderChunk.tonemapping_pars_fragment = THREE.ShaderChunk.tonemapping_pars_fragment.replace(
+      'vec3 CustomToneMapping( vec3 color ) { return color; }',
+      `vec3 CustomToneMapping( vec3 color ) {
+        color *= toneMappingExposure;
+        const float StartCompression = 0.8 - 0.04;
+        const float Desaturation = 0.15;
+        float x = min( color.r, min( color.g, color.b ) );
+        float offset = x < 0.08 ? x - 6.25 * x * x : 0.04;
+        color -= offset;
+        float peak = max( color.r, max( color.g, color.b ) );
+        if ( peak < StartCompression ) return color;
+        const float d = 1. - StartCompression;
+        float newPeak = 1. - d * d / ( peak + d - StartCompression );
+        color *= newPeak / peak;
+        float g = 1. - 1. / ( Desaturation * ( peak - newPeak ) + 1. );
+        return mix( color, vec3( newPeak ), g );
+      }`,
+    )
+    neutralListo = true
+  }
+  renderer.toneMapping = THREE.CustomToneMapping
+  renderer.toneMappingExposure = 1
+}
+
+// ── Luz de foto de producto (20-nov-2026, reemplaza la foto 360° del estudio) ──
+// Cuarto oscuro, caja ALTA y ancha de luz principal a la izquierda, dos tiras
+// angostas atrás a los lados (recortan la silueta con una línea de luz), una
+// arriba y un relleno bajo de frente para la etiqueta. Sin descargas.
+export function estudioProducto(renderer) {
+  const pmrem = new THREE.PMREMGenerator(renderer)
+  const cuarto = new THREE.Scene()
+  cuarto.add(new THREE.Mesh(
+    new THREE.SphereGeometry(20, 32, 16),
+    new THREE.MeshBasicMaterial({ color: new THREE.Color(0.16, 0.15, 0.15), side: THREE.BackSide }),
+  ))
+  const caja = (w, h, brillo, x, y, z) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(brillo, brillo, brillo * 0.97), side: THREE.DoubleSide }))
+    m.position.set(x, y, z); m.lookAt(0, y, 0)
+    cuarto.add(m)
+  }
+  caja(2.2, 14, 7, -5, 0.5, 3)        // principal, izquierda al frente
+  caja(0.5, 14, 9, 5.2, 0.5, -1.2)    // tira de contorno, derecha atrás
+  caja(0.4, 14, 6, -4.6, 0.5, -3)     // tira de contorno, izquierda atrás
+  caja(5, 2.4, 4, 0, 8, 0)            // arriba
+  caja(9, 2.5, 0.9, 0, -1.5, 7)       // relleno bajo de frente (la etiqueta)
+  const env = pmrem.fromScene(cuarto, 0.015).texture
+  pmrem.dispose()
+  return env
+}
+
+// ── Etiqueta de vinil (20-nov-2026) ──
+// Texturas hechas en canvas: grano fino de papel + el filo de arriba y abajo
+// (la normal se inclina en la orilla y ahí se prende una línea de luz). Con
+// barniz brillante encima, el reflejo de las cajas de luz pasa sobre las letras.
+function texturasVinil(ligera) {
+  const W = ligera ? 1024 : 1536, H = ligera ? 342 : 512, FILO = ligera ? 5 : 7
+  const c = document.createElement('canvas'); c.width = W; c.height = H
+  const r = document.createElement('canvas'); r.width = W; r.height = H
+  const g = c.getContext('2d'), gr = r.getContext('2d')
+  const n = g.createImageData(W, H), rr = gr.createImageData(W, H)
+  let s = 7
+  const rnd = () => ((s = (s * 16807) % 2147483647) / 2147483647)
+  const ruido = new Float32Array(W * H).map(() => rnd())
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const i = y * W + x
+    const gx = (ruido[i] - ruido[y * W + ((x + 1) % W)]) * 0.18
+    let ny = (ruido[i] - ruido[Math.min(H - 1, y + 1) * W + x]) * 0.18
+    if (y < FILO) ny += 0.85 * (1 - y / FILO)                 // filo de arriba (fila 0 = v 1)
+    if (y > H - 1 - FILO) ny -= 0.85 * (1 - (H - 1 - y) / FILO)
+    const l = Math.hypot(gx, ny, 1), o = i * 4
+    n.data[o] = (gx / l * 0.5 + 0.5) * 255
+    n.data[o + 1] = (ny / l * 0.5 + 0.5) * 255
+    n.data[o + 2] = (1 / l * 0.5 + 0.5) * 255
+    n.data[o + 3] = 255
+    const rug = 0.22 + ruido[i] * 0.1 + (y < FILO || y > H - 1 - FILO ? 0.15 : 0)
+    rr.data[o] = rr.data[o + 1] = rr.data[o + 2] = rug * 255; rr.data[o + 3] = 255
+  }
+  g.putImageData(n, 0, 0); gr.putImageData(rr, 0, 0)
+  const normal = new THREE.CanvasTexture(c), rugosidad = new THREE.CanvasTexture(r)
+  for (const t of [normal, rugosidad]) t.anisotropy = 8
+  return { normal, rugosidad }
+}
+let vinilCache = null
+
 // Las etiquetas se cargan una vez y las comparten todas las botellas.
 export function crearTexturas(renderer) {
   const cargador = new THREE.TextureLoader()
@@ -448,8 +540,11 @@ export function armarBotella({ texturaDe, ligera = false, foto = false, realce =
   const altoEtq = (R * arcoEtq) / 3.0
   const etiqueta = new THREE.Mesh(
     new THREE.CylinderGeometry(R + 0.003, R + 0.003, altoEtq, ligera ? 72 : 160, 1, true, -arcoEtq / 2, arcoEtq),
+    // vinil laminado (20-nov-2026): rugosidad y relieve de las texturas de arriba
     new THREE.MeshPhysicalMaterial({
-      map: null, roughness: foto ? 0.5 : 0.42, clearcoat: foto ? 0.7 : 0.5, clearcoatRoughness: foto ? 0.12 : 0.2,
+      map: null, roughness: 1, clearcoat: 1, clearcoatRoughness: 0.07, specularIntensity: 1,
+      roughnessMap: (vinilCache ??= texturasVinil(ligera)).rugosidad,
+      normalMap: vinilCache.normal, normalScale: new THREE.Vector2(0.6, 0.6),
     }),
   )
   // Justo debajo del hombro, como en sus fotos: el filo de arriba queda a un
