@@ -98,7 +98,7 @@ document.getElementById('app').innerHTML = html`
 
 <section class="nosotros" id="nosotros">
   ${ondas}
-  <figure class="nosotros-foto" data-botella="nosotros" data-revela>${ramito(3)}<img class="asoma" src="/marca/gotita-asoma.svg" alt="" /><div class="nosotros-zoom"><img class="nosotros-botella" alt="Una botella de agua Natural, de cerca" /></div></figure>
+  <figure class="nosotros-foto" data-botella="nosotros" data-revela>${ramito(3)}<img class="asoma" src="/marca/gotita-asoma.svg" alt="" /><div class="nosotros-zoom"><div class="nb-giro"><img class="nosotros-botella" alt="Una botella de agua Natural, de cerca" /><img class="nb-gotita" src="/marca/gotita-sentada.svg" alt="" aria-hidden="true" /></div></div></figure>
   <div class="nosotros-txt" data-revela>
     <p class="sobre">Nosotros</p>
     <h2>Somos una familia poblana que hace aguas de verdad.</h2>
@@ -287,6 +287,9 @@ const secProc = document.querySelector('.proceso')
 const pasosProc = [...secProc.querySelectorAll('li')]
 const selloProc = [...secProc.querySelectorAll('.proceso-sello b')]
 const esMovil = () => innerWidth < 900
+// (22-nov) El botón "Bien fría" del hero se QUITÓ a pedido de Zahir: el sudor
+// solo aparece en Nosotros (compu) como antes.
+const frioHero = 0
 const secNos = document.querySelector('.nosotros')
 const hNos = document.querySelector('[data-botella="nosotros"]')
 
@@ -412,12 +415,50 @@ function cuadro() {
       // acostada, el aire se juntaba en el hombro y el agua se veía cortada
       escena.lleno(v)
       // gotas de frío: aparecen mientras llega, como recién sacada del refri
-      escena.frio(lim((v - 0.35) / 0.65))
+      escena.frio(Math.max(frioHero, lim((v - 0.35) / 0.65)))
       enNosotros = v >= 1
-    } else { escena.lleno(0); escena.frio(0) }
+    } else { escena.lleno(0); escena.frio(frioHero) }
     // (el pie ya no lleva botella: 13-nov Zahir prefirió la firma sola, al centro)
   } else {
-    opacidad = lim((viaje.getBoundingClientRect().bottom - H * 0.3) / (H * 0.4))
+    // CELULAR v2 (22-nov, Zahir: "que dé vueltas como en el real"): la MISMA
+    // coreografía que en compu en lugar de desvanecerse y cambiar a la foto plana
+    // (eso dejaba un fantasma encima de los stickers). Hero → escenario de "Así le
+    // hacemos" (con la maroma) → Nosotros (otra maroma, acostada y grande).
+    const hero = { x: W / 2, y: H * 0.465 + Math.sin(ahora / 900) * 4, alto: H * 0.66, giroY: respira, ladeo: -0.13, cabeceo: 0 }
+    const pm = document.querySelector('.proceso-movil')
+    const rp = pm.getBoundingClientRect(), rv = viaje.getBoundingClientRect()
+    // empieza cuando el hero se va y termina con el escenario a media pantalla
+    const d0 = rv.bottom + scrollY - H, d1 = rp.top + scrollY + rp.height / 2 - H / 2
+    const t = suave(lim((scrollY - d0) / Math.max(1, d1 - d0)))
+    const B = { x: rp.left + rp.width / 2, y: rp.top + rp.height * 0.5, alto: rp.height * 0.8 }
+    pose = {
+      x: mezcla(hero.x, B.x, t), y: mezcla(hero.y, B.y, t), alto: mezcla(hero.alto, B.alto, t),
+      giroY: respira + t * 0.8, ladeo: mezcla(-0.13 - Math.sin(t * Math.PI) * 0.35, -0.07, t),
+      cabeceo: t * Math.PI * 2, voltea: 0.95 * Math.pow(Math.sin(t * Math.PI), 0.35),
+    }
+    const rn = secNos.getBoundingClientRect()
+    if (rn.top < H * 0.9 && rn.bottom > 0) {
+      const v = suave(lim((H * 0.9 - rn.top) / (H * 0.85)))
+      const rf = hNos.getBoundingClientRect()
+      // más grande (Zahir) y menos ladeada que en compu: acostada a 34° el ANCHO
+      // del teléfono la topaba; a ~26° cabe más alta
+      const fin = {
+        x: rf.left + rf.width * 0.5, y: rf.top + rf.height * 0.52, alto: Math.min(rf.height * 0.98, W * 1.12),
+        giroY: Math.PI * 4 + 0.35 + Math.sin(ahora / 2400) * 0.14, ladeo: -0.45,
+      }
+      pose = {
+        x: mezcla(pose.x, fin.x, v), y: mezcla(pose.y, fin.y, v), alto: mezcla(pose.alto, fin.alto, v),
+        giroY: mezcla(pose.giroY, fin.giroY, v), ladeo: mezcla(pose.ladeo, fin.ladeo, v),
+        cabeceo: pose.cabeceo + v * Math.PI * 2, voltea: 0.95 * Math.pow(Math.sin(v * Math.PI), 0.35),
+      }
+      escena.lleno(v)
+      escena.frio(frioHero)
+      enNosotros = v >= 1
+    } else { escena.lleno(0); escena.frio(frioHero) }
+    // fuera de la pantalla no se dibuja (Codex: antes seguía gastando GPU/batería
+    // mientras se leían las secciones de abajo)
+    const medio = pose.alto * 0.6
+    if (pose.y + medio < 0 || pose.y - medio > H) opacidad = 0
   }
   lienzo.style.opacity = opacidad
   // TEMBLOR al hacer scroll (Zahir, 20-nov): el lienzo es fijo y se redibuja en

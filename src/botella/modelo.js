@@ -827,7 +827,12 @@ export function armarBotella({ texturaDe, ligera = false, foto = false, realce =
           float zona = smoothstep(0.06, 0.16, vLocC.y) * (1.0 - smoothstep(${(nivel - 0.04).toFixed(3)}, ${(nivel + 0.02).toFixed(3)}, vLocC.y));
           float th = atan(vLocC.x, vLocC.z);
           float enEtq = step(abs(th), uEtqC.z) * step(abs(vLocC.y - uEtqC.x), uEtqC.y);
-          float kF = uFrio * zona * mix(1.0, 0.95, enEtq);   // en su foto la etiqueta va MUY mojada
+          // en la etiqueta, menos (×0.75). v7 (botón "Bien fría"): como en un time-lapse real, primero se EMPAÑA
+          // (velo) y después aparecen las gotas, las chicas antes que las grandes
+          float kV = smoothstep(0.0, 0.4, uFrio) * zona * mix(1.0, 0.75, enEtq);
+          float pD = smoothstep(0.25, 1.0, uFrio);
+          float kD = pD * zona * mix(1.0, 0.75, enEtq);
+          float crece = smoothstep(dd.r * 0.55, dd.r * 0.55 + 0.3, pD);
           vec3 nC = mapNC;
           float borde = clamp(1.0 - nC.z, 0.0, 1.0);
           // v3 (Zahir: en café "se ve muy extraño"): la gota casi NO cambia de
@@ -842,7 +847,7 @@ export function armarBotella({ texturaDe, ligera = false, foto = false, realce =
             // sobre la etiqueta: su imprenta, desplazada e invertida por la gota
             float u = (th + uEtqC.z) / (2.0 * uEtqC.z);
             float v = (vLocC.y - (uEtqC.x - uEtqC.y)) / (2.0 * uEtqC.y);
-            vec2 uvE = vec2(u, v) - nC.xy * 0.035 * (1.0 - borde);
+            vec2 uvE = vec2(u, v) - nC.xy * 0.007 * (1.0 - borde);
             base = texture2D(uEtqMapC, uvE * vec2(0.992, 0.988) + vec2(0.004, 0.006)).rgb;
           }
           float junta = pow(clamp(dot(-nC.xy, normalize(vec2(-0.6, 0.8))) * 1.8, 0.0, 1.0), 2.0) * (1.0 - borde);
@@ -852,24 +857,49 @@ export function armarBotella({ texturaDe, ligera = false, foto = false, realce =
           // v4 (copiando su foto real): la gota plana se ve un pelito MÁS OSCURA que
           // lo de abajo (en la jamaica, casi negra) con la luz que junta abajo; el
           // brillo lo pone el reflejo en su orilla empinada
-          vec3 lente = base * luzC * mix(0.88, 0.97, claro) + junta * (base * 0.25 + 0.04) * (1.0 - claro * 0.85);
+          vec3 lente = base * luzC * 1.0 + junta * (base * 0.25 + 0.04) * (1.0 - claro * 0.85);
           vec3 orilla = base * luzC * mix(0.55, 0.86, claro);
           // v5 (Zahir: en las transparentes "se ve raro", aros grises): la gota es
           // TRANSPARENTE. El cuerpo casi no tapa lo de atrás (12%), la orilla un poco
           // (45%) y el brillo va completo encima. Sobre la etiqueta sí se pinta la
           // imprenta deformada (ahí sabemos qué hay debajo).
+          // v6 (22-nov, Zahir: "parece aceite, muchas bolitas"). Comparado con su
+          // FOTO: (1) ninguna gota tiene aro. Una orilla oscura + brillo en TODA la
+          // orilla = burbuja de aceite. En la foto cada gota es casi invisible: un
+          // puntito de luz ARRIBA (la luz viene de arriba) y una rayita clara abajo.
+          // (2) Entre gotas hay un VELO mate (millones de gotitas microscópicas
+          // dispersan la luz: el plástico se ve grisáceo y apagado) y las gotas
+          // grandes son VENTANAS más limpias en ese velo. Los caminitos lo borran.
           float rimF = smoothstep(0.18, 0.6, borde);
-          vec3 cuerpo = mix(lente, orilla, rimF);
-          float aCuerpo = mix(mix(0.12, 0.5, rimF), 0.92, enEtq);
+          vec2 inclC = nC.xy / max(length(nC.xy), 1e-4);
+          float arriba = smoothstep(-0.2, 0.6, dot(inclC, vec2(-0.3, 0.95)));
+          vec3 cuerpo = mix(lente, orilla, rimF * (1.0 - arriba) * 0.5);
+          float aCuerpo = mix(mix(0.04, 0.12, rimF * (1.0 - arriba)), 0.85, enEtq);
           // de canto (en la silueta) las gotas hacían un borde rasposo: se desvanecen
-          float deFrente = smoothstep(0.08, 0.4, abs(dot(normalize(vNormal), normalize(vViewPosition))));
-          float fijas = (dd.g * 0.95 + dd.b * 0.07) * (1.0 - limpioC);
-          float cob = max(fijas, hayD * 0.97) * kF * deFrente;
+          float ndv = abs(dot(normalize(vNormal), normalize(vViewPosition)));
+          // v7 (video de referencia, 22-nov): en una botella fría el empañado se ve
+          // MÁS en las orillas (de lado se ve más superficie y refleja más) y el
+          // centro queda más limpio. Antes se apagaba en las orillas; ahora solo el
+          // filo último (el borde rasposo).
+          float deFrente = smoothstep(0.02, 0.12, ndv);
+          float deLado = pow(1.0 - ndv, 2.0);
+          float fijas = (dd.g * 0.95 + dd.b * 0.05) * (1.0 - limpioC);
+          float cob = max(fijas * crece, hayD * 0.97) * kD * deFrente;
           float aB = cob * aCuerpo;
-          float sL = clamp(dot(totalSpecular, vec3(0.3333)), 0.0, 1.0) * cob;
-          float aT = clamp(aB + sL * (1.0 - aB), 0.0, 1.0);
+          // el brillo: nítido arriba, casi nada en la orilla de abajo
+          vec3 specC = totalSpecular * mix(0.15, 2.4, pow(arriba, 1.5));
+          // el velo: solo fuera de las gotas, menos en la etiqueta y casi nada en lo
+          // claro (en horchata no se nota en la foto)
+          // v7: las gotas ya no son "ventanas" oscuras en el velo (se leían como burbujas DENTRO
+          // del líquido, o como gotas del otro lado): el velo baja solo a la mitad bajo ellas
+          float sinGota = 1.0 - 0.5 * smoothstep(0.04, 0.35, max(dd.g, hayD));
+          float aV = kV * deFrente * sinGota * (1.0 - limpioC) * (1.0 - enEtq * 0.75) * (1.0 - claro * 0.8) * (0.04 + 0.11 * dd.b) * (0.7 + 2.6 * deLado);
+          vec3 colV = luzC * mix(vec3(0.74, 0.76, 0.8), vec3(0.95), claro);
+          float aV2 = aV * (1.0 - aB);
+          float sL = clamp(dot(specC, vec3(0.3333)), 0.0, 1.0) * cob;
+          float aT = clamp(aB + aV2 + sL * (1.0 - aB - aV2), 0.0, 1.0);
           diffuseColor.a = aT;
-          vec3 outgoingLight = (cuerpo * aB + totalSpecular * cob) / max(aT, 0.001);`)
+          vec3 outgoingLight = (cuerpo * aB + colV * aV2 + specC * cob) / max(aT, 0.001);`)
     }
     pielFria = new THREE.Mesh(geo, mat)
     pielFria.renderOrder = 4

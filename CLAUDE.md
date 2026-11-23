@@ -18,6 +18,67 @@
 Sitio de marketing del negocio de aguas naturales. **No es el ERP**: ese vive aparte en
 `~/Developer/natural-erp` y tiene su propio CLAUDE.md.
 
+## ✅ 22-nov PUBLICADO: celular con la botella 3D viajando + SIN SUDOR (en ningún lado)
+- `condensa: false` en `lavanda/escena.js` (Zahir: quitar la condensación también en compu). El código
+  del sudor (v6/v7) se queda en modelo.js, apagado; `prueba-botella.html` todavía lo puede prender.
+- Revisión de Codex (3 hallazgos, los 3 reales y corregidos): el DPR no subía en pantallas de 60 Hz
+  (umbral < 15 ms → < 18 ms); en celular se dibujaba la botella aun fuera de pantalla (ahora
+  `opacidad = 0` si queda fuera); la gotita del respaldo sin WebGL salía recortada (`.nosotros-foto img`
+  le ganaba → `img.nb-gotita`).
+
+## 🟢 22-nov: GOTAS v6 ("parece aceite, muchas bolitas") + CELULAR sin cortes (LOCAL, sin subir)
+
+- **Diagnóstico contra `formacion.jpg`:** en la foto ninguna gota tiene aro; cada una es casi
+  invisible salvo un PUNTITO de luz arriba y una rayita clara abajo; entre gotas hay un VELO
+  mate (gotitas microscópicas) y las gotas grandes son "ventanas" más limpias; la etiqueta
+  mojada se LEE perfecto. Lo nuestro: aro oscuro + brillo en toda la orilla (= burbuja de
+  aceite), 1900 medianas parecidas, etiqueta destrozada (desplazamiento 0.035).
+- **Shader** (`armarFrio` en modelo.js): brillo solo en la parte de ARRIBA de cada gota
+  (`arriba`, ×2.4) y casi nada abajo; sin aro (orilla oscura solo abajo y al 50%); cuerpo
+  al 8%; **velo** fuera de las gotas (`aV`, 5–17%, gris frío × la luz del punto, casi nada
+  en lo claro y 25% en la etiqueta; lo borran los caminitos); etiqueta: desplazamiento
+  0.035→0.007 y 75% de gotas.
+- **Textura** (`herramientas/rocio.cjs`): 1150 gotas (antes 1900) con tamaños `5+30·r^3.2`
+  (casi todas chicas, pocas grandes), 4000 diminutas (solo destellan), neblina 45k con
+  relieve a la mitad. Copias de lo anterior en el scratchpad de la sesión.
+- Revisado en Chrome: jamaica (sitio y prueba), horchata, maracuyá.
+- **v7 (mismo día, Zahir: "veo las gotas de la parte de atrás"):** NO se dibujan las de atrás
+  (la piel es FrontSide y la Lathe mira hacia afuera; comprobado con three en node). Lo que se
+  leía así: las gotas eran "ventanas" más OSCURAS que el velo → parecían burbujas dentro del
+  líquido. Ahora la gota no oscurece (cuerpo al 4%) y el velo solo baja a la mitad bajo ella.
+  Referencia de video real (time-lapse de vaso frío, YouTube "Condensation time lapse"): el
+  empañado se ve MUCHO más en las orillas y el centro queda limpio → velo × (0.7 + 2.6·(1−n·v)²)
+  y las gotas ya no se apagan de lado (solo el último filo).
+- **Botón "Bien fría" en el hero** (idea de Zahir): píldora con copo (`public/marca/copo.svg`, máscara)
+  a un lado del mando (absolute, así el mando sigue centrado en la botella); solo compu y con 3D.
+  `frioHero` sube en ~5 s y baja en ~3.5 s; Nosotros usa `max(frioHero, su frío)`. En el shader
+  el frío es un TIME-LAPSE: 0–40% solo el velo (`kV`), de 25% en adelante las gotas (`kD`),
+  las chicas antes que las grandes (`crece` con la altura `dd.r`).
+- **Celular, transición de Nosotros:** la botella plana va en `.nb-giro` (botella + `.nb-gotita`
+  sentada en la tapa, giran juntas a −34°); al revelarse CAE dando la maroma (`nb-cae`, 1.5 s) y
+  la gotita llega al final (`nb-sienta`). La `.asoma` se esconde en celular.
+- **Celular v2 — la botella 3D VIAJA como en compu** (Zahir lo probó en su iPhone: "va fluido";
+  prefirió vueltas en vez de sudor): rama `else` de `cuadro()`: hero → escenario de
+  `.proceso-movil` (de d0 = sale el hero a d1 = escenario a media pantalla, con maroma) →
+  Nosotros (otra maroma; `ladeo −0.45`, alto = min(0.98 × hueco, 1.12 W): acostada a 34° el
+  ancho del teléfono la topaba). Ya no se desvanece (dejaba un FANTASMA sobre los stickers).
+  Las planas (`.proceso-movil-botella`, `.nb-giro`) quedan solo de respaldo sin WebGL. Hueco de
+  Nosotros en celular 5:7. `.proceso-txt` pasa a `z-index: auto` en celular con 3D (en la capa 4
+  el escenario tapaba la botella; textos siguen en 4). Gotita de la tapa = la DOM de compu (no
+  se corta: la `.nosotros` tiene `overflow: clip`). Celular completo con pulpa salvo teléfonos
+  modestos (`deviceMemory < 4` o `< 6` núcleos → ligera). Sudor sigue solo en compu.
+- **Botón "Bien fría": QUITADO** (Zahir, mismo día, tras probarlo en su iPhone): el sudor vuelve a
+  ser solo de Nosotros en compu; en celular solo pulpa. `?todo` también se quitó.
+- **Calidad en celular** ("baja la calidad de la etiqueta en algunas partes"): la calidad
+  automática de `lavanda/escena.js` bajaba el DPR para siempre con 45 cuadros lentos (la carga de
+  texturas o un scroll brusco bastaban). Ahora ignora los primeros 4 s y los saltos > 120 ms,
+  baja solo con DOS tandas de 60 cuadros lentas (> 24 ms), piso 1.5 en celular y SUBE de nuevo
+  con tres tandas rápidas (< 15 ms). Tope sigue en 2 (celular) / 1.75 (compu).
+- **Celular:** Nosotros ya no recorta la botella en una caja (entera y acostada, 96% del
+  hueco); en el hero/sabores la botella ya no crece al bajar (alto 0.66 H, y 0.465 H) y no
+  se mete bajo los botones. Revisado en 393/375/430/360 px con `public/_movil.html`
+  (iframes; está en .gitignore, solo para desarrollo).
+
 ## 🟢 20-nov (madrugada): GOTAS DE FRÍO v2 — solo en Nosotros (verificado en Chrome)
 
 Tercer intento (los 2 anteriores rechazados: "sucia", "burbujas pegadas"; el `rocio`

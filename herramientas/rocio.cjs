@@ -78,21 +78,22 @@ for (let k = 0; k < 7; k++) {
 }
 // 2 · Gotas grandes y medianas irregulares (pocas grandes, más medianas)
 let puestas = 0
-for (let k = 0; k < 80000 && puestas < 1900; k++) {
-  const rad = 7 + 30 * Math.pow(r(), 2.3)
+// v6 (22-nov, "muchas bolitas"): menos medianas parecidas; casi todas chicas y pocas grandes
+for (let k = 0; k < 80000 && puestas < 1150; k++) {
+  const rad = 5 + 30 * Math.pow(r(), 3.2)
   const x = r() * N, y = r() * N
   if (limpio[idx(x, y)]) continue
   if (!cabe(x, y, rad * 1.05)) continue
   gota(x, y, rad); puestas++
 }
 // 3 · Gotitas chicas entre las grandes (también irregulares, menos que antes)
-for (let k = 0; k < 2500; k++) {   // v3: menos chiquitas ("aún hay muchas")
+for (let k = 0; k < 4000; k++) {   // v6: más, pero diminutas (solo destellan)
   const x = r() * N, y = r() * N
   if (limpio[idx(x, y)] || alto[idx(x, y)] > 0) continue
-  gota(x, y, 2.5 + r() * 3, { partes: 1 + Math.floor(r() * 2) })
+  gota(x, y, 1.8 + r() * 2.4, { partes: 1 + Math.floor(r() * 2) })
 }
 // 4 · Neblina finísima (casi no se ve; da la piel empañada)
-for (let k = 0; k < 15000; k++) {
+for (let k = 0; k < 45000; k++) {   // v6: el velo pareja (es lo que da lo mate)
   const x = r() * N, y = r() * N
   if (limpio[idx(x, y)] || alto[idx(x, y)] > 0) continue
   gota(x, y, 1.2 + r() * 1.4, { capa: neblina, partes: 1, plana: 0.5 })
@@ -101,7 +102,7 @@ for (let k = 0; k < 15000; k++) {
 const normal = Buffer.alloc(N * N * 4), datos = Buffer.alloc(N * N * 4)
 let maxH = 0
 for (let i = 0; i < N * N; i++) maxH = Math.max(maxH, alto[i])
-const h = (xx, yy) => alto[yy * N + envuelve(xx)] + neblina[yy * N + envuelve(xx)] * 0.6
+const h = (xx, yy) => alto[yy * N + envuelve(xx)] + neblina[yy * N + envuelve(xx)] * 0.3
 for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
   const i = y * N + x, o = i * 4
   const yA = Math.max(0, y - 1), yB = Math.min(N - 1, y + 1)

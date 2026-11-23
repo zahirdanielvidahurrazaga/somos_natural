@@ -729,7 +729,26 @@ html.con-3d .botella-plana { display: none }
 .nosotros-foto .asoma { z-index: 1 }
 .nosotros-foto .ramito { z-index: 4 }
 @media (min-width: 900px) { .con-3d .nosotros-zoom { display: none } }
+.nb-giro { position: absolute; inset: 0 }  /* compu sin 3D: la caja de siempre */
 @media (max-width: 899px) { .nosotros-foto { aspect-ratio: 4 / 5 } }
+/* 22-nov (Zahir: "en celular se corta la botella"): la caja recortaba la tapa y dejaba
+   orillas rectas. Ahora va ENTERA y acostada como en compu, del alto de su hueco. */
+@media (max-width: 899px) {
+  .nosotros-zoom { overflow: visible; border-radius: 0 }
+  /* la botella y la gotita sentada en su tapa giran juntas (como en compu) */
+  .nb-giro { position: absolute; left: 50%; top: 50%; height: 96%; aspect-ratio: 509 / 1583; translate: -50% -50%; rotate: -34deg }
+  .nb-giro .nosotros-botella { position: absolute; inset: 0; width: 100%; height: 100%; translate: none; rotate: none; left: 0; top: 0 }
+  .nosotros-foto img.nb-gotita { position: absolute; z-index: 2; width: 60%; height: auto; aspect-ratio: auto; object-fit: contain; border-radius: 0; left: 50%; top: 0; translate: -52% -74%; pointer-events: none }  /* (Codex) `.nosotros-foto img` le ganaba */
+  .nosotros-foto .asoma { display: none }
+  /* TRANSICIÓN (22-nov, Zahir): en celular la botella no viaja en 3D, así que la
+     plana CAE dando la maroma y aterriza acostada; la gotita llega al final y se sienta */
+  .ver .nb-giro { animation: nb-cae 1.5s cubic-bezier(.22, .9, .3, 1.08) .15s both }
+  .ver .nb-gotita { animation: nb-sienta .7s cubic-bezier(.34, 1.6, .64, 1) 1.45s both }
+  @keyframes nb-cae { from { transform: translateY(-75vh) rotate(-320deg) scale(.8); opacity: 0 } 25% { opacity: 1 } to { transform: none } }
+  @keyframes nb-sienta { from { transform: translateY(-120%) scale(.5); opacity: 0 } 40% { opacity: 1 } to { transform: none } }
+}
+@media (max-width: 899px) and (prefers-reduced-motion: reduce) { .ver .nb-giro, .ver .nb-gotita { animation: none } }
+@media (min-width: 900px) { .nb-gotita { display: none } }
 
 /* ── Nosotros v3 (20-nov-2026, Zahir) ──
    Fondo colorido: un ARCO tipo amanecer con los colores de fondo de los mundos
@@ -750,4 +769,15 @@ html.con-3d .botella-plana { display: none }
 .gotita-tapa { position: absolute; left: 0; top: 0; z-index: 4; pointer-events: none; transform-origin: 52% 66%; opacity: 0; transition: opacity .35s; width: 120px; height: auto }
 .gotita-tapa.ver { opacity: 1 }
 @media (min-width: 900px) { .con-3d .nosotros-foto .asoma { display: none } }
-@media (max-width: 899px) { .gotita-tapa { display: none } }
+@media (max-width: 899px) { html:not(.con-3d) .gotita-tapa { display: none } }
+
+/* 22-nov: con 3D, en celular la botella de "Así le hacemos" y Nosotros ES la 3D que viaja
+   (la plana queda solo de respaldo sin WebGL). Hueco de Nosotros más alto: botella más grande. */
+@media (max-width: 899px) {
+  .con-3d .proceso-movil-botella, .con-3d .nb-giro { visibility: hidden }
+  .con-3d .nosotros-foto { aspect-ratio: 5 / 7 }
+  /* .proceso-txt va en la capa 4 (encima del lienzo, 3): con él, el escenario de
+     flores tapaba la botella. Los textos siguen arriba; el escenario, abajo. */
+  .con-3d .proceso-txt { z-index: auto }
+  .con-3d .proceso-cabeza, .con-3d .proceso ol { z-index: 4 }
+}

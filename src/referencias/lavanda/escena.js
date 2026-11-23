@@ -31,8 +31,12 @@ export function crearEscena(canvas, { movil = false } = {}) {
 
   const texturaDe = crearTexturas(renderer)
   // condensa: gotas de frío (solo compu; en celular Nosotros usa la foto plana)
-  const modelo = armarBotella({ texturaDe, ligera: movil, realce: true, condensa: !movil })
-  if (movil) modelo.pulpa(false)
+  // 22-nov (Zahir: "va fluido en mi iPhone"): en celular va completa con pulpa; la
+  // versión ligera solo en teléfonos modestos. El sudor sigue solo en compu (él
+  // prefirió que en celular la botella dé las vueltas).
+  const lento = movil && ((navigator.deviceMemory || 8) < 4 || (navigator.hardwareConcurrency || 8) < 6)
+  const modelo = armarBotella({ texturaDe, ligera: lento, realce: true, condensa: false })  // 22-nov: sin sudor (Zahir); el código queda apagado en modelo.js
+  if (lento) modelo.pulpa(false)
   // Agua viva (20-nov-2026): la luz cruza el líquido + menisco
   modelo.agua(true)
   const giro = new THREE.Group()
@@ -78,15 +82,26 @@ export function crearEscena(canvas, { movil = false } = {}) {
   }
 
   // Calidad automática (igual que el motor del sitio): si va lento, baja la resolución
+  // 22-nov (Zahir: "en mi cel baja la calidad de la etiqueta en algunas partes"):
+  // antes bastaban 45 cuadros lentos (los de la carga de texturas o un scroll
+  // brusco) para bajar la resolución PARA SIEMPRE. Ahora: no mide los primeros 4 s
+  // ni los saltos sueltos (> 120 ms = pausa, no lentitud), baja solo si van DOS
+  // tandas lentas seguidas, en celular no baja de 1.5 y vuelve a SUBIR si va fluido.
   const tiempos = []
-  let previo = performance.now()
+  const dprMax = dpr, dprMin = movil ? 1.5 : 1.25, arranque = performance.now()
+  let previo = performance.now(), lentas = 0, rapidas = 0
   function dibujar() {
     const ahora = performance.now()
-    tiempos.push(ahora - previo); previo = ahora
-    if (tiempos.length >= 45) {
+    const dt = ahora - previo; previo = ahora
+    if (ahora - arranque > 4000 && dt < 120 && !document.hidden) tiempos.push(dt)
+    if (tiempos.length >= 60) {
       const prom = tiempos.reduce((a, b) => a + b, 0) / tiempos.length
       tiempos.length = 0
-      if (prom > 22 && dpr > 1.25) { dpr = Math.max(1.25, dpr - 0.25); renderer.setPixelRatio(dpr); vw = 0 }
+      lentas = prom > 24 ? lentas + 1 : 0
+      // < 18 ms: a 60 Hz un cuadro fluido dura ~16.7 ms (con < 15 nunca subía; Codex)
+      rapidas = prom < 18 ? rapidas + 1 : 0
+      if (lentas >= 2 && dpr > dprMin) { dpr = Math.max(dprMin, dpr - 0.25); renderer.setPixelRatio(dpr); vw = 0; lentas = 0 }
+      else if (rapidas >= 3 && dpr < dprMax) { dpr = Math.min(dprMax, dpr + 0.25); renderer.setPixelRatio(dpr); vw = 0; rapidas = 0 }
     }
     modelo.cuadro(ahora / 1000, camera)
     renderer.render(scene, camera)
